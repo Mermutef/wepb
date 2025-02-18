@@ -1,0 +1,19 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Kotlin project data
+.kotlin
+
+# Ignore Gradle build output directory
+build
+
+# IDEA settings
+.idea
+*/ .idea.
+
+# Application settings
+app.properties
+
+logs
+reports
+**/*.properties
