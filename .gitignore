@@ -8,13 +8,14 @@
 build
 
 # IDEA settings
-.idea
-*/ .idea.
-!**/*.idea/codeStyles
+.idea/*
+!.idea/codeStyles
 
 # Application settings
-app.properties
-
-logs
-reports
 **/*.properties
+
+# Application logs
+logs
+
+# Coverage reports
+reports
