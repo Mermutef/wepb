@@ -1,0 +1,15 @@
+[*.{kt,kts}]
+ktlint_code_style = ktlint_official
+ij_kotlin_packages_to_use_import_on_demand = org.assertj.**,org.http4k.core.**,org.http4k.routing.**
+
+ktlint_standard_no-empty-first-line-in-class-body = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+
+ktlint_function_signature_body_expression_wrapping = multiline
+
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_paren-spacing = disabled
+
+
+
+ktlint_standard_filename = disabled

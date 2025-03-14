@@ -8,8 +8,8 @@ jobs:
                 image: postgres:16.3
                 env:
                     POSTGRES_USER: postgres
-                    POSTGRES_PASSWORD: mysecretpassword
-                    POSTGRES_DB: peproj
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: pe_project
         steps:
             -   uses: actions/checkout@v4
             -   uses: actions/setup-java@v4

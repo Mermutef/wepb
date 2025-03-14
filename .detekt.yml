@@ -1,0 +1,10 @@
+config:
+  validation: true
+  warningsAsErrors: true
+
+style:
+  WildcardImport:
+    excludeImports:
+      - 'org.assertj.*'
+      - 'org.http4k.core.*'
+      - 'org.http4k.routing.*'
