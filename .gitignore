@@ -10,6 +10,7 @@ build
 # IDEA settings
 .idea
 */ .idea.
+!**/*.idea/codeStyles
 
 # Application settings
 app.properties

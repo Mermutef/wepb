@@ -1,0 +1,61 @@
+services:
+  web:
+    build: .
+    depends_on:
+      - db
+    restart: always
+    env_file: ./.env
+    ports:
+      - $APP_LOCAL_PORT:$APP_DOCKER_PORT
+    networks:
+      - service-network
+    volumes:
+      - ./weblogs:/logs
+    tty: true
+    stdin_open: true
+
+  db:
+    image: postgres:16.3-alpine
+    env_file: ./.env
+    restart: always
+    environment:
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - service-network
+    tty: true
+    stdin_open: true
+
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local
+    restart: always
+    volumes:
+      - ./pgbackups:/backups
+    links:
+      - db
+    depends_on:
+      - db
+    env_file: ./.env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_EXTRA_OPTS=-Z1 --schema=public --blobs
+      - SCHEDULE=@every 5m
+      - BACKUP_ON_START=TRUE
+      - BACKUP_KEEP_DAYS=288
+      - BACKUP_KEEP_WEEKS=168
+      - BACKUP_KEEP_MONTHS=31
+    networks:
+      - service-network
+    tty: true
+    stdin_open: true
+
+networks:
+  service-network:
+    driver: bridge

@@ -1,0 +1,11 @@
+auth.adminPass = admin
+auth.secret = secret
+auth.salt = salt
+db.host = localhost
+db.port = 5432
+db.base = pe_project
+db.user = postgres
+db.password = password
+web.port = 9000
+web.domain = example.com
+web.hotReloadTemplates = true
