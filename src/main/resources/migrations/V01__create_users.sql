@@ -1,16 +1,20 @@
 CREATE TYPE user_role AS ENUM (
     'ADMIN',
     'MODERATOR',
-    'AUTHORIZED'
+    'WRITER',
+    'READER'
 );
 
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
-	name CHARACTER VARYING(30) UNIQUE NOT NULL,
+	name CHARACTER(64) NOT NULL,
+	surname CHARACTER(64) NOT NULL,
+	login CHARACTER VARYING(30) UNIQUE NOT NULL,
 	email VARCHAR(255) UNIQUE NOT NULL,
+	phoneNumber VARCHAR(11) NOT NULL,
     password CHARACTER(64) NOT NULL,
-    role user_role NOT NULL,
-    CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+    vkLink VARCHAR(255),
+    role user_role NOT NULL
 );

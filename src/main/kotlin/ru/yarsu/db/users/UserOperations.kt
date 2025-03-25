@@ -14,49 +14,59 @@ class UserOperations(
     private val jooqContext: DSLContext,
 ) : UsersDatabase {
     override fun selectUserByID(userID: Int): User? =
-        selectFromUsers(jooqContext)
+        selectFromUsers()
             .where(USERS.ID.eq(userID))
             .fetchOne()
             ?.toUser()
 
-    override fun selectUserByName(userName: String): User? =
-        selectFromUsers(jooqContext)
-            .where(USERS.NAME.eq(userName))
+    override fun selectUserByLogin(login: String): User? =
+        selectFromUsers()
+            .where(USERS.LOGIN.eq(login))
             .fetchOne()
             ?.toUser()
 
     override fun selectUserByEmail(email: String): User? =
-        selectFromUsers(jooqContext)
+        selectFromUsers()
             .where(USERS.EMAIL.eq(email))
             .fetchOne()
             ?.toUser()
 
+    override fun selectUserByPhone(phoneNumber: String): User? =
+        selectFromUsers()
+            .where(USERS.PHONENUMBER.eq(phoneNumber))
+            .fetchOne()
+            ?.toUser()
+
     override fun selectUsersByRole(userRole: Role): List<User> =
-        selectFromUsers(jooqContext)
+        selectFromUsers()
             .where(USERS.ROLE.eq(userRole.asDbRole()))
             .fetch()
-            .mapNotNull { record: Record ->
-                record.toUser()
-            }
+            .mapNotNull { it.toUser() }
 
     override fun selectAllUsers(): List<User> =
-        selectFromUsers(jooqContext)
+        selectFromUsers()
             .fetch()
-            .mapNotNull { record: Record ->
-                record.toUser()
-            }
+            .mapNotNull { it.toUser() }
 
     override fun insertUser(
         name: String,
+        surname: String,
+        login: String,
         email: String,
-        pass: String,
+        phoneNumber: String,
+        password: String,
+        vkLink: String?,
         role: Role,
     ): User? =
         jooqContext.insertInto(USERS)
             .set(USERS.NAME, name)
+            .set(USERS.SURNAME, surname)
+            .set(USERS.LOGIN, login)
+            .set(USERS.PHONENUMBER, phoneNumber.filter { it.isDigit() })
             .set(USERS.EMAIL, email)
-            .set(USERS.PASSWORD, pass)
-            .set(USERS.ROLE, UserRole.valueOf(role.toString()))
+            .set(USERS.PASSWORD, password)
+            .set(USERS.VKLINK, vkLink)
+            .set(USERS.ROLE, role.asDbRole())
             .returningResult()
             .fetchOne()
             ?.toUser()
@@ -87,14 +97,18 @@ class UserOperations(
             .fetchOne()
             ?.toUser()
 
-    private fun selectFromUsers(jooqContext: DSLContext) =
+    private fun selectFromUsers() =
         jooqContext
             .select(
                 USERS.ID,
                 USERS.NAME,
+                USERS.SURNAME,
+                USERS.LOGIN,
+                USERS.PHONENUMBER,
                 USERS.EMAIL,
                 USERS.PASSWORD,
-                USERS.ROLE,
+                USERS.VKLINK,
+                USERS.ROLE
             )
             .from(USERS)
 }
@@ -103,23 +117,39 @@ private fun Record.toUser(): User? =
     safeLet(
         this[USERS.ID],
         this[USERS.NAME],
+        this[USERS.SURNAME],
+        this[USERS.LOGIN],
         this[USERS.EMAIL],
+        this[USERS.PHONENUMBER],
         this[USERS.PASSWORD],
         this[USERS.ROLE],
-    ) { id, name, email, password, role ->
+    ) { id, name, surname, login, email, phoneNumber, password, role ->
         User(
-            id,
-            name,
-            email,
-            password,
-            Role.valueOf(role.toString())
+            id = id,
+            name = name.trim(),
+            surname = surname,
+            login = login.trim(),
+            phoneNumber = phoneNumber,
+            email = email,
+            password = password,
+            vkLink = this[USERS.VKLINK],
+            role = role.asAppRole(),
         )
     }
 
 private fun Role.asDbRole(): UserRole? =
     when (this) {
+        Role.READER -> UserRole.READER
+        Role.WRITER -> UserRole.WRITER
         Role.MODERATOR -> UserRole.MODERATOR
-        Role.AUTHORIZED -> UserRole.AUTHORIZED
         Role.ADMIN -> UserRole.ADMIN
         Role.ANONYMOUS -> null
+    }
+
+private fun UserRole.asAppRole(): Role =
+    when (this) {
+        UserRole.READER -> Role.READER
+        UserRole.WRITER -> Role.WRITER
+        UserRole.MODERATOR -> Role.MODERATOR
+        UserRole.ADMIN -> Role.ADMIN
     }

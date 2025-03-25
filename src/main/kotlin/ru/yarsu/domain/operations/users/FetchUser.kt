@@ -8,12 +8,12 @@ import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 
 class FetchUserByID (
-    private val fetchUserByID: (Int) -> User?,
+    private val selectUserByID: (Int) -> User?,
 ) : (Int) -> Result4k<User, UserFetchingError> {
 
     override operator fun invoke(userId: Int): Result4k<User, UserFetchingError> =
         try {
-            when (val user = fetchUserByID(userId)) {
+            when (val user = selectUserByID(userId)) {
                 is User -> Success(user)
                 else -> Failure(UserFetchingError.NO_SUCH_USER)
             }
@@ -22,13 +22,13 @@ class FetchUserByID (
         }
 }
 
-class FetchUserByName (
-    private val fetchUserByName: (String) -> User?,
+class FetchUserByLogin (
+    private val selectUserByLogin: (String) -> User?,
 ) : (String) -> Result4k<User, UserFetchingError> {
 
     override operator fun invoke(userName: String): Result4k<User, UserFetchingError> =
         try {
-            fetchUserByName(userName)
+            selectUserByLogin(userName)
                 .let { user ->
                     when (user) {
                         is User -> Success(user)
@@ -41,12 +41,12 @@ class FetchUserByName (
 }
 
 class FetchUserByEmail (
-    private val fetchUserByEmail: (String) -> User?,
+    private val selectUserByEmail: (String) -> User?,
 ) : (String) -> Result4k<User, UserFetchingError> {
 
     override fun invoke(email: String): Result4k<User, UserFetchingError> =
         try {
-            fetchUserByEmail(email)
+            selectUserByEmail(email)
                 .let { user ->
                     when (user) {
                         is User -> Success(user)

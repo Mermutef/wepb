@@ -3,12 +3,16 @@ package ru.yarsu.domain.operations.users
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
+import ru.yarsu.db.validLogin
+import ru.yarsu.db.validUserSurname
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.config
 import ru.yarsu.domain.operations.validEmail
+import ru.yarsu.domain.operations.validName
 import ru.yarsu.domain.operations.validPass
-import ru.yarsu.domain.operations.validUserName
+import ru.yarsu.domain.operations.validPhoneNumber
+import ru.yarsu.domain.operations.validVKLink
 
 class CreateUserTest : FunSpec({
     val users = mutableListOf<User>()
@@ -17,35 +21,63 @@ class CreateUserTest : FunSpec({
         users.clear()
     }
 
-    val insertUserMock: (name: String, email: String, pass: String, role: Role) -> User? = { name, email, pass, role ->
+    val insertUserMock: (
+        name: String,
+        surname: String,
+        login: String,
+        email: String,
+        phoneNumber: String,
+        pass: String,
+        vkLink: String?,
+        role: Role,
+    ) ->
+    User? = { name, surname, login, email, phoneNumber, pass, vkLink, role ->
         val user =
             User(
                 id = users.size + 1,
                 name,
+                surname,
+                login,
                 email,
+                phoneNumber,
                 pass,
+                vkLink,
                 role,
             )
         users.add(user)
         user
     }
 
-    val fetchUserByNameMock: (String) -> User? = { userName ->
-        users.firstOrNull { it.name == userName }
+    val fetchUserByLoginMock: (String) -> User? = { userName ->
+        users.firstOrNull { it.login == userName }
     }
 
     val fetchUserByEmailMock: (String) -> User? = { userName ->
         users.firstOrNull { it.email == userName }
     }
 
-    val insertUserNullMock: (name: String, email: String, pass: String, role: Role) -> User? = { _, _, _, _ -> null }
+    val fetchUserByPhoneMock: (String) -> User? = { userName ->
+        users.firstOrNull { it.phoneNumber == userName }
+    }
+
+    val insertUserNullMock: (
+        name: String,
+        surname: String,
+        login: String,
+        email: String,
+        phoneNumber: String,
+        pass: String,
+        vkLink: String?,
+        role: Role,
+    ) -> User? = { _, _, _, _, _, _, _, _ -> null }
     val fetchUserByNameNullMock: (String) -> User? = { _ -> null }
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
 
     val createUser = CreateUser(
         insertUserMock,
-        fetchUserByNameMock,
+        fetchUserByLoginMock,
         fetchUserByEmailMock,
+        fetchUserByPhoneMock,
         config,
     )
 
@@ -53,21 +85,27 @@ class CreateUserTest : FunSpec({
         insertUserNullMock,
         fetchUserByNameNullMock,
         fetchUserByEmailMock,
+        fetchUserByPhoneMock,
         config,
     )
     val createUserNullEmail = CreateUser(
         insertUserNullMock,
-        fetchUserByNameMock,
+        fetchUserByLoginMock,
         fetchUserByEmailNullMock,
+        fetchUserByPhoneMock,
         config,
     )
 
     test("Valid user can be inserted") {
         createUser(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         )
             .shouldBeSuccess()
     }
@@ -78,9 +116,13 @@ class CreateUserTest : FunSpec({
         .forEach { role ->
             test("All valid roles can be inserted ($role)") {
                 createUser(
-                    validUserName,
+                    validName,
+                    validUserSurname,
+                    validLogin,
                     validEmail,
+                    validPhoneNumber,
                     validPass,
+                    validVKLink,
                     role,
                 ).shouldBeSuccess()
             }
@@ -89,14 +131,18 @@ class CreateUserTest : FunSpec({
     listOf(
         "",
         "     ",
-        "TooManyCharacters".repeat(User.MAX_NAME_LENGTH + 1),
-    ).forEach { invalidName ->
-        test("User with invalid name should not be inserted ($invalidName)") {
+        "TooManyCharacters".repeat(User.MAX_LOGIN_LENGTH + 1),
+    ).forEach { invalidLogin ->
+        test("User with invalid login should not be inserted ($invalidLogin)") {
             createUser(
-                invalidName,
+                validName,
+                validUserSurname,
+                invalidLogin,
                 validEmail,
+                validPhoneNumber,
                 validPass,
-                Role.AUTHORIZED,
+                validVKLink,
+                Role.READER,
             ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
         }
     }
@@ -110,68 +156,100 @@ class CreateUserTest : FunSpec({
     ).forEach { invalidEmail ->
         test("User with invalid email should not be inserted ($invalidEmail)") {
             createUser(
-                validUserName,
+                validName,
+                validUserSurname,
+                validLogin,
                 invalidEmail,
+                validPhoneNumber,
                 validPass,
-                Role.AUTHORIZED,
+                validVKLink,
+                Role.READER,
             ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
         }
     }
 
     test("User with invalid password should not be inserted") {
         createUser(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             "",
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
     }
 
-    test("There cannot be two users with the same name") {
+    test("There cannot be two users with the same login") {
         createUser(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeSuccess()
 
         createUser(
-            validUserName,
-            "1$validEmail",
+            validName,
+            validUserSurname,
+            validLogin,
+            validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
-        ).shouldBeFailure(UserCreationError.NAME_ALREADY_EXISTS)
+            validVKLink,
+            Role.READER,
+        ).shouldBeFailure(UserCreationError.LOGIN_ALREADY_EXISTS)
     }
 
     test("There cannot be two users with the same email") {
         createUser(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeSuccess()
 
         createUser(
-            "1$validUserName",
+            validName,
+            validUserSurname,
+            "1$validLogin",
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.EMAIL_ALREADY_EXISTS)
     }
 
     test("Unknown db error test for CreateUser") {
         createUserNullName(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
 
         createUserNullEmail(
-            validUserName,
+            validName,
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED,
+            validVKLink,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
     }
 })

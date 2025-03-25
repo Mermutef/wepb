@@ -5,35 +5,51 @@ import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
+import ru.yarsu.db.validLogin
+import ru.yarsu.db.validUserSurname
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.validEmail
+import ru.yarsu.domain.operations.validName
 import ru.yarsu.domain.operations.validPass
-import ru.yarsu.domain.operations.validUserName
+import ru.yarsu.domain.operations.validPhoneNumber
+import ru.yarsu.domain.operations.validVKLink
 
 class FetchUserTest : FunSpec({
     val validUser = User(
         0,
-        validUserName,
+        validName,
+        validUserSurname,
+        validLogin,
         validEmail,
+        validPhoneNumber,
         validPass,
-        Role.AUTHORIZED
+        validVKLink,
+        Role.READER
     )
 
-    val authorizedUsers = listOf(
+    val readerUsers = listOf(
         User(
             1,
             "user1",
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED
+            validVKLink,
+            Role.READER
         ),
         User(
             2,
             "user2",
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
-            Role.AUTHORIZED
+            validVKLink,
+            Role.READER
         ),
     )
 
@@ -41,15 +57,23 @@ class FetchUserTest : FunSpec({
         User(
             3,
             "moder1",
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
+            validVKLink,
             Role.MODERATOR
         ),
         User(
             4,
             "moder2",
+            validUserSurname,
+            validLogin,
             validEmail,
+            validPhoneNumber,
             validPass,
+            validVKLink,
             Role.MODERATOR
         )
     )
@@ -75,11 +99,11 @@ class FetchUserTest : FunSpec({
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
 
     val fetchUserByID = FetchUserByID(fetchUserByIDMock)
-    val fetchUserByName = FetchUserByName(fetchUserByNameMock)
+    val fetchUserByName = FetchUserByLogin(fetchUserByNameMock)
     val fetchUserByEmail = FetchUserByEmail(fetchUserByEmailMock)
     val fetchAllUsers = FetchAllUsers(fetchAllUsersMock)
     val fetchUserByIdNull = FetchUserByID(fetchUserByIDNullMock)
-    val fetchUserByNameNull = FetchUserByName(fetchUserByNameNullMock)
+    val fetchUserByNameNull = FetchUserByLogin(fetchUserByNameNullMock)
     val fetchUserByEmailNull = FetchUserByEmail(fetchUserByEmailNullMock)
 
     val fetchUsersByRole = FetchUsersByRole(fetchUsersByRoleMock)
@@ -141,9 +165,9 @@ class FetchUserTest : FunSpec({
 
     listOf(
         Triple("no one user", emptyList(), emptyList()),
-        Triple("only authorized", authorizedUsers, emptyList()),
+        Triple("only READER", readerUsers, emptyList()),
         Triple("only moders", moders, moders),
-        Triple("moders and authorized", authorizedUsers + moders, moders),
+        Triple("moders and READER", readerUsers + moders, moders),
     ).forEach { triple ->
         test(
             "FetchUsersByRole should return list of all" +

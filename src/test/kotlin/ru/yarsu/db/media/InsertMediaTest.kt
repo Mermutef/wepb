@@ -8,8 +8,12 @@ import ru.yarsu.db.DatabaseOperationsHolder
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.appConfig
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validLogin
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
+import ru.yarsu.db.validPhoneNumber
+import ru.yarsu.db.validUserSurname
+import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
@@ -29,9 +33,13 @@ class InsertMediaTest : TestcontainerSpec({ context ->
         teacher = operations
             .userOperations
             .createUser(
-                validUserName,
+                validName,
+                validUserSurname,
+                validLogin,
                 validEmail,
+                validPhoneNumber,
                 validPass,
+                validVKLink,
                 Role.MODERATOR,
             ).shouldBeSuccess()
 
@@ -46,6 +54,7 @@ class InsertMediaTest : TestcontainerSpec({ context ->
     }
 
     test("Valid media can be inserted") {
+
         mediaOperations
             .insertMedia(
                 filename = validMedia.filename,
