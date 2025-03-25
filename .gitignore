@@ -19,3 +19,6 @@ logs
 
 # Coverage reports
 reports
+
+# FreeOffice swp files
+**/*.bak
