@@ -2,8 +2,7 @@ CREATE TYPE user_role AS ENUM (
     'ADMIN',
     'MODERATOR',
     'WRITER',
-    'READER',
-    'AUTHORIZED'
+    'READER'
 );
 
 DROP TABLE IF EXISTS users;

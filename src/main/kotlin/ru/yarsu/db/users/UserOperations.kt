@@ -97,6 +97,36 @@ class UserOperations(
                 USERS.ROLE,
             )
             .from(USERS)
+
+    private fun makeReader(reader:User): User? = updateRole(reader, Role.READER)
+
+    private fun makeWriter(writer:User): User? = updateRole(writer, Role.WRITER)
+
+    private fun makeManager(moderator:User): User? = updateRole(moderator, Role.MODERATOR)
+
+
+
+    /*
+     * Для примера
+     *  override fun updateRole(
+            user: User,
+            newRole: Role,
+        ): User? =
+            newRole
+                .asDbRole()
+                ?.let { role ->
+                    jooqContext.update(USERS)
+                        .set(USERS.ROLE, role)
+                        .where(USERS.ID.eq(user.id))
+                        .returningResult()
+                        .fetchOne()
+                        ?.toUser()
+                }
+
+        override fun makeTeacher(student: User): User? = updateRole(student, Role.TEACHER)
+
+        override fun makeStudent(teacher: User): User? = updateRole(teacher, Role.STUDENT)
+     */
 }
 
 private fun Record.toUser(): User? =
@@ -118,8 +148,10 @@ private fun Record.toUser(): User? =
 
 private fun Role.asDbRole(): UserRole? =
     when (this) {
-        Role.MODERATOR -> UserRole.MODERATOR
         Role.AUTHORIZED -> UserRole.AUTHORIZED
+        Role.READER -> UserRole.READER
+        Role.WRITER -> UserRole.WRITER
+        Role.MODERATOR -> UserRole.MODERATOR
         Role.ADMIN -> UserRole.ADMIN
         Role.ANONYMOUS -> null
     }
