@@ -98,13 +98,11 @@ class UserOperations(
             )
             .from(USERS)
 
-    private fun makeReader(reader:User): User? = updateRole(reader, Role.READER)
-
-    private fun makeWriter(writer:User): User? = updateRole(writer, Role.WRITER)
-
-    private fun makeManager(moderator:User): User? = updateRole(moderator, Role.MODERATOR)
-
-
+//    private fun makeReader(reader:User): User? = updateRole(reader, Role.READER)
+//
+//    private fun makeWriter(writer:User): User? = updateRole(writer, Role.WRITER)
+//
+//    private fun makeManager(moderator:User): User? = updateRole(moderator, Role.MODERATOR)
 
     /*
      * Для примера
@@ -148,7 +146,6 @@ private fun Record.toUser(): User? =
 
 private fun Role.asDbRole(): UserRole? =
     when (this) {
-        Role.AUTHORIZED -> UserRole.AUTHORIZED
         Role.READER -> UserRole.READER
         Role.WRITER -> UserRole.WRITER
         Role.MODERATOR -> UserRole.MODERATOR

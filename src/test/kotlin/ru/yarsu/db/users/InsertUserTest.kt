@@ -19,7 +19,7 @@ class InsertUserTest : TestcontainerSpec({ context ->
                 validUserName,
                 validEmail,
                 validPass,
-                Role.AUTHORIZED,
+                Role.READER,
             ).shouldNotBeNull()
     }
 
@@ -30,13 +30,13 @@ class InsertUserTest : TestcontainerSpec({ context ->
                     validUserName,
                     "student$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
-                    Role.AUTHORIZED,
+                    Role.READER,
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe(validUserName)
         insertedUser.email.shouldBe("student$validEmail")
         insertedUser.pass.shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        insertedUser.role.shouldBe(Role.AUTHORIZED)
+        insertedUser.role.shouldBe(Role.READER)
     }
 
     test("Valid user with long name can be inserted") {
@@ -46,12 +46,12 @@ class InsertUserTest : TestcontainerSpec({ context ->
                     "a".repeat(User.MAX_NAME_LENGTH),
                     "student$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
-                    Role.AUTHORIZED,
+                    Role.READER,
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe("a".repeat(User.MAX_NAME_LENGTH))
         insertedUser.email.shouldBe("student$validEmail")
         insertedUser.pass.shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        insertedUser.role.shouldBe(Role.AUTHORIZED)
+        insertedUser.role.shouldBe(Role.READER)
     }
 })

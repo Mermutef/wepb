@@ -24,7 +24,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                     "Student",
                     validEmail,
                     validPass,
-                    Role.AUTHORIZED,
+                    Role.READER,
                 )
                 .shouldNotBeNull()
     }
@@ -36,7 +36,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                     validUserName,
                     "teacher$validEmail",
                     validPass,
-                    Role.AUTHORIZED,
+                    Role.READER,
                 ).shouldNotBeNull()
 
         val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
@@ -50,4 +50,81 @@ class UpdateUserTest : TestcontainerSpec({ context ->
             .updateRole(student, Role.ANONYMOUS)
             .shouldBeNull()
     }
+
+    /*
+    val userOperations = UserOperations(context)
+
+    lateinit var student: User
+
+    beforeEach {
+
+        student =
+            userOperations
+                .insertUser(
+                    "Student",
+                    validEmail,
+                    validPass,
+                    studentRole,
+                )
+                .shouldNotBeNull()
+    }
+
+    test("Student role can be changed to teacher") {
+        val validStudent =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "student$validEmail",
+                    validPass,
+                    studentRole,
+                ).shouldNotBeNull()
+
+        userOperations
+            .makeTeacher(
+                validStudent,
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.TEACHER)
+    }
+
+    test("Teacher role can be changed to student") {
+        val validTeacher =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "teacher$validEmail",
+                    validPass,
+                    teacherRole,
+                ).shouldNotBeNull()
+
+        userOperations
+            .makeStudent(
+                validTeacher,
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.STUDENT)
+    }
+
+    test("User password can be changed") {
+        val validUser =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "teacher$validEmail",
+                    validPass,
+                    teacherRole,
+                ).shouldNotBeNull()
+
+        val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
+        userOperations
+            .updatePassword(validUser.id, newPass)
+            .shouldNotBeNull().pass shouldBe newPass
+    }
+
+    test("Change the role to ANONYMOUS test") {
+        userOperations
+            .updateRole(student, Role.ANONYMOUS)
+            .shouldBeNull()
+    }
+     */
 })

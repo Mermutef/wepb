@@ -41,9 +41,30 @@ class UserOperationsHolder (
             config = config,
         )
 
-//    val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =
-//        ChangePassword(
-//            changePassword = usersDatabase::updatePassword,
-//            config = config,
-//        )
+    val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =
+        ChangePassword(
+            changePassword = usersDatabase::updatePassword,
+            config = config,
+        )
+
+    val makeReader: (User) -> Result4k<User, MakeRoleError> = RoleChanger(
+        targetRole = Role.READER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_READER,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
+
+    val makeWriter = RoleChanger(
+        targetRole = Role.WRITER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_WRITER,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
+
+    val makeModerator = RoleChanger(
+        targetRole = Role.MODERATOR,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_MODERATOR,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
 }

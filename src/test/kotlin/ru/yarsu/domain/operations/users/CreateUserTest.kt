@@ -67,7 +67,7 @@ class CreateUserTest : FunSpec({
             validUserName,
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         )
             .shouldBeSuccess()
     }
@@ -96,7 +96,7 @@ class CreateUserTest : FunSpec({
                 invalidName,
                 validEmail,
                 validPass,
-                Role.AUTHORIZED,
+                Role.READER,
             ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
         }
     }
@@ -113,7 +113,7 @@ class CreateUserTest : FunSpec({
                 validUserName,
                 invalidEmail,
                 validPass,
-                Role.AUTHORIZED,
+                Role.READER,
             ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
         }
     }
@@ -123,7 +123,7 @@ class CreateUserTest : FunSpec({
             validUserName,
             validEmail,
             "",
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
     }
 
@@ -132,14 +132,14 @@ class CreateUserTest : FunSpec({
             validUserName,
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeSuccess()
 
         createUser(
             validUserName,
             "1$validEmail",
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.NAME_ALREADY_EXISTS)
     }
 
@@ -148,14 +148,14 @@ class CreateUserTest : FunSpec({
             validUserName,
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeSuccess()
 
         createUser(
             "1$validUserName",
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.EMAIL_ALREADY_EXISTS)
     }
 
@@ -164,14 +164,14 @@ class CreateUserTest : FunSpec({
             validUserName,
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
 
         createUserNullEmail(
             validUserName,
             validEmail,
             validPass,
-            Role.AUTHORIZED,
+            Role.READER,
         ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
     }
 })

@@ -13,7 +13,7 @@ import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 
 class CreateMediaTest : FunSpec({
-    val validStudent = User(1, validUserName, validEmail, validPass, Role.AUTHORIZED)
+    val validStudent = User(1, validUserName, validEmail, validPass, Role.READER)
     val validMedia = MediaFile(
         filename = "test_media.txt",
         content = "Valid content".toByteArray(),
@@ -42,6 +42,7 @@ class CreateMediaTest : FunSpec({
             isTemporary,
         )
     }
+
     val createMediaNullMock: (
         filename: String,
         authorId: Int,

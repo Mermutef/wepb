@@ -6,6 +6,7 @@ import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.PasswordHasher
+import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 
 class ChangePassword (
@@ -39,69 +40,27 @@ enum class PasswordChangingError {
     PASSWORD_IS_BLANK_OR_EMPTY,
 }
 
-class MakeReader (
-    private val updateRole: (user: User) -> User?,
-) : (User) -> Result4k<User, MakeReaderError> {
-    override operator fun invoke(user: User): Result4k<User, MakeReaderError> =
-        if (user.role == Role.READER) {
-            Failure(MakeReaderError.IS_ALREADY_READER)
-        } else {
-            when (
-                val newUser =
-                    updateRole(user, Role.READER)
-            ) {
-                is User -> Success(newUser)
-                else -> Failure(MakeReaderError.UNKNOWN_DATABASE_ERROR)
-            }
+class RoleChanger<R : Role, E : Enum<E>>(
+    private val targetRole: R,
+    private val alreadyHasRoleError: E,
+    private val updateRole: (user: User, newRole: Role) -> User?,
+    private val unknownError: E,
+) : (User) -> Result4k<User, E> {
+    override operator fun invoke(user: User): Result4k<User, E> {
+        if (user.role == targetRole) {
+            return Failure(alreadyHasRoleError)
         }
+
+        return when (val newUser = updateRole(user, targetRole)) {
+            is User -> Success(newUser)
+            else -> Failure(unknownError)
+        }
+    }
 }
 
-enum class MakeReaderError {
+enum class MakeRoleError {
     UNKNOWN_DATABASE_ERROR,
     IS_ALREADY_READER,
-}
-
-class MakeWriter (
-    private val updateRole: (user: User) -> User?,
-) : (User) -> Result4k<User, MakeWriterError> {
-    override operator fun invoke(user: User): Result4k<User, MakeWriterError> =
-        if (user.role == Role.WRITER) {
-            Failure(MakeWriterError.IS_ALREADY_WRITER)
-        } else {
-            when (
-                val newUser =
-                    updateRole(user, Role.WRITER)
-            ) {
-                is User -> Success(newUser)
-                else -> Failure(MakeWriterError.UNKNOWN_DATABASE_ERROR)
-            }
-        }
-}
-
-enum class MakeWriterError {
-    UNKNOWN_DATABASE_ERROR,
     IS_ALREADY_WRITER,
-}
-
-class MakeModerator (
-    private val updateRole: (user: User) -> User?,
-) : (User) -> Result4k<User, MakeModeratorError> {
-    override operator fun invoke(user: User): Result4k<User, MakeModeratorError> =
-        if (user.role == Role.MODERATOR) {
-            Failure(MakeModeratorError.IS_ALREADY_MODERATOR)
-        } else {
-            when (
-                val newUser =
-                    updateRole(user, Role.MODERATOR)
-            ) {
-                is User -> Success(newUser)
-                else -> Failure(MakeModeratorError.UNKNOWN_DATABASE_ERROR)
-            }
-        }
-}
-
-enum class MakeModeratorError {
-    UNKNOWN_DATABASE_ERROR,
     IS_ALREADY_MODERATOR,
 }
-
