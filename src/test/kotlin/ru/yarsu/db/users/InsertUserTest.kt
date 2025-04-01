@@ -28,13 +28,13 @@ class InsertUserTest : TestcontainerSpec({ context ->
             userOperations
                 .insertUser(
                     validUserName,
-                    "student$validEmail",
+                    "reader$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
                     Role.READER,
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe(validUserName)
-        insertedUser.email.shouldBe("student$validEmail")
+        insertedUser.email.shouldBe("reader$validEmail")
         insertedUser.pass.shouldBe(appConfiguredPasswordHasher.hash(validPass))
         insertedUser.role.shouldBe(Role.READER)
     }
@@ -44,13 +44,13 @@ class InsertUserTest : TestcontainerSpec({ context ->
             userOperations
                 .insertUser(
                     "a".repeat(User.MAX_NAME_LENGTH),
-                    "student$validEmail",
+                    "reader$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
                     Role.READER,
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe("a".repeat(User.MAX_NAME_LENGTH))
-        insertedUser.email.shouldBe("student$validEmail")
+        insertedUser.email.shouldBe("reader$validEmail")
         insertedUser.pass.shouldBe(appConfiguredPasswordHasher.hash(validPass))
         insertedUser.role.shouldBe(Role.READER)
     }

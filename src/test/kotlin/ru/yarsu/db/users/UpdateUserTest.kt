@@ -14,15 +14,14 @@ import ru.yarsu.domain.models.User
 class UpdateUserTest : TestcontainerSpec({ context ->
     val userOperations = UserOperations(context)
 
-    lateinit var student: User
+    lateinit var reader: User
 
     beforeEach {
-
-        student =
+        reader =
             userOperations
                 .insertUser(
-                    "Student",
-                    validEmail,
+                    "ReaderUpdate1",
+                    "readerUpdate1$validEmail",
                     validPass,
                     Role.READER,
                 )
@@ -34,7 +33,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
             userOperations
                 .insertUser(
                     validUserName,
-                    "teacher$validEmail",
+                    "readerUpdate2$validEmail",
                     validPass,
                     Role.READER,
                 ).shouldNotBeNull()
@@ -47,84 +46,133 @@ class UpdateUserTest : TestcontainerSpec({ context ->
 
     test("Change the role to ANONYMOUS test") {
         userOperations
-            .updateRole(student, Role.ANONYMOUS)
+            .updateRole(reader, Role.ANONYMOUS)
             .shouldBeNull()
     }
 
-    /*
-    val userOperations = UserOperations(context)
-
-    lateinit var student: User
-
     beforeEach {
-
-        student =
+        reader =
             userOperations
                 .insertUser(
-                    "Student",
+                    "Reader",
                     validEmail,
                     validPass,
-                    studentRole,
+                    Role.READER,
                 )
                 .shouldNotBeNull()
     }
 
-    test("Student role can be changed to teacher") {
-        val validStudent =
+    test("Reader role can be changed to Writer") {
+        val validReader =
             userOperations
                 .insertUser(
                     validUserName,
-                    "student$validEmail",
+                    "reader$validEmail",
                     validPass,
-                    studentRole,
+                    Role.READER,
                 ).shouldNotBeNull()
 
         userOperations
-            .makeTeacher(
-                validStudent,
+            .updateRole(
+                validReader,
+                Role.WRITER
             ).shouldNotBeNull()
             .role
-            .shouldBe(Role.TEACHER)
+            .shouldBe(Role.WRITER)
     }
 
-    test("Teacher role can be changed to student") {
-        val validTeacher =
+    test("Reader role can be changed to Moderator") {
+        val validReader =
             userOperations
                 .insertUser(
                     validUserName,
-                    "teacher$validEmail",
+                    "reader$validEmail",
                     validPass,
-                    teacherRole,
+                    Role.READER,
                 ).shouldNotBeNull()
 
         userOperations
-            .makeStudent(
-                validTeacher,
+            .updateRole(
+                validReader,
+                Role.MODERATOR
             ).shouldNotBeNull()
             .role
-            .shouldBe(Role.STUDENT)
+            .shouldBe(Role.MODERATOR)
     }
 
-    test("User password can be changed") {
-        val validUser =
+    test("Writer role can be changed to Reader") {
+        val validWriter =
             userOperations
                 .insertUser(
                     validUserName,
-                    "teacher$validEmail",
+                    "writer$validEmail",
                     validPass,
-                    teacherRole,
+                    Role.WRITER,
                 ).shouldNotBeNull()
 
-        val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
         userOperations
-            .updatePassword(validUser.id, newPass)
-            .shouldNotBeNull().pass shouldBe newPass
+            .updateRole(
+                validWriter,
+                Role.READER
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.READER)
     }
 
-    test("Change the role to ANONYMOUS test") {
+    test("Writer role can be changed to Moderator") {
+        val validWriter =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "writer$validEmail",
+                    validPass,
+                    Role.WRITER,
+                ).shouldNotBeNull()
+
         userOperations
-            .updateRole(student, Role.ANONYMOUS)
-            .shouldBeNull()
+            .updateRole(
+                validWriter,
+                Role.MODERATOR
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.MODERATOR)
     }
-     */
+
+    test("Moderator role can be changed to Reader") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "moder$validEmail",
+                    validPass,
+                    Role.MODERATOR,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.READER
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.READER)
+    }
+
+    test("Moderator role can be changed to Writer") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validUserName,
+                    "moder$validEmail",
+                    validPass,
+                    Role.MODERATOR,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.WRITER
+            ).shouldNotBeNull()
+            .role
+            .shouldBe(Role.WRITER)
+    }
 })

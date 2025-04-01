@@ -18,5 +18,13 @@ class UserOperationsHolderTest : FunSpec({
         userOperationsHolder.fetchAllUsers::class.shouldBe(FetchAllUsers::class)
         userOperationsHolder.fetchUserByID::class.shouldBe(FetchUserByID::class)
         userOperationsHolder.fetchUserByName::class.shouldBe(FetchUserByName::class)
+        userOperationsHolder.makeReader::class.shouldBe(RoleChanger::class)
+        userOperationsHolder.makeWriter::class.shouldBe(RoleChanger::class)
+        userOperationsHolder.makeModerator::class.shouldBe(RoleChanger::class)
+        userOperationsHolder.changePassword::class.shouldBe(ChangePassword::class)
+        userOperationsHolder.fetchUsersByRole::class.shouldBe(FetchUsersByRole::class)
+//        userOperationsHolder.fetchUserByEmail
+//        userOperationsHolder.fetchUserByID
+//        userOperationsHolder.fetchUserByName
     }
 })

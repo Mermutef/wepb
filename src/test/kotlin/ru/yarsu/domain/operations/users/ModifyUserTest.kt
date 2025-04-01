@@ -1,7 +1,10 @@
 package ru.yarsu.domain.operations.users
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
+import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import ru.yarsu.domain.accounts.PasswordHasher
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.config
@@ -10,6 +13,7 @@ import ru.yarsu.domain.operations.validPass
 import ru.yarsu.domain.operations.validUserName
 
 class ModifyUserTest : FunSpec({
+
     val validAnonymous = User(
         1,
         validUserName,
@@ -17,6 +21,35 @@ class ModifyUserTest : FunSpec({
         validPass,
         Role.ANONYMOUS
     )
+    val hasher = PasswordHasher(config.authConfig)
+
+    val changePasswordMock: (userID: Int, newPassword: String) -> User? =
+        { _, newPass -> validAnonymous.copy(pass = newPass) }
+
+    val changePassword = ChangePassword(changePasswordMock, config)
+
+    val changePasswordNullMock: (userID: Int, newPassword: String) -> User? =
+        { _, newPass -> null }
+
+    val changePasswordNull = ChangePassword(changePasswordNullMock, config)
+
+    test("Password can be changed to valid password") {
+        changePassword(validAnonymous, "valid").shouldBeSuccess().pass shouldBe hasher.hash("valid")
+    }
+
+    test("Password cannot be changed to empty password") {
+        changePassword(validAnonymous, "").shouldBeFailure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
+    }
+
+    test("Password cannot be changed to blank password") {
+        changePassword(validAnonymous, "  \t\n") shouldBeFailure
+            PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY
+    }
+
+    test("Unknown db error test for changePassword") {
+        changePasswordNull(validAnonymous, "valid") shouldBeFailure
+            PasswordChangingError.UNKNOWN_CHANGING_ERROR
+    }
 
     val validReader = User(
         1,
@@ -32,7 +65,7 @@ class ModifyUserTest : FunSpec({
         validEmail,
         validPass,
         Role.WRITER,
-        )
+    )
 
     val validModerator = User(
         1,
@@ -42,21 +75,7 @@ class ModifyUserTest : FunSpec({
         Role.MODERATOR,
     )
 
-    val changePasswordMock: (userID: Int, newPassword: String) -> User? =
-        { _, newPass -> validAnonymous.copy(pass = newPass) }
-
-    val changePassword = ChangePassword(changePasswordMock, config)
-
-    test("Password cannot be changed to empty password") {
-        changePassword(validAnonymous, "").shouldBeFailure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
-    }
-
-    test("Password cannot be changed to blank password") {
-        changePassword(validAnonymous, "  \t\n")
-            .shouldBeFailure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
-    }
-
-    val makeReaderMock: (user: User) -> User? = { user ->
+    val makeReaderMock: (user: User, role: Role) -> User? = { user, _ ->
         User(
             user.id,
             user.name,
@@ -66,9 +85,9 @@ class ModifyUserTest : FunSpec({
         )
     }
 
-    val makeReaderNullMock: (user: User) -> User? = { _ -> null }
+    val makeReaderNullMock: (user: User, role: Role) -> User? = { _, _ -> null }
 
-    val makeWriterMock: (user: User) -> User? = { user ->
+    val makeWriterMock: (user: User, role: Role) -> User? = { user, _ ->
         User(
             user.id,
             user.name,
@@ -77,9 +96,9 @@ class ModifyUserTest : FunSpec({
             Role.WRITER,
         )
     }
-    val makeWriterNullMock: (user: User) -> User? = { _ -> null }
+    val makeWriterNullMock: (user: User, role: Role) -> User? = { _, _ -> null }
 
-    val makeModeratorMock: (user: User) -> User? = { user ->
+    val makeModeratorMock: (user: User, role: Role) -> User? = { user, _ ->
         User(
             user.id,
             user.name,
@@ -88,41 +107,105 @@ class ModifyUserTest : FunSpec({
             Role.MODERATOR,
         )
     }
-    val makeModeratorNullMock: (user: User) -> User? = { _ -> null }
-    val oper = UserOperationsHolder()
-    val makeTeacher = (makeTeacherMock)
-    val makeStudent = MakeStudent(makeStudentMock)
-    val makeTeacherNull = MakeTeacher(makeTeacherNullMock)
-    val makeStudentNull = MakeStudent(makeStudentNullMock)
+    val makeModeratorNullMock: (user: User, role: Role) -> User? = { _, _ -> null }
 
-    test("Student role can be changed to teacher") {
-        makeTeacher(validStudent)
-            .shouldBeSuccess()
+    val makeReader = RoleChanger(
+        Role.READER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_READER,
+        makeReaderMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+    val makeWriter = RoleChanger(
+        Role.WRITER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_WRITER,
+        makeWriterMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+    val makeModerator = RoleChanger(
+        Role.MODERATOR,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_MODERATOR,
+        makeModeratorMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+    val makeReaderNull = RoleChanger(
+        Role.READER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_READER,
+        makeReaderNullMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+    val makeWriterNull = RoleChanger(
+        Role.WRITER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_WRITER,
+        makeWriterNullMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+    val makeModeratorNull = RoleChanger(
+        Role.MODERATOR,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_MODERATOR,
+        makeModeratorNullMock,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR
+    )
+
+    test("Anonymous role can be changed to reader") {
+        makeReader(validAnonymous).shouldBeSuccess().role shouldBe Role.READER
     }
 
-    test("Student role cannot be changed to student") {
-        makeStudent(validStudent) shouldBeFailure
-                MakeStudentError.IS_ALREADY_STUDENT
+    test("Anonymous role can be changed to writer") {
+        makeWriter(validAnonymous).shouldBeSuccess().role shouldBe Role.WRITER
     }
 
-    test("Unknown db error test for MakeStudent") {
-        makeStudentNull(validTeacher) shouldBeFailure
-                MakeStudentError.UNKNOWN_DATABASE_ERROR
+    test("Anonymous role can be changed to moderator") {
+        makeModerator(validAnonymous).shouldBeSuccess().role shouldBe Role.MODERATOR
     }
 
-    test("Teacher role can be changed to student") {
-        makeStudent(validTeacher)
-            .shouldBeSuccess().role shouldBe Role.TEACHER
+    test("Reader role can be changed to writer") {
+        makeWriter(validReader).shouldBeSuccess().role shouldBe Role.WRITER
     }
 
-    test("Teacher role cannot be changed to teacher") {
-        makeTeacher(validTeacher) shouldBeFailure
-                MakeTeacherError.IS_ALREADY_TEACHER
+    test("Reader role can be changed to moderator") {
+        makeModerator(validReader).shouldBeSuccess().role shouldBe Role.MODERATOR
     }
 
-    test("Unknown db error test for MakeTeacher") {
-        makeTeacherNull(validStudent) shouldBeFailure
-                MakeTeacherError.UNKNOWN_DATABASE_ERROR
+    test("Reader role cannot be changed to reader") {
+        makeReader(validReader) shouldBeFailure MakeRoleError.IS_ALREADY_READER
     }
 
+    test("Writer role can be changed to reader") {
+        makeReader(validWriter).shouldBeSuccess().role shouldBe Role.READER
+    }
+
+    test("Writer role can be changed to moderator") {
+        makeModerator(validWriter).shouldBeSuccess().role shouldBe Role.MODERATOR
+    }
+
+    test("Writer role cannot be changed to writer") {
+        makeWriter(validWriter) shouldBeFailure MakeRoleError.IS_ALREADY_WRITER
+    }
+
+    test("Moderator role can be changed to reader") {
+        makeReader(validModerator).shouldBeSuccess().role shouldBe Role.READER
+    }
+
+    test("Moderator role can be changed to writer") {
+        makeWriter(validModerator).shouldBeSuccess().role shouldBe Role.WRITER
+    }
+
+    test("Moderator role cannot be changed to moderator") {
+        makeModerator(validModerator) shouldBeFailure MakeRoleError.IS_ALREADY_MODERATOR
+    }
+
+    test("Unknown db error test for makeReader") {
+        makeReaderNull(validAnonymous) shouldBeFailure
+            MakeRoleError.UNKNOWN_DATABASE_ERROR
+    }
+
+    test("Unknown db error test for makeWriter") {
+        makeWriterNull(validAnonymous) shouldBeFailure
+            MakeRoleError.UNKNOWN_DATABASE_ERROR
+    }
+
+    test("Unknown db error test for makeModerator") {
+        makeModeratorNull(validAnonymous) shouldBeFailure
+            MakeRoleError.UNKNOWN_DATABASE_ERROR
+    }
 })

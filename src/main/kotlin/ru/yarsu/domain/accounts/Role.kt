@@ -1,5 +1,6 @@
 package ru.yarsu.domain.accounts
 
+@Suppress("detekt:LongParameterList")
 enum class Role(
     val attachMediaFile: Boolean = false, // Прикреплять имеющиеся в приложении медиафайлы к постам
     val deleteYourPost: Boolean = false, // Удалять свои черновики постов

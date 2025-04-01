@@ -2,7 +2,6 @@ package ru.yarsu.db.users
 
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -13,7 +12,6 @@ import ru.yarsu.db.validPass
 import ru.yarsu.db.validUserName
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.adminRole
 
 class SelectUserTest : TestcontainerSpec({ context ->
     val userOperations = UserOperations(context)
@@ -24,7 +22,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
             userOperations
                 .insertUser(
                     validUserName,
-                    "student1$validEmail",
+                    "reader1$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
                     Role.READER,
                 ).shouldNotBeNull()
@@ -45,7 +43,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
         userOperations
             .insertUser(
                 "John",
-                "student2$validEmail",
+                "reader2$validEmail",
                 "pass",
                 Role.MODERATOR,
             )
@@ -63,7 +61,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .shouldNotBeNull()
 
         fetchedUser.name.shouldBe(validUserName)
-        fetchedUser.email.shouldBe("student1$validEmail")
+        fetchedUser.email.shouldBe("reader1$validEmail")
         fetchedUser.pass
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
         fetchedUser.role.shouldBe(Role.READER)
@@ -109,7 +107,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .shouldNotBeNull()
 
         fetchedUser.name.shouldBe(validUserName)
-        fetchedUser.email.shouldBe("student1$validEmail")
+        fetchedUser.email.shouldBe("reader1$validEmail")
         fetchedUser.pass
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
         fetchedUser.role.shouldBe(Role.READER)
@@ -121,52 +119,6 @@ class SelectUserTest : TestcontainerSpec({ context ->
             .selectUserByName("")
             .shouldBeNull()
     }
-
-//    Role.entries.minus(Role.ANONYMOUS).forEach { role ->
-//        test("Users can be fetched by role == $role") {
-//
-//            // user already added
-//
-//            userOperations
-//                .insertUser(
-//                    "Moder",
-//                    "moder$validEmail",
-//                    "pass",
-//                    Role.MODERATOR,
-//                )
-//
-//            userOperations
-//                .insertUser(
-//                    "Writer",
-//                    "writer$validEmail",
-//                    "pass",
-//                    Role.WRITER,
-//                )
-//
-//            userOperations
-//                .insertUser(
-//                    "Reader",
-//                    "reader$validEmail",
-//                    "pass",
-//                    Role.READER,
-//                )
-//
-//            userOperations
-//                .insertUser(
-//                    "Admin",
-//                    "admin$validEmail",
-//                    "pass",
-//                    adminRole,
-//                )
-//
-//            val fetchedUsers =
-//                userOperations.selectUsersByRole(role)
-//                    .shouldNotBeEmpty()
-//                    .shouldHaveSize(1)
-//
-//            fetchedUsers.first().role.shouldBe(role)
-//        }
-//    }
 
     listOf(Role.ADMIN, Role.MODERATOR, Role.ANONYMOUS).forEach { role ->
         test("Fetches emptyList, when no one user with role == $role exists") {

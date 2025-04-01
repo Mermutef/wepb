@@ -21,7 +21,7 @@ class ChangePassword (
     ): Result4k<User, PasswordChangingError> =
         try {
             when {
-                newPassword.isBlank() || newPassword.isEmpty() ->
+                newPassword.isBlank() ->
                     Failure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
                 else -> when (val userWithNewPassword = changePassword(user.id, hasher.hash(newPassword))) {
                     is User -> Success(userWithNewPassword)
