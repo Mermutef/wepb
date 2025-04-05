@@ -36,7 +36,7 @@ import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.enums.UserRole
 import ru.yarsu.db.generated.keys.MEDIA__MEDIA_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.USERS_EMAIL_KEY
-import ru.yarsu.db.generated.keys.USERS_NAME_KEY
+import ru.yarsu.db.generated.keys.USERS_LOGIN_KEY
 import ru.yarsu.db.generated.keys.USERS_PKEY
 import ru.yarsu.db.generated.tables.Media.MediaPath
 import ru.yarsu.db.generated.tables.records.UsersRecord
@@ -96,7 +96,17 @@ open class Users(
     /**
      * The column <code>public.users.name</code>.
      */
-    val NAME: TableField<UsersRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(30).nullable(false), this, "")
+    val NAME: TableField<UsersRecord, String?> = createField(DSL.name("name"), SQLDataType.CHAR(64).nullable(false), this, "")
+
+    /**
+     * The column <code>public.users.surname</code>.
+     */
+    val SURNAME: TableField<UsersRecord, String?> = createField(DSL.name("surname"), SQLDataType.CHAR(64).nullable(false), this, "")
+
+    /**
+     * The column <code>public.users.login</code>.
+     */
+    val LOGIN: TableField<UsersRecord, String?> = createField(DSL.name("login"), SQLDataType.VARCHAR(30).nullable(false), this, "")
 
     /**
      * The column <code>public.users.email</code>.
@@ -104,9 +114,19 @@ open class Users(
     val EMAIL: TableField<UsersRecord, String?> = createField(DSL.name("email"), SQLDataType.VARCHAR(255).nullable(false), this, "")
 
     /**
+     * The column <code>public.users.phonenumber</code>.
+     */
+    val PHONENUMBER: TableField<UsersRecord, String?> = createField(DSL.name("phonenumber"), SQLDataType.VARCHAR(11).nullable(false), this, "")
+
+    /**
      * The column <code>public.users.password</code>.
      */
     val PASSWORD: TableField<UsersRecord, String?> = createField(DSL.name("password"), SQLDataType.CHAR(64).nullable(false), this, "")
+
+    /**
+     * The column <code>public.users.vklink</code>.
+     */
+    val VKLINK: TableField<UsersRecord, String?> = createField(DSL.name("vklink"), SQLDataType.VARCHAR(255), this, "")
 
     /**
      * The column <code>public.users.role</code>.
@@ -147,7 +167,7 @@ open class Users(
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<UsersRecord, Int?> = super.getIdentity() as Identity<UsersRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
-    override fun getUniqueKeys(): List<UniqueKey<UsersRecord>> = listOf(USERS_NAME_KEY, USERS_EMAIL_KEY)
+    override fun getUniqueKeys(): List<UniqueKey<UsersRecord>> = listOf(USERS_LOGIN_KEY, USERS_EMAIL_KEY)
 
     private lateinit var _media: MediaPath
 

@@ -8,8 +8,8 @@ import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.appConfiguredPasswordHasher
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 
@@ -21,7 +21,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
         insertedUser =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "reader1$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
                     Role.READER,
@@ -60,9 +60,9 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .selectUserByID(insertedUser.id)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(validUserName)
+        fetchedUser.name.shouldBe(validName)
         fetchedUser.email.shouldBe("reader1$validEmail")
-        fetchedUser.pass
+        fetchedUser.password
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
         fetchedUser.role.shouldBe(Role.READER)
         fetchedUser.id.shouldBe(insertedUser.id)
@@ -76,8 +76,8 @@ class SelectUserTest : TestcontainerSpec({ context ->
 
         fetchedUser.name.shouldBe(insertedUser.name)
         fetchedUser.email.shouldBe(insertedUser.email)
-        fetchedUser.pass
-            .shouldBe(insertedUser.pass)
+        fetchedUser.password
+            .shouldBe(insertedUser.password)
         fetchedUser.role.shouldBe(insertedUser.role)
         fetchedUser.id.shouldBe(insertedUser.id)
     }
@@ -103,12 +103,12 @@ class SelectUserTest : TestcontainerSpec({ context ->
     test("User can be fetched by valid name") {
         val fetchedUser =
             userOperations
-                .selectUserByName(insertedUser.name)
+                .selectUserByLogin(insertedUser.name)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(validUserName)
+        fetchedUser.name.shouldBe(validName)
         fetchedUser.email.shouldBe("reader1$validEmail")
-        fetchedUser.pass
+        fetchedUser.password
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
         fetchedUser.role.shouldBe(Role.READER)
         fetchedUser.id.shouldBe(insertedUser.id)
@@ -116,7 +116,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
 
     test("User can't be fetched by invalid name") {
         userOperations
-            .selectUserByName("")
+            .selectUserByLogin("")
             .shouldBeNull()
     }
 

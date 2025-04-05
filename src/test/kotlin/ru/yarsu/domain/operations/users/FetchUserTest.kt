@@ -75,11 +75,11 @@ class FetchUserTest : FunSpec({
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
 
     val fetchUserByID = FetchUserByID(fetchUserByIDMock)
-    val fetchUserByName = FetchUserByName(fetchUserByNameMock)
+    val fetchUserByName = FetchUserByLogin(fetchUserByNameMock)
     val fetchUserByEmail = FetchUserByEmail(fetchUserByEmailMock)
     val fetchAllUsers = FetchAllUsers(fetchAllUsersMock)
     val fetchUserByIdNull = FetchUserByID(fetchUserByIDNullMock)
-    val fetchUserByNameNull = FetchUserByName(fetchUserByNameNullMock)
+    val fetchUserByNameNull = FetchUserByLogin(fetchUserByNameNullMock)
     val fetchUserByEmailNull = FetchUserByEmail(fetchUserByEmailNullMock)
 
     val fetchUsersByRole = FetchUsersByRole(fetchUsersByRoleMock)

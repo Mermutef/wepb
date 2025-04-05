@@ -89,7 +89,7 @@ class CreateUserTest : FunSpec({
     listOf(
         "",
         "     ",
-        "TooManyCharacters".repeat(User.MAX_NAME_LENGTH + 1),
+        "TooManyCharacters".repeat(User.MAX_LOGIN_LENGTH + 1),
     ).forEach { invalidName ->
         test("User with invalid name should not be inserted ($invalidName)") {
             createUser(

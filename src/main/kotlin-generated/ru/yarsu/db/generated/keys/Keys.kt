@@ -22,7 +22,7 @@ import ru.yarsu.db.generated.tables.records.UsersRecord
 
 val MEDIA_PKEY: UniqueKey<MediaRecord> = Internal.createUniqueKey(Media.MEDIA, DSL.name("media_pkey"), arrayOf(Media.MEDIA.FILENAME), true)
 val USERS_EMAIL_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_email_key"), arrayOf(Users.USERS.EMAIL), true)
-val USERS_NAME_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_name_key"), arrayOf(Users.USERS.NAME), true)
+val USERS_LOGIN_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_login_key"), arrayOf(Users.USERS.LOGIN), true)
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)
 
 // -------------------------------------------------------------------------

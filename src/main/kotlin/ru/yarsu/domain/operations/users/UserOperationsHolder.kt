@@ -23,22 +23,39 @@ class UserOperationsHolder (
         usersDatabase.selectUserByEmail(email)
     }
 
-    val fetchUserByName: (String) -> Result4k<User, UserFetchingError> = FetchUserByName { userName: String ->
-        usersDatabase.selectUserByName(userName)
+    val fetchUserByName: (String) -> Result4k<User, UserFetchingError> = FetchUserByLogin { userName: String ->
+        usersDatabase.selectUserByLogin(userName)
     }
 
-    val createUser: (name: String, email: String, password: String, role: Role) -> Result4k<User, UserCreationError> =
+    val createUser: (
+        name: String,
+        surname: String,
+        login: String,
+        phoneNumber: String,
+        email: String,
+        password: String,
+        vkLink: String?,
+        role: Role,
+    ) -> Result4k<User, UserCreationError> =
         CreateUser(
-            insertUser = { name: String, email: String, pass: String, role: Role ->
-                usersDatabase.insertUser(name, email, pass, role)
+            insertUser = { name, surname, login, phone, email, pass, vkLink, role ->
+                usersDatabase.insertUser(
+                    name = name,
+                    surname = surname,
+                    login = login,
+                    email = email,
+                    phoneNumber = phone,
+                    password = pass,
+                    vkLink = vkLink,
+                    role = role
+                )
             },
-            fetchUserByName = { name: String ->
-                usersDatabase.selectUserByName(name)
+            fetchUserByLogin = { login ->
+                usersDatabase.selectUserByLogin(login)
             },
-            fetchUserByEmail = { email: String ->
-                usersDatabase.selectUserByEmail(email)
-            },
-            config = config,
+            fetchUserByEmail = usersDatabase::selectUserByEmail, // вот так же сделать
+            fetchUserByPhone = usersDatabase::selectUserByPhone,
+            config = config
         )
 
     val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =

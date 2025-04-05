@@ -6,8 +6,8 @@ import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.appConfiguredPasswordHasher
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
 
@@ -32,7 +32,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validUser =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "readerUpdate2$validEmail",
                     validPass,
                     Role.READER,
@@ -41,7 +41,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
         userOperations
             .updatePassword(validUser.id, newPass)
-            .shouldNotBeNull().pass shouldBe newPass
+            .shouldNotBeNull().password shouldBe newPass
     }
 
     test("Change the role to ANONYMOUS test") {
@@ -66,7 +66,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validReader =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "reader$validEmail",
                     validPass,
                     Role.READER,
@@ -85,7 +85,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validReader =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "reader$validEmail",
                     validPass,
                     Role.READER,
@@ -104,7 +104,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validWriter =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "writer$validEmail",
                     validPass,
                     Role.WRITER,
@@ -123,7 +123,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validWriter =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "writer$validEmail",
                     validPass,
                     Role.WRITER,
@@ -142,7 +142,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validModerator =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "moder$validEmail",
                     validPass,
                     Role.MODERATOR,
@@ -161,7 +161,7 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         val validModerator =
             userOperations
                 .insertUser(
-                    validUserName,
+                    validName,
                     "moder$validEmail",
                     validPass,
                     Role.MODERATOR,

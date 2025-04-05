@@ -24,7 +24,7 @@ class ModifyUserTest : FunSpec({
     val hasher = PasswordHasher(config.authConfig)
 
     val changePasswordMock: (userID: Int, newPassword: String) -> User? =
-        { _, newPass -> validAnonymous.copy(pass = newPass) }
+        { _, newPass -> validAnonymous.copy(password = newPass) }
 
     val changePassword = ChangePassword(changePasswordMock, config)
 
@@ -34,7 +34,7 @@ class ModifyUserTest : FunSpec({
     val changePasswordNull = ChangePassword(changePasswordNullMock, config)
 
     test("Password can be changed to valid password") {
-        changePassword(validAnonymous, "valid").shouldBeSuccess().pass shouldBe hasher.hash("valid")
+        changePassword(validAnonymous, "valid").shouldBeSuccess().password shouldBe hasher.hash("valid")
     }
 
     test("Password cannot be changed to empty password") {
@@ -80,7 +80,7 @@ class ModifyUserTest : FunSpec({
             user.id,
             user.name,
             user.email,
-            user.pass,
+            user.password,
             Role.READER,
         )
     }
@@ -92,7 +92,7 @@ class ModifyUserTest : FunSpec({
             user.id,
             user.name,
             user.email,
-            user.pass,
+            user.password,
             Role.WRITER,
         )
     }
@@ -103,7 +103,7 @@ class ModifyUserTest : FunSpec({
             user.id,
             user.name,
             user.email,
-            user.pass,
+            user.password,
             Role.MODERATOR,
         )
     }
