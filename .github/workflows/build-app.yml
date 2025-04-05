@@ -21,6 +21,7 @@ jobs:
                 run: |
                     export db_host=database
                     cp app.properties.example app.properties
+                    chmod +x ./gradlew
                     ./gradlew build
 
             -   name: Upload build artifacts

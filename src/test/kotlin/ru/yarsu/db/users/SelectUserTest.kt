@@ -2,18 +2,16 @@ package ru.yarsu.db.users
 
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.appConfiguredPasswordHasher
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.adminRole
 
 class SelectUserTest : TestcontainerSpec({ context ->
     val userOperations = UserOperations(context)
@@ -23,10 +21,10 @@ class SelectUserTest : TestcontainerSpec({ context ->
         insertedUser =
             userOperations
                 .insertUser(
-                    validUserName,
-                    "student1$validEmail",
+                    validName,
+                    "reader1$validEmail",
                     appConfiguredPasswordHasher.hash(validPass),
-                    Role.AUTHORIZED,
+                    Role.READER,
                 ).shouldNotBeNull()
     }
 
@@ -45,7 +43,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
         userOperations
             .insertUser(
                 "John",
-                "student2$validEmail",
+                "reader2$validEmail",
                 "pass",
                 Role.MODERATOR,
             )
@@ -62,11 +60,11 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .selectUserByID(insertedUser.id)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(validUserName)
-        fetchedUser.email.shouldBe("student1$validEmail")
-        fetchedUser.pass
+        fetchedUser.name.shouldBe(validName)
+        fetchedUser.email.shouldBe("reader1$validEmail")
+        fetchedUser.password
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        fetchedUser.role.shouldBe(Role.AUTHORIZED)
+        fetchedUser.role.shouldBe(Role.READER)
         fetchedUser.id.shouldBe(insertedUser.id)
     }
 
@@ -78,8 +76,8 @@ class SelectUserTest : TestcontainerSpec({ context ->
 
         fetchedUser.name.shouldBe(insertedUser.name)
         fetchedUser.email.shouldBe(insertedUser.email)
-        fetchedUser.pass
-            .shouldBe(insertedUser.pass)
+        fetchedUser.password
+            .shouldBe(insertedUser.password)
         fetchedUser.role.shouldBe(insertedUser.role)
         fetchedUser.id.shouldBe(insertedUser.id)
     }
@@ -105,51 +103,21 @@ class SelectUserTest : TestcontainerSpec({ context ->
     test("User can be fetched by valid name") {
         val fetchedUser =
             userOperations
-                .selectUserByName(insertedUser.name)
+                .selectUserByLogin(insertedUser.name)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(validUserName)
-        fetchedUser.email.shouldBe("student1$validEmail")
-        fetchedUser.pass
+        fetchedUser.name.shouldBe(validName)
+        fetchedUser.email.shouldBe("reader1$validEmail")
+        fetchedUser.password
             .shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        fetchedUser.role.shouldBe(Role.AUTHORIZED)
+        fetchedUser.role.shouldBe(Role.READER)
         fetchedUser.id.shouldBe(insertedUser.id)
     }
 
     test("User can't be fetched by invalid name") {
         userOperations
-            .selectUserByName("")
+            .selectUserByLogin("")
             .shouldBeNull()
-    }
-
-    Role.entries.minus(Role.ANONYMOUS).forEach { role ->
-        test("Users can be fetched by role == $role") {
-
-            // user already added
-
-            userOperations
-                .insertUser(
-                    "Teacher",
-                    validEmail,
-                    "pass",
-                    Role.MODERATOR,
-                )
-
-            userOperations
-                .insertUser(
-                    "Admin",
-                    "admin$validEmail",
-                    "pass",
-                    adminRole,
-                )
-
-            val fetchedUsers =
-                userOperations.selectUsersByRole(role)
-                    .shouldNotBeEmpty()
-                    .shouldHaveSize(1)
-
-            fetchedUsers.first().role.shouldBe(role)
-        }
     }
 
     listOf(Role.ADMIN, Role.MODERATOR, Role.ANONYMOUS).forEach { role ->

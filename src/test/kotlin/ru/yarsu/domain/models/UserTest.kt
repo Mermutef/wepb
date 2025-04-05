@@ -3,7 +3,7 @@ package ru.yarsu.domain.models
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.models.User.Companion.MAX_EMAIL_LENGTH
-import ru.yarsu.domain.models.User.Companion.MAX_NAME_LENGTH
+import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
 import ru.yarsu.domain.models.User.Companion.validateUserData
 
 class UserTest : FunSpec({
@@ -14,7 +14,7 @@ class UserTest : FunSpec({
             "pass",
         ),
         Triple(
-            "a".repeat(MAX_NAME_LENGTH),
+            "a".repeat(MAX_LOGIN_LENGTH),
             "b".repeat(MAX_EMAIL_LENGTH - 9) + "@anfas.ru",
             "pass",
         ),
@@ -49,7 +49,7 @@ class UserTest : FunSpec({
     )
 
     val tooLongName = Triple(
-        "a".repeat(MAX_NAME_LENGTH + 1),
+        "a".repeat(MAX_LOGIN_LENGTH + 1),
         "some@email.com",
         "pass",
     )
@@ -86,7 +86,7 @@ class UserTest : FunSpec({
                 userdata.first,
                 userdata.second,
                 userdata.third,
-            ) shouldBe UserValidationResult.NAME_PATTERN_MISMATCH
+            ) shouldBe UserValidationResult.LOGIN_PATTERN_MISMATCH
         }
     }
 
@@ -111,6 +111,6 @@ class UserTest : FunSpec({
             tooLongName.first,
             tooLongName.second,
             tooLongName.third,
-        ) shouldBe UserValidationResult.NAME_IS_TOO_LONG
+        ) shouldBe UserValidationResult.LOGIN_IS_TOO_LONG
     }
 })

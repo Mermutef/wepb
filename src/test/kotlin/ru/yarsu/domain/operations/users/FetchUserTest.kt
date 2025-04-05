@@ -17,23 +17,23 @@ class FetchUserTest : FunSpec({
         validUserName,
         validEmail,
         validPass,
-        Role.AUTHORIZED
+        Role.READER
     )
 
-    val authorizedUsers = listOf(
+    val readerUsers = listOf(
         User(
             1,
             "user1",
             validEmail,
             validPass,
-            Role.AUTHORIZED
+            Role.READER
         ),
         User(
             2,
             "user2",
             validEmail,
             validPass,
-            Role.AUTHORIZED
+            Role.READER
         ),
     )
 
@@ -75,11 +75,11 @@ class FetchUserTest : FunSpec({
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
 
     val fetchUserByID = FetchUserByID(fetchUserByIDMock)
-    val fetchUserByName = FetchUserByName(fetchUserByNameMock)
+    val fetchUserByName = FetchUserByLogin(fetchUserByNameMock)
     val fetchUserByEmail = FetchUserByEmail(fetchUserByEmailMock)
     val fetchAllUsers = FetchAllUsers(fetchAllUsersMock)
     val fetchUserByIdNull = FetchUserByID(fetchUserByIDNullMock)
-    val fetchUserByNameNull = FetchUserByName(fetchUserByNameNullMock)
+    val fetchUserByNameNull = FetchUserByLogin(fetchUserByNameNullMock)
     val fetchUserByEmailNull = FetchUserByEmail(fetchUserByEmailNullMock)
 
     val fetchUsersByRole = FetchUsersByRole(fetchUsersByRoleMock)
@@ -141,9 +141,9 @@ class FetchUserTest : FunSpec({
 
     listOf(
         Triple("no one user", emptyList(), emptyList()),
-        Triple("only authorized", authorizedUsers, emptyList()),
+        Triple("only READER", readerUsers, emptyList()),
         Triple("only moders", moders, moders),
-        Triple("moders and authorized", authorizedUsers + moders, moders),
+        Triple("moders and READER", readerUsers + moders, moders),
     ).forEach { triple ->
         test(
             "FetchUsersByRole should return list of all" +
