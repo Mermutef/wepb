@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap-icons.min.css" rel="stylesheet" />
+{#        <link href="/static/css/style.css" rel="stylesheet" />#}
+        <title>{% if block("title") %}
+    {% block title0 %}{% endblock %}
+    {% else %}
+    {% block title %}{% endblock %} - Wepb
+                {% endif %}
+        </title>
+    {#Здесь должна быть иконка приложения#}
+    {#<link rel="shortcut icon" href="/static/images/wepb.svg" type="image/svg">#}
+    </head>
+    <body>
+        {% block page %}{% endblock %}
+        <script src="/static/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/js/bundle-scripts.js"></script>
+    </body>
+</html>
