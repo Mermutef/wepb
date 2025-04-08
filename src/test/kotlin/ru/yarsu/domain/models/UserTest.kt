@@ -86,7 +86,7 @@ class UserTest : FunSpec({
                 userdata.first,
                 userdata.second,
                 userdata.third,
-            ) shouldBe UserValidationResult.LOGIN_PATTERN_MISMATCH
+            ) shouldBe UserValidationResult.NAME_PATTERN_MISMATCH
         }
     }
 
@@ -111,6 +111,6 @@ class UserTest : FunSpec({
             tooLongName.first,
             tooLongName.second,
             tooLongName.third,
-        ) shouldBe UserValidationResult.LOGIN_IS_TOO_LONG
+        ) shouldBe UserValidationResult.NAME_IS_TOO_LONG
     }
 })

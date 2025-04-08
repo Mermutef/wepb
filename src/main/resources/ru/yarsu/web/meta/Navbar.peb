@@ -8,7 +8,7 @@
             <ul class="navbar">
                 <li class="nav-item">
                     {% if model.user == null %}
-                        <a class="nav-item btn btn-primary mx-2" href="/auth/login">Log In</a>
+                        <a class="nav-item btn btn-primary mx-2" href="/auth/sign-up">Регистрация</a>
                     {% elseif model.user.isAuthorized()%}
                         <div class="dropdown">
                             <a class="nav-link" href="" role="button" id="manageAccountActions" data-bs-toggle="dropdown" aria-expanded="false">

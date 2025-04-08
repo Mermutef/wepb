@@ -6,7 +6,7 @@ import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.extract
 
 class ShowSignUpFormHandler(
-    private val render: ContextAwareViewRender
+    private val render: ContextAwareViewRender,
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
         return render(request) extract SignUpVM()

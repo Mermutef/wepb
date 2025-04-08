@@ -1,0 +1,9 @@
+{# @pebvariable name="model" type="ru.yarsu.web.auth.models.HomeVM" #}
+
+{% extends "../../meta/BaseLayout.peb" %}
+{% block title %}
+    Sign Up
+{% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+{% endblock %}
