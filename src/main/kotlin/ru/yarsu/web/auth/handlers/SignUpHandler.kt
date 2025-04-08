@@ -78,14 +78,6 @@ class SignUpHandler(
         val surname = UserWebLenses.surnameField(form)
         val phoneNumber = UserWebLenses.phoneNumberField(form)
         val vkLink = UserWebLenses.vkLinkField(form)
-        print(name)
-        print(surname)
-        print(login)
-        print(password)
-        print(repeatPassword)
-        print(email)
-        print(phoneNumber)
-        print(vkLink)
         // создаем пользователя
         return when (
             val result = userOperations
