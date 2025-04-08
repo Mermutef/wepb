@@ -1,0 +1,75 @@
+{# @pebvariable name="model" type="ru.yarsu.web.auth.models.SignUpVM" #}
+
+{% extends "../../meta/BaseLayout.peb" %}
+{% block title %}
+    Sign Up
+{% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+    <div class="container">
+        <div class="card max-width-500 mx-auto">
+            <div class="row px-2">
+                <div class="col">
+                    <p class="text-center"><h2>Регистрация</h2></p>
+                    <form method="post">
+                        <div class="mb-3">
+                                {% for error in model.form.errors.values() %}
+                                <p class="text-danger">
+                                        {{error.description}}
+                                </p>
+                                {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="{{ model.form.fields["name"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Фамилия</label>
+                            <input type="text" class="form-control" id="surname" name="surname"
+                                   value="{{ model.form.fields["surname"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Логин</label>
+                            <input type="text" class="form-control" id="login" name="login"
+                                   value="{{ model.form.fields["login"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Номер телефона</label>
+                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                                   value="{{ model.form.fields["phoneNumber"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Почта</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ model.form.fields["email"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   value="{{ model.form.fields["password"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="repeat_password" class="form-label">Повторите пароль</label>
+                            <input type="password" class="form-control" id="repeat_password" name="repeat_password"
+                                   value="{{ model.form.fields["repeat_password"] | first }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vk_link" class="form-label">Cсылка на страницу ВКонтакте</label>
+                            <input type="text" class="form-control" id="vk_link" name="vk_link"
+                                   value="{{ model.form.fields["vk_link"] | first }}">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 m-auto pe-0">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    Зарегистрироваться
+                                </button>
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-1 text-center"><a href="{{ model.signInLink }}" class="text-black">Уже есть аккаунт? Вход</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

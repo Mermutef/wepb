@@ -8,20 +8,18 @@ import org.http4k.core.*
 import org.http4k.lens.WebForm
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.models.User.Companion.MAX_NAME_LENGTH
 import ru.yarsu.domain.operations.users.UserCreationError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.models.SignUpVM
+import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.cookies.globalCookie
+import ru.yarsu.web.extract
 import ru.yarsu.web.form.addFailure
 import ru.yarsu.web.form.toCustomForm
-import ru.yarsu.web.context.templates.ContextAwareViewRender
-import ru.yarsu.web.extract
 import ru.yarsu.web.lenses.UserWebLenses
 import ru.yarsu.web.redirect
 
-// todo tests
 class SignUpHandler(
     private val render: ContextAwareViewRender,
     private val userOperations: UserOperationsHolder,
@@ -29,20 +27,25 @@ class SignUpHandler(
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
         val form = UserWebLenses.signUpLens(request)
+        // если форма содержит ошибки при заполнении полей, которые отлавливают линзы,
+        // то пользователю возвращается форма с текстом ошибки
         return if (form.errors.isNotEmpty()) {
             Response(Status.OK).with(render(request) of SignUpVM(form = form.toCustomForm()))
         } else {
+            // пытаемся добавить нового пользователя в базу данных
             when (val userInsertResult = tryInsert(form = form, userOperations = userOperations)) {
                 is Failure -> {
                     render(request) extract SignUpVM(
                         form = form.toCustomForm().addFailure(
                             name = userInsertResult.reason.toString(),
-                            description = userInsertResult.reason.errorText
+                            description = userInsertResult.reason.errorText // вот как раз здесь передается
+                            // текст ошибки
                         ),
                     )
                 }
 
                 is Success -> {
+                    // здесь выдаем токен
                     when (val tokenResult = jwtTools.createUserJwt(userInsertResult.value.id)) {
                         is Failure -> {
                             render(request) extract SignUpVM(
@@ -53,7 +56,7 @@ class SignUpHandler(
                             )
                         }
 
-                        is Success -> redirect("/")
+                        is Success -> redirect("/") // перенаправление на список постов
                             .globalCookie("auth", tokenResult.value)
                     }
                 }
@@ -65,19 +68,37 @@ class SignUpHandler(
         form: WebForm,
         userOperations: UserOperationsHolder,
     ): Result<User, SignUpError> {
+        // поление всех необходимых полей из формы
         val password = UserWebLenses.passwordSignUpField(form)
         val repeatPassword = UserWebLenses.repeatPasswordField(form)
         if (repeatPassword != password) return Failure(SignUpError.PASSWORDS_DO_NOT_MATCH)
         val login = UserWebLenses.nameField(form)
         val email = UserWebLenses.emailField(form)
-
-        return when (val result = userOperations.createUser(login, email, password, Role.AUTHORIZED)) {
-            is Success -> Success(result.value)
-            is Failure -> Failure(
+        val name = UserWebLenses.nameField(form)
+        val surname = UserWebLenses.surnameField(form)
+        val phoneNumber = UserWebLenses.phoneNumberField(form)
+        val vkLink = UserWebLenses.vkLinkField(form)
+        print(name)
+        print(surname)
+        print(login)
+        print(password)
+        print(repeatPassword)
+        print(email)
+        print(phoneNumber)
+        print(vkLink)
+        // создаем пользователя
+        return when (
+            val result = userOperations
+                .createUser(name, surname, login, email, phoneNumber, password, vkLink, Role.READER)
+        ) {
+            is Success -> Success(result.value) // если успех, то нам приходит  обьект User
+            is Failure -> Failure( // в случае ошибки идентифицируем ее с ошибкой регистрации, чтобы показать
+                // пользователю
                 when (result.failureOrNull()) {
-                    UserCreationError.NAME_ALREADY_EXISTS -> SignUpError.NAME_ALREADY_EXISTS
+                    UserCreationError.LOGIN_ALREADY_EXISTS -> SignUpError.LOGIN_ALREADY_EXISTS
                     UserCreationError.INVALID_USER_DATA -> SignUpError.INVALID_USER_DATA
                     UserCreationError.EMAIL_ALREADY_EXISTS -> SignUpError.EMAIL_ALREADY_EXISTS
+                    UserCreationError.PHONE_ALREADY_EXISTS -> SignUpError.PHONE_ALREADY_EXISTS
                     else -> SignUpError.UNKNOWN_DATABASE_ERROR
                 }
             )
@@ -86,12 +107,11 @@ class SignUpHandler(
 }
 
 enum class SignUpError(val errorText: String) {
-    NAME_IS_BLANK_OR_EMPTY("Имя пользователя должно быть не пустым"),
     PASSWORD_IS_BLANK_OR_EMPTY("Пароль должен быть не пустым"),
-    NAME_IS_TOO_LONG("Имя пользователя должно быть короче $MAX_NAME_LENGTH символов"),
     REPEAT_PASSWORD_IS_BLANK_OR_EMPTY("Повтор пароля не может быть пустым"),
     PASSWORDS_DO_NOT_MATCH("Пароли должны совпадать"),
-    NAME_ALREADY_EXISTS("Имя пользователя уже занято"),
+    LOGIN_ALREADY_EXISTS("Имя пользователя уже занято"),
+    PHONE_ALREADY_EXISTS("Номер телефона уже занят"),
     EMAIL_ALREADY_EXISTS("Адрес электронной почты уже занят"),
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
     TOKEN_CREATION_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
