@@ -30,6 +30,7 @@
                                     class="form-control"
                                     id="name"
                                     name="name"
+                                    placeholder="Иван"
                                     value="{{ model.form.fields["name"] | first }}"
                             >
                         </div>
@@ -44,6 +45,7 @@
                                     class="form-control"
                                     id="surname"
                                     name="surname"
+                                    placeholder="Иванов"
                                     value="{{ model.form.fields["surname"] | first }}"
                             >
                         </div>
@@ -58,6 +60,7 @@
                                     class="form-control"
                                     id="login"
                                     name="login"
+                                    placeholder="iivanov"
                                     value="{{ model.form.fields["login"] | first }}"
                             >
                         </div>
@@ -87,6 +90,7 @@
                                     class="form-control"
                                     id="email"
                                     name="email"
+                                    placeholder="example@mail.com"
                                     value="{{ model.form.fields["email"] | first }}"
                             >
                         </div>
@@ -101,6 +105,7 @@
                                     class="form-control"
                                     id="password"
                                     name="password"
+                                    placeholder="Пароль"
                                     value="{{ model.form.fields["password"] | first }}"
                             >
                         </div>
@@ -115,6 +120,7 @@
                                     class="form-control"
                                     id="repeat_password"
                                     name="repeat_password"
+                                    placeholder="Повтор пароля"
                                     value="{{ model.form.fields["repeat_password"] | first }}"
                             >
                         </div>
