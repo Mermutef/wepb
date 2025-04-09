@@ -1,4 +1,4 @@
-package ru.yarsu.web.lenses
+package ru.yarsu.web.auth.lenses
 
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result

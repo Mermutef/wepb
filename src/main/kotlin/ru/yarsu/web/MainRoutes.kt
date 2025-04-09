@@ -10,6 +10,7 @@ import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
+import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.lenses.GeneralWebLenses.userLens
 import ru.yarsu.web.media.MEDIA_SEGMENT
@@ -23,9 +24,14 @@ private fun createMainRouter(
     config: AppConfig,
     jwtTools: JWTTools,
 ) = routes(
-    "/" bind Method.GET to { _ -> ok("pong") },
+    "/" bind Method.GET to HomeHandler(contextTools.render),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
-    AUTH_SEGMENT bind authRouter(contextTools, config, operations, jwtTools),
+    AUTH_SEGMENT bind authRouter(
+        contextTools = contextTools,
+        config = config,
+        operations = operations,
+        jwtTools = jwtTools
+    ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 
@@ -35,7 +41,6 @@ fun createApp(
 ): RoutingHttpHandler {
     val contexts = ContextTools(config.webConfig)
     val requestContext = RequestContexts()
-    val userLens = userLens(requestContext)
     val jwtTools = JWTTools(config.authConfig.secret, "ru.yarsu")
     val app = createMainRouter(
         contextTools = contexts,

@@ -18,7 +18,7 @@ import ru.yarsu.web.cookies.globalCookie
 import ru.yarsu.web.extract
 import ru.yarsu.web.form.addFailure
 import ru.yarsu.web.form.toCustomForm
-import ru.yarsu.web.lenses.UserWebLenses
+import ru.yarsu.web.auth.lenses.UserWebLenses
 import ru.yarsu.web.redirect
 
 class SignInHandler(

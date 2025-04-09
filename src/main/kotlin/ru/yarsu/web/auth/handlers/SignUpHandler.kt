@@ -17,7 +17,7 @@ import ru.yarsu.web.cookies.globalCookie
 import ru.yarsu.web.extract
 import ru.yarsu.web.form.addFailure
 import ru.yarsu.web.form.toCustomForm
-import ru.yarsu.web.lenses.UserWebLenses
+import ru.yarsu.web.auth.lenses.UserWebLenses
 import ru.yarsu.web.redirect
 
 class SignUpHandler(
@@ -68,7 +68,7 @@ class SignUpHandler(
         form: WebForm,
         userOperations: UserOperationsHolder,
     ): Result<User, SignUpError> {
-        // поление всех необходимых полей из формы
+        // получение всех необходимых полей из формы
         val password = UserWebLenses.passwordSignUpField(form)
         val repeatPassword = UserWebLenses.repeatPasswordField(form)
         if (repeatPassword != password) return Failure(SignUpError.PASSWORDS_DO_NOT_MATCH)
