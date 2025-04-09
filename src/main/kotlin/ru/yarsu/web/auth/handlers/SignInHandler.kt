@@ -12,13 +12,13 @@ import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
 import ru.yarsu.domain.operations.users.UserFetchingError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.domain.tools.JWTTools
+import ru.yarsu.web.auth.lenses.UserWebLenses
 import ru.yarsu.web.auth.models.SignInVM
 import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.cookies.globalCookie
 import ru.yarsu.web.extract
 import ru.yarsu.web.form.addFailure
 import ru.yarsu.web.form.toCustomForm
-import ru.yarsu.web.auth.lenses.UserWebLenses
 import ru.yarsu.web.redirect
 
 class SignInHandler(

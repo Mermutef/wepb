@@ -10,19 +10,19 @@
     <div class="card max-width-500 mx-auto">
         <div class="row px-2">
             <div class="col">
-                <p class="text-center"><h2>Страницы в разработке!</h2></p>
-                <ul class="dropdown-menu">
-                    <li>
+                <p class="text-center"><h2>Страницы в разработке!</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">
                         <a class="dropdown-item" href="/">
                             Главная страница
                         </a>
                     </li>
-                    <li>
+                    <li class="list-group-item">
                         <a class="dropdown-item" href="/auth/sign-up">
                             Регистрация
                         </a>
                     </li>
-                    <li>
+                    <li class="list-group-item">
                         <a class="dropdown-item" href="/auth/sign-in">
                             Вход
                         </a>
