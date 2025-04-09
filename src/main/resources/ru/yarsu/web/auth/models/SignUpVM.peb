@@ -20,44 +20,118 @@
                                 {% endfor %}
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Имя</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   value="{{ model.form.fields["name"] | first }}">
+                            <label
+                                    for="name"
+                                    class="form-label">
+                                        Имя
+                            </label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    name="name"
+                                    value="{{ model.form.fields["name"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="surname" class="form-label">Фамилия</label>
-                            <input type="text" class="form-control" id="surname" name="surname"
-                                   value="{{ model.form.fields["surname"] | first }}">
+                            <label
+                                    for="surname"
+                                    class="form-label">
+                                        Фамилия
+                            </label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="surname"
+                                    name="surname"
+                                    value="{{ model.form.fields["surname"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="login" class="form-label">Логин</label>
-                            <input type="text" class="form-control" id="login" name="login"
-                                   value="{{ model.form.fields["login"] | first }}">
+                            <label
+                                    for="login"
+                                    class="form-label">
+                                        Логин
+                            </label>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="login"
+                                    name="login"
+                                    value="{{ model.form.fields["login"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="phoneNumber" class="form-label">Номер телефона</label>
-                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                                   value="{{ model.form.fields["phoneNumber"] | first }}">
+                            <label
+                                    for="phoneNumber"
+                                    class="form-label">
+                                        Номер телефона
+                            </label>
+                            <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="phoneNumber"
+                                    name="phoneNumber"
+                                    placeholder="79991112233"
+                                    value="{{ model.form.fields["phoneNumber"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Почта</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                   value="{{ model.form.fields["email"] | first }}">
+                            <label
+                                    for="email"
+                                    class="form-label">
+                                        Почта
+                            </label>
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    value="{{ model.form.fields["email"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   value="{{ model.form.fields["password"] | first }}">
+                            <label
+                                    for="password"
+                                    class="form-label">
+                                        Пароль
+                            </label>
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    name="password"
+                                    value="{{ model.form.fields["password"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="repeat_password" class="form-label">Повторите пароль</label>
-                            <input type="password" class="form-control" id="repeat_password" name="repeat_password"
-                                   value="{{ model.form.fields["repeat_password"] | first }}">
+                            <label
+                                    for="repeat_password"
+                                    class="form-label">
+                                        Повторите пароль
+                            </label>
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    id="repeat_password"
+                                    name="repeat_password"
+                                    value="{{ model.form.fields["repeat_password"] | first }}"
+                            >
                         </div>
                         <div class="mb-3">
-                            <label for="vk_link" class="form-label">Cсылка на страницу ВКонтакте</label>
-                            <input type="text" class="form-control" id="vk_link" name="vk_link"
-                                   value="{{ model.form.fields["vk_link"] | first }}">
+                            <label
+                                    for="vk_link"
+                                    class="form-label">
+                                        Cсылка на страницу ВКонтакте
+                            </label>
+                            <input
+                                    type="url"
+                                    class="form-control"
+                                    id="vk_link"
+                                    name="vk_link"
+                                    placeholder="https://vk.com/id000"
+                                    value="{{ model.form.fields["vk_link"] | first }}"
+                            >
                         </div>
                         <div class="row">
                             <div class="col-6 m-auto pe-0">
