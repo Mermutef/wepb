@@ -4,8 +4,12 @@ import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validLogin
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
+import ru.yarsu.db.validPhoneNumber
+import ru.yarsu.db.validUserSurname
+import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
@@ -13,7 +17,17 @@ import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 
 class CreateMediaTest : FunSpec({
-    val validStudent = User(1, validUserName, validEmail, validPass, Role.AUTHORIZED)
+    val validStudent = User(
+        1,
+        validName,
+        validUserSurname,
+        validLogin,
+        validEmail,
+        validPhoneNumber,
+        validPass,
+        validVKLink,
+        Role.READER
+    )
     val validMedia = MediaFile(
         filename = "test_media.txt",
         content = "Valid content".toByteArray(),
@@ -42,6 +56,7 @@ class CreateMediaTest : FunSpec({
             isTemporary,
         )
     }
+
     val createMediaNullMock: (
         filename: String,
         authorId: Int,
