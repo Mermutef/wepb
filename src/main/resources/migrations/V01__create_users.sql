@@ -13,7 +13,7 @@ CREATE TABLE users (
 	surname CHARACTER(64) NOT NULL,
 	login CHARACTER VARYING(30) UNIQUE NOT NULL,
 	email VARCHAR(255) UNIQUE NOT NULL,
-	phoneNumber VARCHAR(11) NOT NULL,
+	phoneNumber VARCHAR(11) UNIQUE NOT NULL,
     password CHARACTER(64) NOT NULL,
     vkLink VARCHAR(255),
     role user_role NOT NULL

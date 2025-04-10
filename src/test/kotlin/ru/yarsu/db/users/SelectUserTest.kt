@@ -36,7 +36,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 ).shouldNotBeNull()
     }
 
-    test("There is only general admin user by default") {
+    test("There is only user by default") {
         userOperations
             .selectAllUsers()
             .shouldNotBeNull()
@@ -72,12 +72,15 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .selectUserByID(insertedUser.id)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(validName)
-        fetchedUser.email.shouldBe("reader1$validEmail")
-        fetchedUser.password
-            .shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        fetchedUser.role.shouldBe(Role.READER)
         fetchedUser.id.shouldBe(insertedUser.id)
+        fetchedUser.name.shouldBe(insertedUser.name)
+        fetchedUser.surname.shouldBe(insertedUser.surname)
+        fetchedUser.login.shouldBe(insertedUser.login)
+        fetchedUser.email.shouldBe(insertedUser.email)
+        fetchedUser.phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUser.password.shouldBe(insertedUser.password)
+        fetchedUser.vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUser.role.shouldBe(insertedUser.role)
     }
 
     test("User can be fetched by valid email") {
@@ -86,12 +89,15 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .selectUserByEmail(insertedUser.email)
                 .shouldNotBeNull()
 
-        fetchedUser.name.shouldBe(insertedUser.name)
-        fetchedUser.email.shouldBe(insertedUser.email)
-        fetchedUser.password
-            .shouldBe(insertedUser.password)
-        fetchedUser.role.shouldBe(insertedUser.role)
         fetchedUser.id.shouldBe(insertedUser.id)
+        fetchedUser.name.shouldBe(insertedUser.name)
+        fetchedUser.surname.shouldBe(insertedUser.surname)
+        fetchedUser.login.shouldBe(insertedUser.login)
+        fetchedUser.email.shouldBe(insertedUser.email)
+        fetchedUser.phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUser.password.shouldBe(insertedUser.password)
+        fetchedUser.vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUser.role.shouldBe(insertedUser.role)
     }
 
     listOf(

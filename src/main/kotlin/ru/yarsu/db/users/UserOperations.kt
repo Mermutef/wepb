@@ -9,6 +9,7 @@ import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.models.User
 
+
 @Suppress("detekt:TooManyFunctions")
 class UserOperations(
     private val jooqContext: DSLContext,
@@ -71,6 +72,72 @@ class UserOperations(
             .fetchOne()
             ?.toUser()
 
+    override fun updateName(
+        userID: Int,
+        newName: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.NAME, newName)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
+    override fun updateSurname(
+        userID: Int,
+        newSurname: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.SURNAME, newSurname)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
+    override fun updateEmail(
+        userID: Int,
+        newEmail: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.EMAIL, newEmail)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
+    override fun updatePhoneNumber(
+        userID: Int,
+        newPhoneNumber: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.PHONENUMBER, newPhoneNumber)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
+    override fun updatePassword(
+        userID: Int,
+        newPassword: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.PASSWORD, newPassword)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
+    override fun updateVKLink(
+        userID: Int,
+        newVKLink: String,
+    ): User? =
+        jooqContext.update(USERS)
+            .set(USERS.VKLINK, newVKLink)
+            .where(USERS.ID.eq(userID))
+            .returningResult()
+            .fetchOne()
+            ?.toUser()
+
     override fun updateRole(
         user: User,
         newRole: Role,
@@ -85,17 +152,6 @@ class UserOperations(
                     .fetchOne()
                     ?.toUser()
             }
-
-    override fun updatePassword(
-        userID: Int,
-        newPassword: String,
-    ): User? =
-        jooqContext.update(USERS)
-            .set(USERS.PASSWORD, newPassword)
-            .where(USERS.ID.eq(userID))
-            .returningResult()
-            .fetchOne()
-            ?.toUser()
 
     private fun selectFromUsers() =
         jooqContext
@@ -127,7 +183,7 @@ private fun Record.toUser(): User? =
         User(
             id = id,
             name = name.trim(),
-            surname = surname,
+            surname = surname.trim(),
             login = login.trim(),
             phoneNumber = phoneNumber,
             email = email,

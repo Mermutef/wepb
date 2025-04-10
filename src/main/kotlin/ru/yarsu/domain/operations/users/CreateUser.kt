@@ -39,7 +39,8 @@ class CreateUser (
         role: Role,
     ): Result4k<User, UserCreationError> =
         when {
-            User.validateUserData(login, email, pass) != UserValidationResult.ALL_OK ->
+            User.validateUserData(name, surname, login, email, phoneNumber.filter { it.isDigit() }, pass, vkLink)
+                    != UserValidationResult.ALL_OK ->
                 Failure(UserCreationError.INVALID_USER_DATA)
             loginAlreadyExists(login) ->
                 Failure(UserCreationError.LOGIN_ALREADY_EXISTS)
@@ -65,23 +66,6 @@ class CreateUser (
                 }
         }
 
-    @Suppress("detekt:UnusedPrivateMember")
-    private fun isValidPhone(phone: String): Boolean {
-        // Простая проверка номера телефона
-        return phone.matches(Regex("^\\+?[0-9\\-() ]+\$"))
-    }
-
-    @Suppress("detekt:UnusedPrivateMember")
-    private fun isValidEmail(email: String): Boolean {
-        return email.matches(User.emailPattern)
-    }
-
-    @Suppress("detekt:UnusedPrivateMember")
-    private fun isStrongPassword(pass: String): Boolean {
-        @Suppress("detekt:MagicNumber")
-        return pass.length >= 8
-    }
-
     private fun loginAlreadyExists(login: String): Boolean =
         when (fetchUserByLogin(login)) {
             is User -> true
@@ -94,7 +78,11 @@ class CreateUser (
             else -> false
         }
 
-    private fun phoneAlreadyExists(phone: String): Boolean = fetchUserByPhone(phone) != null
+    private fun phoneAlreadyExists(phone: String): Boolean =
+        when (fetchUserByPhone(phone)) {
+        is User -> true
+        else -> false
+    }
 }
 
 enum class UserCreationError {

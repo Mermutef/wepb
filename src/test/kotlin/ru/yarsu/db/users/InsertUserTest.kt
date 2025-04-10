@@ -46,9 +46,12 @@ class InsertUserTest : TestcontainerSpec({ context ->
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe(validName)
+        insertedUser.surname.shouldBe(validUserSurname)
         insertedUser.login.shouldBe(validLogin)
         insertedUser.email.shouldBe("reader$validEmail")
+        insertedUser.phoneNumber.shouldBe(validPhoneNumber.filter { it.isDigit() })
         insertedUser.password.shouldBe(appConfiguredPasswordHasher.hash(validPass))
+        insertedUser.vkLink.shouldBe(validVKLink)
         insertedUser.role.shouldBe(Role.READER)
     }
 
@@ -67,8 +70,12 @@ class InsertUserTest : TestcontainerSpec({ context ->
                 ).shouldNotBeNull()
 
         insertedUser.name.shouldBe("a".repeat(User.MAX_LOGIN_LENGTH))
+        insertedUser.surname.shouldBe(validUserSurname)
+        insertedUser.login.shouldBe(validLogin)
         insertedUser.email.shouldBe("reader$validEmail")
+        insertedUser.phoneNumber.shouldBe(validPhoneNumber.filter { it.isDigit() })
         insertedUser.password.shouldBe(appConfiguredPasswordHasher.hash(validPass))
+        insertedUser.vkLink.shouldBe(validVKLink)
         insertedUser.role.shouldBe(Role.READER)
     }
 })
