@@ -11,6 +11,7 @@ import ru.yarsu.domain.models.User
 
 class ChangePassword (
     private val changePassword: (userID: Int, newPassword: String) -> User?,
+    private val maxLength: Int,
     config: AppConfig,
 ) : (User, String) -> Result4k<User, PasswordChangingError> {
     private val hasher = PasswordHasher(config.authConfig)
@@ -23,6 +24,8 @@ class ChangePassword (
             when {
                 newPassword.isBlank() ->
                     Failure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
+                newPassword.length > maxLength ->
+                    Failure(PasswordChangingError.PASSWORD_IS_TOO_LONG)
                 else -> when (val userWithNewPassword = changePassword(user.id, hasher.hash(newPassword))) {
                     is User -> Success(userWithNewPassword)
 
@@ -38,6 +41,43 @@ enum class PasswordChangingError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_CHANGING_ERROR,
     PASSWORD_IS_BLANK_OR_EMPTY,
+    PASSWORD_IS_TOO_LONG,
+}
+
+class ChangeStringField(
+    private val maxLength: Int,
+    private val pattern: Regex,
+    private val changeName: (userID: Int, newName: String) -> User?,
+) : (User, String) -> Result4k<User, FieldChangingError> {
+    override operator fun invoke(
+        user: User,
+        newField: String,
+    ): Result4k<User, FieldChangingError> =
+        try {
+            when {
+                newField.isBlank() ->
+                    Failure(FieldChangingError.FIELD_IS_BLANK_OR_EMPTY)
+                newField.length > maxLength ->
+                    Failure(FieldChangingError.FIELD_IS_TOO_LONG)
+                !pattern.matches(newField) ->
+                    Failure(FieldChangingError.FIELD_PATTERN_MISMATCH)
+                else -> when (val userWithNewPassword = changeName(user.id, newField)) {
+                    is User -> Success(userWithNewPassword)
+
+                    else -> Failure(FieldChangingError.UNKNOWN_CHANGING_ERROR)
+                }
+            }
+        } catch (_: DataAccessException) {
+            Failure(FieldChangingError.UNKNOWN_DATABASE_ERROR)
+        }
+}
+
+enum class FieldChangingError {
+    UNKNOWN_DATABASE_ERROR,
+    UNKNOWN_CHANGING_ERROR,
+    FIELD_IS_BLANK_OR_EMPTY,
+    FIELD_IS_TOO_LONG,
+    FIELD_PATTERN_MISMATCH,
 }
 
 class RoleChanger<R : Role, E : Enum<E>>(

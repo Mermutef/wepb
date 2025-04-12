@@ -12,6 +12,7 @@ import ru.yarsu.db.validLogin
 import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
 import ru.yarsu.db.validPhoneNumber
+import ru.yarsu.db.validSecondPhoneNumber
 import ru.yarsu.db.validUserSurname
 import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
@@ -20,7 +21,6 @@ import ru.yarsu.domain.models.User
 class SelectUserTest : TestcontainerSpec({ context ->
     val userOperations = UserOperations(context)
     lateinit var insertedUser: User
-
     beforeEach {
         insertedUser =
             userOperations
@@ -28,7 +28,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
                     validName,
                     validUserSurname,
                     validLogin,
-                    "reader1$validEmail",
+                    validEmail,
                     validPhoneNumber,
                     appConfiguredPasswordHasher.hash(validPass),
                     validVKLink,
@@ -54,7 +54,7 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 validUserSurname,
                 "reader2$validLogin",
                 "reader2$validEmail",
-                validPhoneNumber,
+                validSecondPhoneNumber,
                 "pass",
                 validVKLink,
                 Role.MODERATOR,
@@ -70,6 +70,23 @@ class SelectUserTest : TestcontainerSpec({ context ->
         val fetchedUser =
             userOperations
                 .selectUserByID(insertedUser.id)
+                .shouldNotBeNull()
+
+        fetchedUser.id.shouldBe(insertedUser.id)
+        fetchedUser.name.shouldBe(insertedUser.name)
+        fetchedUser.surname.shouldBe(insertedUser.surname)
+        fetchedUser.login.shouldBe(insertedUser.login)
+        fetchedUser.email.shouldBe(insertedUser.email)
+        fetchedUser.phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUser.password.shouldBe(insertedUser.password)
+        fetchedUser.vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUser.role.shouldBe(insertedUser.role)
+    }
+
+    test("User can be fetched by valid login") {
+        val fetchedUser =
+            userOperations
+                .selectUserByLogin(insertedUser.login)
                 .shouldNotBeNull()
 
         fetchedUser.id.shouldBe(insertedUser.id)
@@ -100,6 +117,78 @@ class SelectUserTest : TestcontainerSpec({ context ->
         fetchedUser.role.shouldBe(insertedUser.role)
     }
 
+    test("User can be fetched by valid phoneNumber") {
+        val fetchedUser =
+            userOperations
+                .selectUserByPhone(insertedUser.phoneNumber)
+                .shouldNotBeNull()
+
+        fetchedUser.id.shouldBe(insertedUser.id)
+        fetchedUser.name.shouldBe(insertedUser.name)
+        fetchedUser.surname.shouldBe(insertedUser.surname)
+        fetchedUser.login.shouldBe(insertedUser.login)
+        fetchedUser.email.shouldBe(insertedUser.email)
+        fetchedUser.phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUser.password.shouldBe(insertedUser.password)
+        fetchedUser.vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUser.role.shouldBe(insertedUser.role)
+    }
+
+    test("User can be fetched by role") {
+        val fetchedUserList =
+            userOperations
+                .selectUsersByRole(insertedUser.role)
+                .shouldNotBeNull()
+
+        fetchedUserList[0].id.shouldBe(insertedUser.id)
+        fetchedUserList[0].name.shouldBe(insertedUser.name)
+        fetchedUserList[0].surname.shouldBe(insertedUser.surname)
+        fetchedUserList[0].login.shouldBe(insertedUser.login)
+        fetchedUserList[0].email.shouldBe(insertedUser.email)
+        fetchedUserList[0].phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUserList[0].password.shouldBe(insertedUser.password)
+        fetchedUserList[0].vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUserList[0].role.shouldBe(insertedUser.role)
+    }
+
+    test("Two users can be fetched by role") {
+        userOperations
+            .insertUser(
+                validName,
+                validUserSurname,
+                "1$validLogin",
+                "1$validEmail",
+                validSecondPhoneNumber,
+                appConfiguredPasswordHasher.hash(validPass),
+                validVKLink,
+                Role.READER,
+            ).shouldNotBeNull()
+
+        userOperations
+            .selectUsersByRole(insertedUser.role)
+            .shouldNotBeNull()
+            .shouldHaveSize(2)
+    }
+
+    test("One user of two users can be fetched by role") {
+        userOperations
+            .insertUser(
+                validName,
+                validUserSurname,
+                "1$validLogin",
+                "1$validEmail",
+                validSecondPhoneNumber,
+                appConfiguredPasswordHasher.hash(validPass),
+                validVKLink,
+                Role.WRITER,
+            ).shouldNotBeNull()
+
+        userOperations
+            .selectUsersByRole(insertedUser.role)
+            .shouldNotBeNull()
+            .shouldHaveSize(1)
+    }
+
     listOf(
         "",
         "tenCharact".repeat(11),
@@ -118,23 +207,15 @@ class SelectUserTest : TestcontainerSpec({ context ->
             .shouldBeNull()
     }
 
-    test("User can be fetched by valid login") {
-        val fetchedUser =
-            userOperations
-                .selectUserByLogin(insertedUser.login)
-                .shouldNotBeNull()
-
-        fetchedUser.name.shouldBe(validName)
-        fetchedUser.email.shouldBe("reader1$validEmail")
-        fetchedUser.password
-            .shouldBe(appConfiguredPasswordHasher.hash(validPass))
-        fetchedUser.role.shouldBe(Role.READER)
-        fetchedUser.id.shouldBe(insertedUser.id)
-    }
-
-    test("User can't be fetched by invalid name") {
+    test("User can't be fetched by invalid login") {
         userOperations
             .selectUserByLogin("")
+            .shouldBeNull()
+    }
+
+    test("User can't be fetched by invalid phone") {
+        userOperations
+            .selectUserByPhone("")
             .shouldBeNull()
     }
 

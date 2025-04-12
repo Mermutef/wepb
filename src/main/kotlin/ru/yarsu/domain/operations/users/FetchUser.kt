@@ -58,6 +58,24 @@ class FetchUserByEmail (
         }
 }
 
+class FetchUserByPhone (
+    private val selectUserByPhone: (String) -> User?,
+) : (String) -> Result4k<User, UserFetchingError> {
+
+    override fun invoke(phone: String): Result4k<User, UserFetchingError> =
+        try {
+            selectUserByPhone(phone)
+                .let { user ->
+                    when (user) {
+                        is User -> Success(user)
+                        else -> Failure(UserFetchingError.NO_SUCH_USER)
+                    }
+                }
+        } catch (_: DataAccessException) {
+            Failure(UserFetchingError.UNKNOWN_DATABASE_ERROR)
+        }
+}
+
 class FetchUsersByRole (
     private val fetchUsersByRole: (Role) -> List<User>,
 ) : (Role) -> Result4k<List<User>, UserFetchingError> {

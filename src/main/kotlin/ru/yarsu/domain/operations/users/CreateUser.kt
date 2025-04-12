@@ -40,7 +40,7 @@ class CreateUser (
     ): Result4k<User, UserCreationError> =
         when {
             User.validateUserData(name, surname, login, email, phoneNumber.filter { it.isDigit() }, pass, vkLink)
-                    != UserValidationResult.ALL_OK ->
+                != UserValidationResult.ALL_OK ->
                 Failure(UserCreationError.INVALID_USER_DATA)
             loginAlreadyExists(login) ->
                 Failure(UserCreationError.LOGIN_ALREADY_EXISTS)
@@ -80,9 +80,9 @@ class CreateUser (
 
     private fun phoneAlreadyExists(phone: String): Boolean =
         when (fetchUserByPhone(phone)) {
-        is User -> true
-        else -> false
-    }
+            is User -> true
+            else -> false
+        }
 }
 
 enum class UserCreationError {

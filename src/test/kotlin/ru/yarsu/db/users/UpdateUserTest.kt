@@ -10,6 +10,7 @@ import ru.yarsu.db.validLogin
 import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
 import ru.yarsu.db.validPhoneNumber
+import ru.yarsu.db.validSecondPhoneNumber
 import ru.yarsu.db.validUserSurname
 import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
@@ -24,51 +25,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
         reader =
             userOperations
                 .insertUser(
-                    "ReaderUpdate1",
-                    validUserSurname,
-                    "ReaderUpd$validLogin",
-                    "readerUpdate1$validEmail",
-                    validPhoneNumber,
-                    validPass,
-                    validVKLink,
-                    Role.READER,
-                )
-                .shouldNotBeNull()
-    }
-
-    test("User password can be changed") {
-        val validUser =
-            userOperations
-                .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate2$validLogin",
-                    "readerUpdate2$validEmail",
-                    validPhoneNumber,
-                    validPass,
-                    validVKLink,
-                    Role.READER,
-                ).shouldNotBeNull()
-
-        val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
-        userOperations
-            .updatePassword(validUser.id, newPass)
-            .shouldNotBeNull().password shouldBe newPass
-    }
-
-    test("Change the role to ANONYMOUS test") {
-        userOperations
-            .updateRole(reader, Role.ANONYMOUS)
-            .shouldBeNull()
-    }
-
-    beforeEach {
-        reader =
-            userOperations
-                .insertUser(
-                    "Reader",
-                    validUserSurname,
-                    "ReaderUpdate3$validLogin",
+                    validLogin,
                     validEmail,
                     validPhoneNumber,
                     validPass,
@@ -78,15 +37,28 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .shouldNotBeNull()
     }
 
+    test("User password can be changed") {
+        val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
+        userOperations
+            .updatePassword(reader.id, newPass)
+            .shouldNotBeNull().password shouldBe newPass
+    }
+
+    test("Change the role to ANONYMOUS") {
+        userOperations
+            .updateRole(reader, Role.ANONYMOUS)
+            .shouldBeNull()
+    }
+
     test("Reader role can be changed to Writer") {
         val validReader =
             userOperations
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate4$validLogin",
-                    "reader$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.READER,
@@ -107,9 +79,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate5$validLogin",
-                    "reader$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.READER,
@@ -130,9 +102,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate6$validLogin",
-                    "writer$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.WRITER,
@@ -153,9 +125,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate7$validLogin",
-                    "writer$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.WRITER,
@@ -176,9 +148,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate8$validLogin",
-                    "moder$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.MODERATOR,
@@ -199,9 +171,9 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .insertUser(
                     validName,
                     validUserSurname,
-                    "ReaderUpdate9$validLogin",
-                    "moder$validEmail",
-                    validPhoneNumber,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
                     validPass,
                     validVKLink,
                     Role.MODERATOR,

@@ -34,12 +34,12 @@ class ModifyUserTest : FunSpec({
     val changePasswordMock: (userID: Int, newPassword: String) -> User? =
         { _, newPass -> validAnonymous.copy(password = newPass) }
 
-    val changePassword = ChangePassword(changePasswordMock, config)
+    val changePassword = ChangePassword(changePasswordMock, User.MAX_PASSWORD_LENGTH, config)
 
     val changePasswordNullMock: (userID: Int, newPassword: String) -> User? =
         { _, newPass -> null }
 
-    val changePasswordNull = ChangePassword(changePasswordNullMock, config)
+    val changePasswordNull = ChangePassword(changePasswordNullMock, User.MAX_PASSWORD_LENGTH, config)
 
     test("Password can be changed to valid password") {
         changePassword(validAnonymous, "valid").shouldBeSuccess().password shouldBe hasher.hash("valid")

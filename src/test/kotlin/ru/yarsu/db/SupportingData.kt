@@ -13,13 +13,16 @@ val validPass = "passwordiche"
 val validEmail = "validEmail@gmail.com"
 
 @Suppress("MayBeConst")
-val validUserSurname = "valid-user-surname"
+val validUserSurname = "Иванов"
 
 @Suppress("MayBeConst")
 val validLogin = "valid-login"
 
 @Suppress("MayBeConst")
 val validPhoneNumber = "+7(999)256-23-54"
+
+@Suppress("MayBeConst")
+val validSecondPhoneNumber = "+7(998)256-23-54"
 
 @Suppress("MayBeConst")
 val validVKLink = "https://vk.com/id564657468"

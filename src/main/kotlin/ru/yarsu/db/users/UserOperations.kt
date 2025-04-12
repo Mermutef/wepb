@@ -9,7 +9,6 @@ import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.models.User
 
-
 @Suppress("detekt:TooManyFunctions")
 class UserOperations(
     private val jooqContext: DSLContext,
