@@ -8,10 +8,10 @@ data class User (
     val surname: String,
     val login: String,
     val email: String,
-    val phoneNumber: String, // up
-    val password: String, // up
-    val vkLink: String?, // up
-    val role: Role, // UP
+    val phoneNumber: String,
+    val password: String,
+    val vkLink: String?,
+    val role: Role,
 ) {
     companion object {
         @Suppress("LongParameterList", "CyclomaticComplexMethod")
@@ -28,9 +28,9 @@ data class User (
                 ?: validateSurname(surname)
                 ?: validateLogin(login)
                 ?: validateEmail(email)
-                ?: validatePhoneNumber(phoneNumber)
+                ?: validatePhoneNumber(phoneNumber.filter { it.isDigit() })
                 ?: validatePassword(password)
-                ?: validateVkLink(vkLink)
+                ?: validateVKLink(vkLink)
                 ?: UserValidationResult.ALL_OK
 
         fun validateName(name: String): UserValidationResult? {
@@ -86,9 +86,9 @@ data class User (
             }
         }
 
-        fun validateVkLink(vkLink: String?): UserValidationResult? {
+        fun validateVKLink(vkLink: String?): UserValidationResult? {
             return when {
-                vkLink?.isBlank() ?: true -> UserValidationResult.VK_LINK_IS_BLANK_OR_EMPTY
+                vkLink?.isBlank() ?: false -> UserValidationResult.VK_LINK_IS_BLANK_OR_EMPTY
                 vkLink?.let { it.length > MAX_VK_LINK_LENGTH } ?: false -> UserValidationResult.VK_LINK_IS_TOO_LONG
                 vkLink?.let { !vkLinkPattern.matches(it) } ?: false -> UserValidationResult.VK_LINK_PATTERN_MISMATCH
                 else -> null
@@ -107,7 +107,7 @@ data class User (
         val loginPattern = Regex("^[\\w-.]+\$")
         val vkLinkPattern = Regex("^https:\\/\\/vk.com\\/[\\w.-]+\$")
         val namePattern = Regex("^[а-яА-Я -]+\$")
-        val phonePattern = Regex("^7\\d{10}\$")
+        val phonePattern = Regex("^79\\d{9}\$")
     }
 }
 

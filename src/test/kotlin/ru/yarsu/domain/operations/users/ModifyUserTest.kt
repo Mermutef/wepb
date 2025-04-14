@@ -31,22 +31,168 @@ class ModifyUserTest : FunSpec({
     )
     val hasher = PasswordHasher(config.authConfig)
 
+    val changeNameMock: (userID: Int, newName: String) -> User? =
+        { _, newName -> validAnonymous.copy(name = newName) }
+
+    val changeName = ChangeStringField(User.MAX_NAME_LENGTH, User.namePattern, changeNameMock)
+
+    val changeSurnameMock: (userID: Int, newSurname: String) -> User? =
+        { _, newSurname -> validAnonymous.copy(surname = newSurname) }
+
+    val changeSurname = ChangeStringField(User.MAX_SURNAME_LENGTH, User.namePattern, changeSurnameMock)
+
+    val changeEmailMock: (userID: Int, newEmail: String) -> User? =
+        { _, newEmail -> validAnonymous.copy(email = newEmail) }
+
+    val changeEmail = ChangeStringField(User.MAX_EMAIL_LENGTH, User.emailPattern, changeEmailMock)
+
+    val changePhoneNumberMock: (userID: Int, newPhone: String) -> User? =
+        { _, newPhone -> validAnonymous.copy(phoneNumber = newPhone) }
+
+    val changePhoneNumber = ChangeStringField(User.MAX_PHONE_NUMBER_LENGTH, User.phonePattern, changePhoneNumberMock)
+
     val changePasswordMock: (userID: Int, newPassword: String) -> User? =
         { _, newPass -> validAnonymous.copy(password = newPass) }
 
     val changePassword = ChangePassword(changePasswordMock, User.MAX_PASSWORD_LENGTH, config)
 
+    val changeVKLinkMock: (userID: Int, newVKLink: String) -> User? =
+        { _, newVKLink -> validAnonymous.copy(vkLink = newVKLink) }
+
+    val changeVKLink = ChangeStringField(User.MAX_VK_LINK_LENGTH, User.vkLinkPattern, changeVKLinkMock)
+
+    val changeNameNullMock: (userID: Int, newName: String) -> User? =
+        { _, _ -> null }
+
+    val changeNameNull = ChangeStringField(User.MAX_NAME_LENGTH, User.namePattern, changeNameNullMock)
+
+    val changeSurnameNullMock: (userID: Int, newSurname: String) -> User? =
+        { _, _ -> null }
+
+    val changeSurnameNull = ChangeStringField(User.MAX_SURNAME_LENGTH, User.namePattern, changeSurnameNullMock)
+
+    val changeEmailNullMock: (userID: Int, newEmail: String) -> User? =
+        { _, _ -> null }
+
+    val changeEmailNull = ChangeStringField(User.MAX_EMAIL_LENGTH, User.emailPattern, changeEmailNullMock)
+
+    val changePhoneNumberNullMock: (userID: Int, newPhone: String) -> User? =
+        { _, _ -> null }
+
+    val changePhoneNumberNull = ChangeStringField(
+        User.MAX_PHONE_NUMBER_LENGTH,
+        User.phonePattern,
+        changePhoneNumberNullMock
+    )
+
     val changePasswordNullMock: (userID: Int, newPassword: String) -> User? =
-        { _, newPass -> null }
+        { _, _ -> null }
 
     val changePasswordNull = ChangePassword(changePasswordNullMock, User.MAX_PASSWORD_LENGTH, config)
 
-    test("Password can be changed to valid password") {
-        changePassword(validAnonymous, "valid").shouldBeSuccess().password shouldBe hasher.hash("valid")
+    val changeVKLinkNullMock: (userID: Int, newVKLink: String) -> User? =
+        { _, _ -> null }
+
+    val changeVKLinkNull = ChangeStringField(User.MAX_VK_LINK_LENGTH, User.vkLinkPattern, changeVKLinkNullMock)
+
+    test("Name can be changed to valid name") {
+        changeName(validAnonymous, "Вася").shouldBeSuccess().name shouldBe "Вася"
     }
 
-    test("Password cannot be changed to empty password") {
-        changePassword(validAnonymous, "").shouldBeFailure(PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY)
+    test("Name cannot be changed to blank name") {
+        changeName(validAnonymous, "  \t\n") shouldBeFailure
+            FieldChangingError.FIELD_IS_BLANK_OR_EMPTY
+    }
+
+    test("Name cannot be changed too long name") {
+        changeName(validAnonymous, "a".repeat(User.MAX_NAME_LENGTH + 1)) shouldBeFailure
+            FieldChangingError.FIELD_IS_TOO_LONG
+    }
+
+    test("Name cannot be changed not matching pattern name") {
+        changeName(validAnonymous, "Vasy") shouldBeFailure
+            FieldChangingError.FIELD_PATTERN_MISMATCH
+    }
+
+    test("Unknown db error test for changeName") {
+        changeNameNull(validAnonymous, "Вася") shouldBeFailure
+            FieldChangingError.UNKNOWN_CHANGING_ERROR
+    }
+
+    test("Surname can be changed to valid surname") {
+        changeSurname(validAnonymous, "Васильев").shouldBeSuccess().surname shouldBe "Васильев"
+    }
+
+    test("Surname cannot be changed to blank surname") {
+        changeSurname(validAnonymous, "  \t\n") shouldBeFailure
+            FieldChangingError.FIELD_IS_BLANK_OR_EMPTY
+    }
+
+    test("Surname cannot be changed too long surname") {
+        changeSurname(validAnonymous, "a".repeat(User.MAX_SURNAME_LENGTH + 1)) shouldBeFailure
+            FieldChangingError.FIELD_IS_TOO_LONG
+    }
+
+    test("Surname cannot be changed not matching pattern surname") {
+        changeSurname(validAnonymous, "Vasiliev") shouldBeFailure
+            FieldChangingError.FIELD_PATTERN_MISMATCH
+    }
+
+    test("Unknown db error test for changeSurname") {
+        changeSurnameNull(validAnonymous, "Васильев") shouldBeFailure
+            FieldChangingError.UNKNOWN_CHANGING_ERROR
+    }
+
+    test("Email can be changed to valid email") {
+        changeEmail(validAnonymous, "1$validEmail").shouldBeSuccess().email shouldBe "1$validEmail"
+    }
+
+    test("Email cannot be changed to blank email") {
+        changeEmail(validAnonymous, "  \t\n") shouldBeFailure
+            FieldChangingError.FIELD_IS_BLANK_OR_EMPTY
+    }
+
+    test("Email cannot be changed too long email") {
+        changeEmail(validAnonymous, "a".repeat(User.MAX_EMAIL_LENGTH + 1)) shouldBeFailure
+            FieldChangingError.FIELD_IS_TOO_LONG
+    }
+
+    test("Email cannot be changed not matching pattern Email") {
+        changeEmail(validAnonymous, "invalid") shouldBeFailure
+            FieldChangingError.FIELD_PATTERN_MISMATCH
+    }
+
+    test("Unknown db error test for changeEmail") {
+        changeEmailNull(validAnonymous, "1$validEmail") shouldBeFailure
+            FieldChangingError.UNKNOWN_CHANGING_ERROR
+    }
+
+    test("PhoneNumber can be changed to valid phoneNumber") {
+        changePhoneNumber(validAnonymous, "79000000000").shouldBeSuccess().phoneNumber shouldBe "79000000000"
+    }
+
+    test("PhoneNumber cannot be changed to blank phoneNumber") {
+        changePhoneNumber(validAnonymous, "  \t\n") shouldBeFailure
+            FieldChangingError.FIELD_IS_BLANK_OR_EMPTY
+    }
+
+    test("PhoneNumber cannot be changed too long phoneNumber") {
+        changePhoneNumber(validAnonymous, "a".repeat(User.MAX_PHONE_NUMBER_LENGTH + 1)) shouldBeFailure
+            FieldChangingError.FIELD_IS_TOO_LONG
+    }
+
+    test("PhoneNumber cannot be changed not matching pattern phoneNumber") {
+        changePhoneNumber(validAnonymous, "6900000000") shouldBeFailure
+            FieldChangingError.FIELD_PATTERN_MISMATCH
+    }
+
+    test("Unknown db error test for changePhoneNumber") {
+        changePhoneNumberNull(validAnonymous, "79000000000") shouldBeFailure
+            FieldChangingError.UNKNOWN_CHANGING_ERROR
+    }
+
+    test("Password can be changed to valid password") {
+        changePassword(validAnonymous, "valid").shouldBeSuccess().password shouldBe hasher.hash("valid")
     }
 
     test("Password cannot be changed to blank password") {
@@ -54,9 +200,38 @@ class ModifyUserTest : FunSpec({
             PasswordChangingError.PASSWORD_IS_BLANK_OR_EMPTY
     }
 
+    test("Password cannot be changed too long password") {
+        changePassword(validAnonymous, "a".repeat(User.MAX_PASSWORD_LENGTH + 1)) shouldBeFailure
+            PasswordChangingError.PASSWORD_IS_TOO_LONG
+    }
+
     test("Unknown db error test for changePassword") {
         changePasswordNull(validAnonymous, "valid") shouldBeFailure
             PasswordChangingError.UNKNOWN_CHANGING_ERROR
+    }
+
+    test("VKLink can be changed to valid vkLink") {
+        changeVKLink(validAnonymous, "${validVKLink}1").shouldBeSuccess().vkLink shouldBe "${validVKLink}1"
+    }
+
+    test("VKLink cannot be changed to blank vkLink") {
+        changeVKLink(validAnonymous, "  \t\n") shouldBeFailure
+            FieldChangingError.FIELD_IS_BLANK_OR_EMPTY
+    }
+
+    test("VKLink cannot be changed too long vkLink") {
+        changeVKLink(validAnonymous, "a".repeat(User.MAX_VK_LINK_LENGTH + 1)) shouldBeFailure
+            FieldChangingError.FIELD_IS_TOO_LONG
+    }
+
+    test("VKLink cannot be changed not matching pattern vkLink") {
+        changeVKLink(validAnonymous, "invalid_vk_link") shouldBeFailure
+            FieldChangingError.FIELD_PATTERN_MISMATCH
+    }
+
+    test("Unknown db error test for changeVKLink") {
+        changeVKLinkNull(validAnonymous, "${validVKLink}1") shouldBeFailure
+            FieldChangingError.UNKNOWN_CHANGING_ERROR
     }
 
     val validReader = User(

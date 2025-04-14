@@ -78,38 +78,67 @@ class FetchUserTest : FunSpec({
         )
     )
     val users = listOf(validUser)
+
     var usersForFetchByRole: List<User> = emptyList()
 
     val fetchUserByIDMock: (Int) -> User? = { userID ->
         users.firstOrNull { it.id == userID }
     }
+
+    val fetchUserByLoginMock: (String) -> User? = { login ->
+        users.firstOrNull { it.login == login }
+    }
+
     val fetchUserByEmailMock: (String) -> User? = { email ->
         users.firstOrNull { it.email == email }
     }
-    val fetchUserByNameMock: (String) -> User? = { userName ->
-        users.firstOrNull { it.name == userName }
+
+    val fetchUserByPhoneMock: (String) -> User? = { phone ->
+        users.firstOrNull { it.phoneNumber == phone }
     }
+
     val fetchUsersByRoleMock: (Role) -> List<User> = { userRole ->
         usersForFetchByRole.filter { it.role == userRole }
     }
+
     val fetchAllUsersMock: () -> List<User> = { users }
 
     val fetchUserByIDNullMock: (Int) -> User? = { _ -> null }
-    val fetchUserByNameNullMock: (String) -> User? = { _ -> null }
+    val fetchUserByLoginNullMock: (String) -> User? = { _ -> null }
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
+    val fetchUserByPhoneNullMock: (String) -> User? = { _ -> null }
 
     val fetchUserByID = FetchUserByID(fetchUserByIDMock)
-    val fetchUserByName = FetchUserByLogin(fetchUserByNameMock)
+    val fetchUserByLogin = FetchUserByLogin(fetchUserByLoginMock)
     val fetchUserByEmail = FetchUserByEmail(fetchUserByEmailMock)
+    val fetchUserByPhone = FetchUserByPhone(fetchUserByPhoneMock)
     val fetchAllUsers = FetchAllUsers(fetchAllUsersMock)
+
     val fetchUserByIdNull = FetchUserByID(fetchUserByIDNullMock)
-    val fetchUserByNameNull = FetchUserByLogin(fetchUserByNameNullMock)
+    val fetchUserByLoginNull = FetchUserByLogin(fetchUserByLoginNullMock)
     val fetchUserByEmailNull = FetchUserByEmail(fetchUserByEmailNullMock)
+    val fetchUserByPhoneNull = FetchUserByPhone(fetchUserByPhoneNullMock)
 
     val fetchUsersByRole = FetchUsersByRole(fetchUsersByRoleMock)
 
     test("User can be fetched by his ID") {
         fetchUserByID(validUser.id).shouldBeSuccess()
+    }
+
+    test("User can be fetched by his login") {
+        fetchUserByLogin(validUser.login).shouldBeSuccess()
+    }
+
+    test("User can be fetched by his email") {
+        fetchUserByEmail(validUser.email).shouldBeSuccess()
+    }
+
+    test("User can be fetched by his phone") {
+        fetchUserByPhone(validUser.phoneNumber).shouldBeSuccess()
+    }
+
+    test("FetchAllUsers should return list of users") {
+        fetchAllUsers().shouldBeSuccess().shouldHaveSize(1)
     }
 
     listOf(
@@ -124,22 +153,14 @@ class FetchUserTest : FunSpec({
         }
     }
 
-    test("User can be fetched by his name") {
-        fetchUserByName(validUser.name).shouldBeSuccess()
-    }
-
-    test("User can be fetched by his email") {
-        fetchUserByEmail(validUser.email).shouldBeSuccess()
-    }
-
     listOf(
         "",
         "    ",
-    ).forEach { name ->
-        test("User can't be fetched by invalid name == $name") {
-            fetchUserByName(name)
+    ).forEach { login ->
+        test("User can't be fetched by invalid login == $login") {
+            fetchUserByLogin(login)
                 .shouldBeFailure(UserFetchingError.NO_SUCH_USER)
-            fetchUserByNameNull(name)
+            fetchUserByLoginNull(login)
                 .shouldBeFailure(UserFetchingError.NO_SUCH_USER)
         }
     }
@@ -159,8 +180,16 @@ class FetchUserTest : FunSpec({
         }
     }
 
-    test("FetchAllUsers should return list of users") {
-        fetchAllUsers().shouldBeSuccess().shouldHaveSize(1)
+    listOf(
+        "00000000000",
+        "888888888888",
+    ).forEach { phone ->
+        test("User can't be fetched by invalid phone == $phone") {
+            fetchUserByPhone(phone)
+                .shouldBeFailure(UserFetchingError.NO_SUCH_USER)
+            fetchUserByPhoneNull(phone)
+                .shouldBeFailure(UserFetchingError.NO_SUCH_USER)
+        }
     }
 
     listOf(

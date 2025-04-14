@@ -46,7 +46,7 @@ class CreateUser (
                 Failure(UserCreationError.LOGIN_ALREADY_EXISTS)
             emailAlreadyExists(email) ->
                 Failure(UserCreationError.EMAIL_ALREADY_EXISTS)
-            phoneAlreadyExists(phoneNumber) ->
+            phoneAlreadyExists(phoneNumber.filter { it.isDigit() }) ->
                 Failure(UserCreationError.PHONE_ALREADY_EXISTS)
             else ->
                 when (

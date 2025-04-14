@@ -222,32 +222,4 @@ class InsertUserTest : TestcontainerSpec({ context ->
         insertedUser.vkLink.shouldBe("a".repeat(User.MAX_VK_LINK_LENGTH))
         insertedUser.role.shouldBe(Role.READER)
     }
-
-//    test("Can't create two users with the same login") {
-//        val insertedUser =
-//            userOperations
-//                .insertUser(
-//                    validName,
-//                    validUserSurname,
-//                    validLogin,
-//                    validEmail,
-//                    validPhoneNumber.filter { it.isDigit() },
-//                    appConfiguredPasswordHasher.hash(validPass),
-//                    "a".repeat(User.MAX_VK_LINK_LENGTH),
-//                    Role.READER,
-//                ).shouldNotBeNull()
-//
-//        val inserted2User =
-//            userOperations
-//                .insertUser(
-//                    validName,
-//                    validUserSurname,
-//                    validLogin,
-//                    "1$validEmail",
-//                    validSecondPhoneNumber.filter { it.isDigit() },
-//                    appConfiguredPasswordHasher.hash(validPass),
-//                    validVKLink,
-//                    Role.READER,
-//                ).shouldBeNull()
-//    }
 })

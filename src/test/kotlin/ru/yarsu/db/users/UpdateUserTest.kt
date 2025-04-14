@@ -37,11 +37,46 @@ class UpdateUserTest : TestcontainerSpec({ context ->
                 .shouldNotBeNull()
     }
 
+    test("User name can be changed") {
+        val newName = "Ваня"
+        userOperations
+            .updateName(reader.id, newName)
+            .shouldNotBeNull().name shouldBe newName
+    }
+
+    test("User surname can be changed") {
+        val newSurname = "Сергеев"
+        userOperations
+            .updateSurname(reader.id, newSurname)
+            .shouldNotBeNull().surname shouldBe newSurname
+    }
+
+    test("User email can be changed") {
+        val newEmail = "new$validEmail"
+        userOperations
+            .updateEmail(reader.id, newEmail)
+            .shouldNotBeNull().email shouldBe newEmail
+    }
+
+    test("User phone number can be changed") {
+        val newPhone = "79555555555"
+        userOperations
+            .updatePhoneNumber(reader.id, newPhone)
+            .shouldNotBeNull().phoneNumber shouldBe newPhone
+    }
+
     test("User password can be changed") {
         val newPass = appConfiguredPasswordHasher.hash("newPassword1234 @3243 *%")
         userOperations
             .updatePassword(reader.id, newPass)
             .shouldNotBeNull().password shouldBe newPass
+    }
+
+    test("User vk link can be changed") {
+        val newVKLink = "${validVKLink}1"
+        userOperations
+            .updateVKLink(reader.id, newVKLink)
+            .shouldNotBeNull().vkLink shouldBe newVKLink
     }
 
     test("Change the role to ANONYMOUS") {

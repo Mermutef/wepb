@@ -23,14 +23,14 @@ import java.time.LocalDateTime
 
 class InsertMediaTest : TestcontainerSpec({ context ->
     lateinit var validMedia: MediaFile
-    lateinit var teacher: User
+    lateinit var writer: User
     val mediaOperations = MediaOperations(context)
 
     val database = DatabaseOperationsHolder(context)
     val operations = OperationsHolder(database, appConfig)
 
     beforeEach {
-        teacher = operations
+        writer = operations
             .userOperations
             .createUser(
                 validName,
@@ -49,7 +49,7 @@ class InsertMediaTest : TestcontainerSpec({ context ->
             mediaType = MediaType.VIDEO,
             birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
             isTemporary = false,
-            authorId = teacher.id,
+            authorId = writer.id,
         )
     }
 

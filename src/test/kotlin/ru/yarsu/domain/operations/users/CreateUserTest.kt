@@ -48,16 +48,16 @@ class CreateUserTest : FunSpec({
         user
     }
 
-    val fetchUserByLoginMock: (String) -> User? = { userName ->
-        users.firstOrNull { it.login == userName }
+    val fetchUserByLoginMock: (String) -> User? = { userLogin ->
+        users.firstOrNull { it.login == userLogin }
     }
 
-    val fetchUserByEmailMock: (String) -> User? = { userName ->
-        users.firstOrNull { it.email == userName }
+    val fetchUserByEmailMock: (String) -> User? = { userEmail ->
+        users.firstOrNull { it.email == userEmail }
     }
 
-    val fetchUserByPhoneMock: (String) -> User? = { userName ->
-        users.firstOrNull { it.phoneNumber == userName }
+    val fetchUserByPhoneMock: (String) -> User? = { userPhone ->
+        users.firstOrNull { it.phoneNumber == userPhone }
     }
 
     val insertUserNullMock: (
@@ -72,6 +72,7 @@ class CreateUserTest : FunSpec({
     ) -> User? = { _, _, _, _, _, _, _, _ -> null }
     val fetchUserByNameNullMock: (String) -> User? = { _ -> null }
     val fetchUserByEmailNullMock: (String) -> User? = { _ -> null }
+    val fetchUserByPhoneNullMock: (String) -> User? = { _ -> null }
 
     val createUser = CreateUser(
         insertUserMock,
@@ -88,11 +89,20 @@ class CreateUserTest : FunSpec({
         fetchUserByPhoneMock,
         config,
     )
+
     val createUserNullEmail = CreateUser(
         insertUserNullMock,
         fetchUserByLoginMock,
         fetchUserByEmailNullMock,
         fetchUserByPhoneMock,
+        config,
+    )
+
+    val createUserNullPhone = CreateUser(
+        insertUserNullMock,
+        fetchUserByLoginMock,
+        fetchUserByEmailMock,
+        fetchUserByPhoneNullMock,
         config,
     )
 
@@ -127,6 +137,44 @@ class CreateUserTest : FunSpec({
                 ).shouldBeSuccess()
             }
         }
+
+    listOf(
+        "",
+        "Ivan",
+        "Иван".repeat(User.MAX_NAME_LENGTH + 1),
+    ).forEach { invalidName ->
+        test("User with invalid name should not be inserted ($invalidName)") {
+            createUser(
+                invalidName,
+                validUserSurname,
+                validLogin,
+                validEmail,
+                validPhoneNumber,
+                validPass,
+                validVKLink,
+                Role.READER,
+            ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+        }
+    }
+
+    listOf(
+        "",
+        "Ivanov",
+        "Иванов".repeat(User.MAX_SURNAME_LENGTH + 1),
+    ).forEach { invalidUserSurname ->
+        test("User with invalid surname should not be inserted ($invalidUserSurname)") {
+            createUser(
+                validName,
+                invalidUserSurname,
+                validLogin,
+                validEmail,
+                validPhoneNumber,
+                validPass,
+                validVKLink,
+                Role.READER,
+            ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+        }
+    }
 
     listOf(
         "",
@@ -168,17 +216,60 @@ class CreateUserTest : FunSpec({
         }
     }
 
-    test("User with invalid password should not be inserted") {
-        createUser(
-            validName,
-            validUserSurname,
-            validLogin,
-            validEmail,
-            validPhoneNumber,
-            "",
-            validVKLink,
-            Role.READER,
-        ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+    listOf(
+        "",
+        "99898989898",
+        "89".repeat(User.MAX_PHONE_NUMBER_LENGTH + 1),
+    ).forEach { invalidPhoneNumber ->
+        test("User with invalid phone number should not be inserted ($invalidPhoneNumber)") {
+            createUser(
+                validName,
+                validUserSurname,
+                validLogin,
+                validEmail,
+                invalidPhoneNumber,
+                validPass,
+                validVKLink,
+                Role.READER,
+            ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+        }
+    }
+
+    listOf(
+        "",
+        "a".repeat(User.MAX_PASSWORD_LENGTH + 1),
+    ).forEach { invalidPassword ->
+        test("User with invalid password should not be inserted ($invalidPassword)") {
+            createUser(
+                validName,
+                validUserSurname,
+                validLogin,
+                validEmail,
+                validPhoneNumber,
+                invalidPassword,
+                validVKLink,
+                Role.READER,
+            ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+        }
+    }
+
+    listOf(
+        "",
+        "aaaaaaa",
+        "a".repeat(User.MAX_VK_LINK_LENGTH + 1),
+    ).forEach { invalidVKLink ->
+        test("User with invalid vk link should not be inserted ($invalidVKLink)") {
+            createUser(
+                validName,
+                validUserSurname,
+                validLogin,
+                validEmail,
+                validPhoneNumber,
+                validPass,
+                invalidVKLink,
+                Role.READER,
+            ).shouldBeFailure(UserCreationError.INVALID_USER_DATA)
+        }
     }
 
     test("There cannot be two users with the same login") {
@@ -229,6 +320,30 @@ class CreateUserTest : FunSpec({
         ).shouldBeFailure(UserCreationError.EMAIL_ALREADY_EXISTS)
     }
 
+    test("There cannot be two users with the same phone number") {
+        createUser(
+            validName,
+            validUserSurname,
+            validLogin,
+            validEmail,
+            validPhoneNumber,
+            validPass,
+            validVKLink,
+            Role.READER,
+        ).shouldBeSuccess()
+
+        createUser(
+            validName,
+            validUserSurname,
+            "1$validLogin",
+            "1$validEmail",
+            validPhoneNumber,
+            validPass,
+            validVKLink,
+            Role.READER,
+        ).shouldBeFailure(UserCreationError.PHONE_ALREADY_EXISTS)
+    }
+
     test("Unknown db error test for CreateUser") {
         createUserNullName(
             validName,
@@ -251,5 +366,29 @@ class CreateUserTest : FunSpec({
             validVKLink,
             Role.READER,
         ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
+
+        createUserNullPhone(
+            validName,
+            validUserSurname,
+            validLogin,
+            validEmail,
+            validPhoneNumber,
+            validPass,
+            validVKLink,
+            Role.READER,
+        ).shouldBeFailure(UserCreationError.UNKNOWN_DATABASE_ERROR)
+    }
+
+    test("There can be user with null vk link") {
+        createUser(
+            validName,
+            validUserSurname,
+            validLogin,
+            validEmail,
+            validPhoneNumber,
+            validPass,
+            null,
+            Role.READER,
+        ).shouldBeSuccess()
     }
 })

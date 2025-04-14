@@ -140,15 +140,15 @@ class SelectUserTest : TestcontainerSpec({ context ->
                 .selectUsersByRole(insertedUser.role)
                 .shouldNotBeNull()
 
-        fetchedUserList[0].id.shouldBe(insertedUser.id)
-        fetchedUserList[0].name.shouldBe(insertedUser.name)
-        fetchedUserList[0].surname.shouldBe(insertedUser.surname)
-        fetchedUserList[0].login.shouldBe(insertedUser.login)
-        fetchedUserList[0].email.shouldBe(insertedUser.email)
-        fetchedUserList[0].phoneNumber.shouldBe(insertedUser.phoneNumber)
-        fetchedUserList[0].password.shouldBe(insertedUser.password)
-        fetchedUserList[0].vkLink.shouldBe(insertedUser.vkLink)
-        fetchedUserList[0].role.shouldBe(insertedUser.role)
+        fetchedUserList.first().id.shouldBe(insertedUser.id)
+        fetchedUserList.first().name.shouldBe(insertedUser.name)
+        fetchedUserList.first().surname.shouldBe(insertedUser.surname)
+        fetchedUserList.first().login.shouldBe(insertedUser.login)
+        fetchedUserList.first().email.shouldBe(insertedUser.email)
+        fetchedUserList.first().phoneNumber.shouldBe(insertedUser.phoneNumber)
+        fetchedUserList.first().password.shouldBe(insertedUser.password)
+        fetchedUserList.first().vkLink.shouldBe(insertedUser.vkLink)
+        fetchedUserList.first().role.shouldBe(insertedUser.role)
     }
 
     test("Two users can be fetched by role") {
