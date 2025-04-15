@@ -58,8 +58,10 @@ class UserOperations(
         vkLink: String?,
         role: Role,
     ): User? =
-        role.asDbRole()
-            ?.let { role ->
+        role
+            .takeIf { it != Role.ADMIN }
+            ?.asDbRole()
+            ?.let { dbRole ->
                 jooqContext.insertInto(USERS)
                     .set(USERS.NAME, name)
                     .set(USERS.SURNAME, surname)
@@ -68,7 +70,7 @@ class UserOperations(
                     .set(USERS.EMAIL, email)
                     .set(USERS.PASSWORD, password)
                     .set(USERS.VKLINK, vkLink)
-                    .set(USERS.ROLE, role)
+                    .set(USERS.ROLE, dbRole)
                     .returningResult()
                     .fetchOne()
                     ?.toUser()
@@ -145,7 +147,8 @@ class UserOperations(
         newRole: Role,
     ): User? =
         newRole
-            .asDbRole()
+            .takeIf { it != Role.ADMIN }
+            ?.asDbRole()
             ?.let { role ->
                 jooqContext.update(USERS)
                     .set(USERS.ROLE, role)
@@ -202,7 +205,7 @@ private fun Role.asDbRole(): UserRole? =
         Role.READER -> UserRole.READER
         Role.WRITER -> UserRole.WRITER
         Role.MODERATOR -> UserRole.MODERATOR
-        Role.ADMIN -> null
+        Role.ADMIN -> UserRole.ADMIN
         Role.ANONYMOUS -> null
     }
 
