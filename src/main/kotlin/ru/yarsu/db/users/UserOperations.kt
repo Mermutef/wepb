@@ -58,18 +58,21 @@ class UserOperations(
         vkLink: String?,
         role: Role,
     ): User? =
-        jooqContext.insertInto(USERS)
-            .set(USERS.NAME, name)
-            .set(USERS.SURNAME, surname)
-            .set(USERS.LOGIN, login)
-            .set(USERS.PHONENUMBER, phoneNumber.filter { it.isDigit() })
-            .set(USERS.EMAIL, email)
-            .set(USERS.PASSWORD, password)
-            .set(USERS.VKLINK, vkLink)
-            .set(USERS.ROLE, role.asDbRole())
-            .returningResult()
-            .fetchOne()
-            ?.toUser()
+        role.asDbRole()
+            ?.let { role ->
+                jooqContext.insertInto(USERS)
+                    .set(USERS.NAME, name)
+                    .set(USERS.SURNAME, surname)
+                    .set(USERS.LOGIN, login)
+                    .set(USERS.PHONENUMBER, phoneNumber.filter { it.isDigit() })
+                    .set(USERS.EMAIL, email)
+                    .set(USERS.PASSWORD, password)
+                    .set(USERS.VKLINK, vkLink)
+                    .set(USERS.ROLE, role)
+                    .returningResult()
+                    .fetchOne()
+                    ?.toUser()
+            }
 
     override fun updateName(
         userID: Int,
@@ -199,7 +202,7 @@ private fun Role.asDbRole(): UserRole? =
         Role.READER -> UserRole.READER
         Role.WRITER -> UserRole.WRITER
         Role.MODERATOR -> UserRole.MODERATOR
-        Role.ADMIN -> UserRole.ADMIN
+        Role.ADMIN -> null
         Role.ANONYMOUS -> null
     }
 
@@ -210,3 +213,16 @@ private fun UserRole.asAppRole(): Role? =
         UserRole.MODERATOR -> Role.MODERATOR
         UserRole.ADMIN -> null
     }
+
+// jooqContext.insertInto(USERS)
+// .set(USERS.NAME, name)
+// .set(USERS.SURNAME, surname)
+// .set(USERS.LOGIN, login)
+// .set(USERS.PHONENUMBER, phoneNumber.filter { it.isDigit() })
+// .set(USERS.EMAIL, email)
+// .set(USERS.PASSWORD, password)
+// .set(USERS.VKLINK, vkLink)
+// .set(USERS.ROLE, role.asDbRole())
+// .returningResult()
+// .fetchOne()
+// ?.toUser()

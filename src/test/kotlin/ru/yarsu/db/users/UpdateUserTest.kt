@@ -222,4 +222,130 @@ class UpdateUserTest : TestcontainerSpec({ context ->
             .role
             .shouldBe(Role.WRITER)
     }
+
+    test("Reader role can not be changed to Admin") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.READER,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ADMIN
+            ).shouldBe(null)
+    }
+
+    test("Writer role can not be changed to Admin") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.WRITER,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ADMIN
+            ).shouldBe(null)
+    }
+
+    test("Moderator role can not be changed to Admin") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.MODERATOR,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ADMIN
+            ).shouldBe(null)
+    }
+
+    test("Reader role can not be changed to Anonymous") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.READER,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ANONYMOUS
+            ).shouldBe(null)
+    }
+
+    test("Writer role can not be changed to Anonymous") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.WRITER,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ANONYMOUS
+            ).shouldBe(null)
+    }
+
+    test("Moderator role can not be changed to Anonymous") {
+        val validModerator =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    "1$validLogin",
+                    "1$validEmail",
+                    validSecondPhoneNumber,
+                    validPass,
+                    validVKLink,
+                    Role.MODERATOR,
+                ).shouldNotBeNull()
+
+        userOperations
+            .updateRole(
+                validModerator,
+                Role.ANONYMOUS
+            ).shouldBe(null)
+    }
 })
