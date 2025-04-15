@@ -1,6 +1,6 @@
 package ru.yarsu.config
 
-import org.http4k.cloudnative.env.Environment
+import org.http4k.config.Environment
 import java.io.File
 
 data class AppConfig (
