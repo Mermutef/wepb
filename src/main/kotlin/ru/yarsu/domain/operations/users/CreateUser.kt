@@ -10,43 +10,64 @@ import ru.yarsu.domain.models.User
 import ru.yarsu.domain.models.UserValidationResult
 
 class CreateUser (
-    private val insertUser: (name: String, email: String, pass: String, role: Role) -> User?,
-    private val fetchUserByName: (String) -> User?,
+    private val insertUser: (
+        name: String,
+        surname: String,
+        login: String,
+        email: String,
+        phoneNumber: String,
+        password: String,
+        vkLink: String?,
+        role: Role,
+    ) -> User?,
+    private val fetchUserByLogin: (String) -> User?,
     private val fetchUserByEmail: (String) -> User?,
+    private val fetchUserByPhone: (String) -> User?,
     config: AppConfig,
-) : (String, String, String, Role) -> Result4k<User, UserCreationError> {
+) : (String, String, String, String, String, String, String?, Role) -> Result4k<User, UserCreationError> {
+
     private val hasher = PasswordHasher(config.authConfig)
 
     override operator fun invoke(
         name: String,
+        surname: String,
+        login: String,
         email: String,
+        phoneNumber: String,
         pass: String,
+        vkLink: String?,
         role: Role,
     ): Result4k<User, UserCreationError> =
         when {
-            User.validateUserData(name, email, pass) != UserValidationResult.ALL_OK ->
+            User.validateUserData(name, surname, login, email, phoneNumber.filter { it.isDigit() }, pass, vkLink)
+                != UserValidationResult.ALL_OK ->
                 Failure(UserCreationError.INVALID_USER_DATA)
-            nameAlreadyExists(name) ->
-                Failure(UserCreationError.NAME_ALREADY_EXISTS)
+            loginAlreadyExists(login) ->
+                Failure(UserCreationError.LOGIN_ALREADY_EXISTS)
             emailAlreadyExists(email) ->
                 Failure(UserCreationError.EMAIL_ALREADY_EXISTS)
+            phoneAlreadyExists(phoneNumber.filter { it.isDigit() }) ->
+                Failure(UserCreationError.PHONE_ALREADY_EXISTS)
             else ->
                 when (
-                    val newUser =
-                        insertUser(
-                            name,
-                            email,
-                            hasher.hash(pass),
-                            role,
-                        )
+                    val newUser = insertUser(
+                        name,
+                        surname,
+                        login,
+                        email,
+                        phoneNumber.filter { it.isDigit() }, // + проверка, что начинается с 79 и длиной 11 символов
+                        hasher.hash(pass),
+                        vkLink,
+                        role
+                    )
                 ) {
                     is User -> Success(newUser)
                     else -> Failure(UserCreationError.UNKNOWN_DATABASE_ERROR)
                 }
         }
 
-    private fun nameAlreadyExists(name: String): Boolean =
-        when (fetchUserByName(name)) {
+    private fun loginAlreadyExists(login: String): Boolean =
+        when (fetchUserByLogin(login)) {
             is User -> true
             else -> false
         }
@@ -56,11 +77,18 @@ class CreateUser (
             is User -> true
             else -> false
         }
+
+    private fun phoneAlreadyExists(phone: String): Boolean =
+        when (fetchUserByPhone(phone)) {
+            is User -> true
+            else -> false
+        }
 }
 
 enum class UserCreationError {
-    NAME_ALREADY_EXISTS,
+    LOGIN_ALREADY_EXISTS,
     EMAIL_ALREADY_EXISTS,
+    PHONE_ALREADY_EXISTS,
     INVALID_USER_DATA,
     UNKNOWN_DATABASE_ERROR,
 }

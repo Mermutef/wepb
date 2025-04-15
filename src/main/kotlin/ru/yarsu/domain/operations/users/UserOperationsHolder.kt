@@ -12,38 +12,114 @@ class UserOperationsHolder (
 ) {
     val fetchAllUsers: () -> Result4k<List<User>, UserFetchingError> = FetchAllUsers { usersDatabase.selectAllUsers() }
 
-    val fetchUsersByRole: (Role) -> Result4k<List<User>, UserFetchingError> =
-        FetchUsersByRole { userRole: Role -> usersDatabase.selectUsersByRole(userRole) }
-
     val fetchUserByID: (Int) -> Result4k<User, UserFetchingError> = FetchUserByID { userID: Int ->
         usersDatabase.selectUserByID(userID)
+    }
+
+    val fetchUserByLogin: (String) -> Result4k<User, UserFetchingError> = FetchUserByLogin { login: String ->
+        usersDatabase.selectUserByLogin(login)
     }
 
     val fetchUserByEmail: (String) -> Result4k<User, UserFetchingError> = FetchUserByEmail { email: String ->
         usersDatabase.selectUserByEmail(email)
     }
 
-    val fetchUserByName: (String) -> Result4k<User, UserFetchingError> = FetchUserByName { userName: String ->
-        usersDatabase.selectUserByName(userName)
+    val fetchUserByPhone: (String) -> Result4k<User, UserFetchingError> = FetchUserByPhone { phone: String ->
+        usersDatabase.selectUserByPhone(phone)
     }
 
-    val createUser: (name: String, email: String, password: String, role: Role) -> Result4k<User, UserCreationError> =
+    val fetchUsersByRole: (Role) -> Result4k<List<User>, UserFetchingError> =
+        FetchUsersByRole { userRole: Role -> usersDatabase.selectUsersByRole(userRole) }
+
+    val createUser: (
+        name: String,
+        surname: String,
+        login: String,
+        email: String,
+        phoneNumber: String,
+        password: String,
+        vkLink: String?,
+        role: Role,
+    ) -> Result4k<User, UserCreationError> =
         CreateUser(
-            insertUser = { name: String, email: String, pass: String, role: Role ->
-                usersDatabase.insertUser(name, email, pass, role)
+            insertUser = { name, surname, login, phone, email, pass, vkLink, role ->
+                usersDatabase.insertUser(
+                    name = name,
+                    surname = surname,
+                    login = login,
+                    email = email,
+                    phoneNumber = phone,
+                    password = pass,
+                    vkLink = vkLink,
+                    role = role
+                )
             },
-            fetchUserByName = { name: String ->
-                usersDatabase.selectUserByName(name)
-            },
-            fetchUserByEmail = { email: String ->
-                usersDatabase.selectUserByEmail(email)
-            },
+            fetchUserByLogin = usersDatabase::selectUserByLogin,
+            fetchUserByEmail = usersDatabase::selectUserByEmail,
+            fetchUserByPhone = usersDatabase::selectUserByPhone,
+            config = config
+        )
+
+    val changeName: (User, String) -> Result4k<User, FieldChangingError> =
+        ChangeStringField(
+            maxLength = User.MAX_NAME_LENGTH,
+            pattern = User.namePattern,
+            changeName = usersDatabase::updateName
+        )
+
+    val changeSurname: (User, String) -> Result4k<User, FieldChangingError> =
+        ChangeStringField(
+            maxLength = User.MAX_SURNAME_LENGTH,
+            pattern = User.namePattern,
+            changeName = usersDatabase::updateSurname
+        )
+
+    val changeEmail: (User, String) -> Result4k<User, FieldChangingError> =
+        ChangeStringField(
+            maxLength = User.MAX_EMAIL_LENGTH,
+            pattern = User.emailPattern,
+            changeName = usersDatabase::updateEmail
+        )
+
+    val changePhoneNumber: (User, String) -> Result4k<User, FieldChangingError> =
+        ChangeStringField(
+            maxLength = User.MAX_PHONE_NUMBER_LENGTH,
+            pattern = User.phonePattern,
+            changeName = usersDatabase::updatePhoneNumber
+        )
+
+    val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =
+        ChangePassword(
+            changePassword = usersDatabase::updatePassword,
+            maxLength = User.MAX_PASSWORD_LENGTH,
             config = config,
         )
 
-//    val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =
-//        ChangePassword(
-//            changePassword = usersDatabase::updatePassword,
-//            config = config,
-//        )
+    val changeVKLink: (User, String) -> Result4k<User, FieldChangingError> =
+        ChangeStringField(
+            maxLength = User.MAX_VK_LINK_LENGTH,
+            pattern = User.vkLinkPattern,
+            changeName = usersDatabase::updateVKLink
+        )
+
+    val makeReader: (User) -> Result4k<User, MakeRoleError> = RoleChanger(
+        targetRole = Role.READER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_READER,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
+
+    val makeWriter: (User) -> Result4k<User, MakeRoleError> = RoleChanger(
+        targetRole = Role.WRITER,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_WRITER,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
+
+    val makeModerator: (User) -> Result4k<User, MakeRoleError> = RoleChanger(
+        targetRole = Role.MODERATOR,
+        alreadyHasRoleError = MakeRoleError.IS_ALREADY_MODERATOR,
+        usersDatabase::updateRole,
+        unknownError = MakeRoleError.UNKNOWN_DATABASE_ERROR,
+    )
 }

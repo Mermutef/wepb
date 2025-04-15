@@ -4,13 +4,28 @@ import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.PasswordHasher
 
 @Suppress("MayBeConst")
-val validUserName = "valid-user-name"
+val validName = "Иван"
 
 @Suppress("MayBeConst")
-val validPass = "pass"
+val validPass = "passwordiche"
 
 @Suppress("MayBeConst")
 val validEmail = "validEmail@gmail.com"
+
+@Suppress("MayBeConst")
+val validUserSurname = "Иванов"
+
+@Suppress("MayBeConst")
+val validLogin = "valid-login"
+
+@Suppress("MayBeConst")
+val validPhoneNumber = "+7(999)256-23-54"
+
+@Suppress("MayBeConst")
+val validSecondPhoneNumber = "+7(998)256-23-54"
+
+@Suppress("MayBeConst")
+val validVKLink = "https://vk.com/id564657468"
 
 val appConfig = AppConfig.fromEnvironment()
 val appConfiguredPasswordHasher = PasswordHasher(appConfig.authConfig)

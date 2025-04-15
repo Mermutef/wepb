@@ -8,8 +8,12 @@ import ru.yarsu.db.DatabaseOperationsHolder
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.appConfig
 import ru.yarsu.db.validEmail
+import ru.yarsu.db.validLogin
+import ru.yarsu.db.validName
 import ru.yarsu.db.validPass
-import ru.yarsu.db.validUserName
+import ru.yarsu.db.validPhoneNumber
+import ru.yarsu.db.validUserSurname
+import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
@@ -19,19 +23,23 @@ import java.time.LocalDateTime
 
 class InsertMediaTest : TestcontainerSpec({ context ->
     lateinit var validMedia: MediaFile
-    lateinit var teacher: User
+    lateinit var writer: User
     val mediaOperations = MediaOperations(context)
 
     val database = DatabaseOperationsHolder(context)
     val operations = OperationsHolder(database, appConfig)
 
     beforeEach {
-        teacher = operations
+        writer = operations
             .userOperations
             .createUser(
-                validUserName,
+                validName,
+                validUserSurname,
+                validLogin,
                 validEmail,
+                validPhoneNumber,
                 validPass,
+                validVKLink,
                 Role.MODERATOR,
             ).shouldBeSuccess()
 
@@ -41,11 +49,12 @@ class InsertMediaTest : TestcontainerSpec({ context ->
             mediaType = MediaType.VIDEO,
             birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
             isTemporary = false,
-            authorId = teacher.id,
+            authorId = writer.id,
         )
     }
 
     test("Valid media can be inserted") {
+
         mediaOperations
             .insertMedia(
                 filename = validMedia.filename,
