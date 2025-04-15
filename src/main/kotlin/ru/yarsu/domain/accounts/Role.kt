@@ -1,12 +1,12 @@
 package ru.yarsu.domain.accounts
 
 enum class Role(
-    val leaveComment: Boolean = false, // Оставить, изменять, удалять комментарий
-    val manageComment: Boolean = false, // Оставить, изменять, удалять комментарий
-    val writePosts: Boolean = false, // управлять своими постами
+    val leaveComment: Boolean = false, // Комментировать посты
+    val manageComment: Boolean = false, // Скрывать и делать видимыми комментарии других пользователей
+    val writePosts: Boolean = false, // Писать посты
     val manageMediaFile: Boolean = false, // Загружать, просматривать, прикреплять медиафайлы
-    val managePosts: Boolean = false, // редактировать, публиковать, скрывать посты (свои и писателей)
-    val manageUsers: Boolean = false, // Просматривать список пользователей в системе, их роли
+    val managePosts: Boolean = false, // Управлять постами
+    val manageUsers: Boolean = false, // Управлять пользователями
 ) {
     ANONYMOUS,
     READER(leaveComment = true),

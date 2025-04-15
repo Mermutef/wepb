@@ -103,7 +103,7 @@ data class User (
         const val MAX_PASSWORD_LENGTH = 64
         const val MAX_VK_LINK_LENGTH = 255
 
-        val emailPattern = Regex("^[\\w.-]+@([\\w-]+\\.)+[a-zA-Z]{2,}\$") // mail.aaa-ssss_121323@uniyar.ac.ru
+        val emailPattern = Regex("^[\\w.-]+@([\\w-]+\\.)+[a-zA-Z]{2,}\$")
         val loginPattern = Regex("^[\\w-.]+\$")
         val vkLinkPattern = Regex("^https:\\/\\/vk.com\\/[\\w.-]+\$")
         val namePattern = Regex("^[а-яА-Я -]+\$")
