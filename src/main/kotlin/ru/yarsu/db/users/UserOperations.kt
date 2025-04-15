@@ -179,17 +179,19 @@ private fun Record.toUser(): User? =
         this[USERS.PASSWORD],
         this[USERS.ROLE],
     ) { id, name, surname, login, email, phoneNumber, password, role ->
-        User(
-            id = id,
-            name = name.trim(),
-            surname = surname.trim(),
-            login = login.trim(),
-            phoneNumber = phoneNumber,
-            email = email,
-            password = password,
-            vkLink = this[USERS.VKLINK],
-            role = role.asAppRole(),
-        )
+        role.asAppRole()?.let {
+            User(
+                id = id,
+                name = name.trim(),
+                surname = surname.trim(),
+                login = login.trim(),
+                phoneNumber = phoneNumber,
+                email = email,
+                password = password,
+                vkLink = this[USERS.VKLINK],
+                role = it,
+            )
+        }
     }
 
 private fun Role.asDbRole(): UserRole? =
@@ -201,10 +203,10 @@ private fun Role.asDbRole(): UserRole? =
         Role.ANONYMOUS -> null
     }
 
-private fun UserRole.asAppRole(): Role =
+private fun UserRole.asAppRole(): Role? =
     when (this) {
         UserRole.READER -> Role.READER
         UserRole.WRITER -> Role.WRITER
         UserRole.MODERATOR -> Role.MODERATOR
-        UserRole.ADMIN -> Role.ADMIN
+        UserRole.ADMIN -> null
     }

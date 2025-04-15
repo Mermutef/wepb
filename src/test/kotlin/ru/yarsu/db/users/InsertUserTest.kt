@@ -222,4 +222,91 @@ class InsertUserTest : TestcontainerSpec({ context ->
         insertedUser.vkLink.shouldBe("a".repeat(User.MAX_VK_LINK_LENGTH))
         insertedUser.role.shouldBe(Role.READER)
     }
+
+    test("Valid user with role = ADMIN can not be inserted") {
+        val insertedUser =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    validLogin,
+                    validEmail,
+                    validPhoneNumber.filter { it.isDigit() },
+                    appConfiguredPasswordHasher.hash(validPass),
+                    validVKLink,
+                    Role.ADMIN,
+                ).shouldBe(null)
+    }
+
+    test("Valid user with role = READER can be inserted") {
+        val insertedUser =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    validLogin,
+                    validEmail,
+                    validPhoneNumber.filter { it.isDigit() },
+                    appConfiguredPasswordHasher.hash(validPass),
+                    validVKLink,
+                    Role.READER,
+                ).shouldNotBeNull()
+
+        insertedUser.name.shouldBe(validName)
+        insertedUser.surname.shouldBe(validUserSurname)
+        insertedUser.login.shouldBe(validLogin)
+        insertedUser.email.shouldBe(validEmail)
+        insertedUser.phoneNumber.shouldBe(validPhoneNumber.filter { it.isDigit() })
+        insertedUser.password.shouldBe(appConfiguredPasswordHasher.hash(validPass))
+        insertedUser.vkLink.shouldBe(validVKLink)
+        insertedUser.role.shouldBe(Role.READER)
+    }
+
+    test("Valid user with role = WRITER can be inserted") {
+        val insertedUser =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    validLogin,
+                    validEmail,
+                    validPhoneNumber.filter { it.isDigit() },
+                    appConfiguredPasswordHasher.hash(validPass),
+                    validVKLink,
+                    Role.WRITER,
+                ).shouldNotBeNull()
+
+        insertedUser.name.shouldBe(validName)
+        insertedUser.surname.shouldBe(validUserSurname)
+        insertedUser.login.shouldBe(validLogin)
+        insertedUser.email.shouldBe(validEmail)
+        insertedUser.phoneNumber.shouldBe(validPhoneNumber.filter { it.isDigit() })
+        insertedUser.password.shouldBe(appConfiguredPasswordHasher.hash(validPass))
+        insertedUser.vkLink.shouldBe(validVKLink)
+        insertedUser.role.shouldBe(Role.WRITER)
+    }
+
+    test("Valid user with role = MODERATOR can be inserted") {
+        val insertedUser =
+            userOperations
+                .insertUser(
+                    validName,
+                    validUserSurname,
+                    validLogin,
+                    validEmail,
+                    validPhoneNumber.filter { it.isDigit() },
+                    appConfiguredPasswordHasher.hash(validPass),
+                    validVKLink,
+                    Role.MODERATOR,
+                ).shouldNotBeNull()
+
+        insertedUser.name.shouldBe(validName)
+        insertedUser.surname.shouldBe(validUserSurname)
+        insertedUser.login.shouldBe(validLogin)
+        insertedUser.email.shouldBe(validEmail)
+        insertedUser.phoneNumber.shouldBe(validPhoneNumber.filter { it.isDigit() })
+        insertedUser.password.shouldBe(appConfiguredPasswordHasher.hash(validPass))
+        insertedUser.vkLink.shouldBe(validVKLink)
+        insertedUser.role.shouldBe(Role.MODERATOR)
+    }
 })
