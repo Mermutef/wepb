@@ -206,23 +206,12 @@ private fun Role.asDbRole(): UserRole? =
         Role.ANONYMOUS -> null
     }
 
-private fun UserRole.asAppRole(): Role? =
+private fun UserRole.asAppRole(): Role =
     when (this) {
         UserRole.READER -> Role.READER
         UserRole.WRITER -> Role.WRITER
         UserRole.MODERATOR -> Role.MODERATOR
-        UserRole.ADMIN -> null
+        UserRole.ADMIN -> Role.ADMIN
     }
 
-// jooqContext.insertInto(USERS)
-// .set(USERS.NAME, name)
-// .set(USERS.SURNAME, surname)
-// .set(USERS.LOGIN, login)
-// .set(USERS.PHONENUMBER, phoneNumber.filter { it.isDigit() })
-// .set(USERS.EMAIL, email)
-// .set(USERS.PASSWORD, password)
-// .set(USERS.VKLINK, vkLink)
-// .set(USERS.ROLE, role.asDbRole())
-// .returningResult()
-// .fetchOne()
-// ?.toUser()
+
