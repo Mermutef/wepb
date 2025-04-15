@@ -213,5 +213,3 @@ private fun UserRole.asAppRole(): Role =
         UserRole.MODERATOR -> Role.MODERATOR
         UserRole.ADMIN -> Role.ADMIN
     }
-
-
