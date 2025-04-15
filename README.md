@@ -11,6 +11,9 @@
     ```
 2. Создайте на сервере базу данных `pe_project`
    ```bash
+   docker exec -it pedb bash
+   ```
+   ```bash
    psql -h localhost -U postgres
    ```
    ```bash
