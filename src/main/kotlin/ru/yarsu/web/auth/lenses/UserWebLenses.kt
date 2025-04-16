@@ -16,7 +16,6 @@ import ru.yarsu.domain.models.User
 import ru.yarsu.domain.models.User.Companion.MAX_EMAIL_LENGTH
 import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
 import ru.yarsu.domain.models.User.Companion.emailPattern
-import ru.yarsu.domain.models.User.Companion.loginPattern
 import ru.yarsu.domain.operations.users.UserFetchingError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.web.auth.handlers.SignInError
@@ -50,8 +49,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { name: String ->
                     name.takeIf {
-                        name.length in 1..MAX_LOGIN_LENGTH &&
-                            loginPattern.matches(name)
+                        name.length in 1..MAX_LOGIN_LENGTH
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -65,8 +63,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { surname: String ->
                     surname.takeIf {
-                        surname.length in 1..MAX_LOGIN_LENGTH &&
-                            loginPattern.matches(surname)
+                        surname.length in 1..MAX_LOGIN_LENGTH
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -80,8 +77,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { login: String ->
                     login.takeIf {
-                        login.length in 1..MAX_LOGIN_LENGTH &&
-                            loginPattern.matches(login)
+                        login.length in 1..MAX_LOGIN_LENGTH
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -95,8 +91,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { phone: String ->
                     phone.takeIf {
-                        phone.length in 1..MAX_LOGIN_LENGTH &&
-                            loginPattern.matches(phone)
+                        phone.length in 1..MAX_LOGIN_LENGTH
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -130,8 +125,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { vkLink: String ->
                     vkLink.takeIf {
-                        vkLink.length in 1..MAX_LOGIN_LENGTH &&
-                            loginPattern.matches(vkLink)
+                        vkLink.length in 1..MAX_LOGIN_LENGTH
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
