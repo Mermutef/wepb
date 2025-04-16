@@ -72,7 +72,7 @@ class SignUpHandler(
         val password = UserWebLenses.passwordSignUpField(form)
         val repeatPassword = UserWebLenses.repeatPasswordField(form)
         if (repeatPassword != password) return Failure(SignUpError.PASSWORDS_DO_NOT_MATCH)
-        val login = UserWebLenses.nameField(form)
+        val login = UserWebLenses.loginField(form)
         val email = UserWebLenses.emailField(form)
         val name = UserWebLenses.nameField(form)
         val surname = UserWebLenses.surnameField(form)

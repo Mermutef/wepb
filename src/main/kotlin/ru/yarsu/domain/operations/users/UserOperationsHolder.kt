@@ -42,7 +42,7 @@ class UserOperationsHolder (
         role: Role,
     ) -> Result4k<User, UserCreationError> =
         CreateUser(
-            insertUser = { name, surname, login, phone, email, pass, vkLink, role ->
+            insertUser = { name, surname, login, email, phone, pass, vkLink, role ->
                 usersDatabase.insertUser(
                     name = name,
                     surname = surname,

@@ -70,7 +70,7 @@ class SignInHandler(
         val password = UserWebLenses.passwordSignInField(form)
         // todo наврала, вроде аутентификация пока только по логину, а надо еще
         // по номеру телефона и почте (необходимо создать функцию в бд - fetch по номеру телефона, по почте уже есть)
-        return when (val result = userOperations.fetchUserByName(login)) { // поиск юзера с данным логином
+        return when (val result = userOperations.fetchUserByLogin(login)) { // поиск юзера с данным логином
             is Failure -> when (result.reason) {
                 UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(SignInError.UNKNOWN_DATABASE_ERROR)
                 UserFetchingError.NO_SUCH_USER -> Failure(SignInError.INCORRECT_LOGIN_OR_PASS)
