@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
         <link href="/static/css/bootstrap-icons.min.css" rel="stylesheet" />
-{#        <link href="/static/css/style.css" rel="stylesheet" />#}
+        <link href="/static/css/style.css" rel="stylesheet" />
         <title>{% if block("title") %}
     {% block title0 %}{% endblock %}
     {% else %}
@@ -15,7 +15,7 @@
     {#Здесь должна быть иконка приложения#}
     {#<link rel="shortcut icon" href="/static/images/wepb.svg" type="image/svg">#}
     </head>
-    <body>
+    <body data-bs-theme="pedbStyle">
         {% block page %}{% endblock %}
         <script src="/static/js/bootstrap.bundle.min.js"></script>
         <script src="/static/js/bundle-scripts.js"></script>

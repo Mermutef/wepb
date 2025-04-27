@@ -7,7 +7,7 @@
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
 <div class="container">
-    <div class="card max-width-500 mx-auto">
+    <div class="card max-width-500 mx-auto mt-5">
         <div class="row px-2">
             <div class="col">
                 <p class="text-center"><h2>Страницы в разработке!</h2>

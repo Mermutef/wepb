@@ -1,0 +1,102 @@
+@font-face {
+    font-family: "BlackerSans";
+    src:
+        url("/static/css/fonts/TT-Travels-Next-Trial-Variable.ttf");
+}
+
+[data-bs-theme="pedbStyle"] {
+    --bs-dark-blue: #002448;
+    --bs-soft-grey: #d5e4f0;
+    --bs-blue: #0966B8;
+    --bs-soft-blue: #60A8E8;
+    --bs-orange: #FF9500;
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
+            "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
+            "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+            "Noto Color Emoji";
+    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+            "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+        font-family: "BlackerSans", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
+        font-variation-settings: "slnt" 0;
+        font-size: 18px;
+        background-color: var(--bs-dark-blue);
+}
+
+.form-control {
+    background-color: var(--bs-soft-grey);
+    border-color: var(--bs-soft-grey);
+    font-size: 16px;
+    padding: 10px 15px;
+}
+
+.max-width-700 {
+    max-width: 700px;
+}
+
+.bold-heavy {
+     font-weight: 800;
+}
+
+.bold-demi {
+     font-weight: 500;
+}
+
+.medium {
+     font-weight: 600;
+}
+
+.navbar-container {
+    height: 80px;
+    min-height: 80px;
+}
+.text-white {
+    font-colour: ffffff
+}
+
+.thin {
+     font-weight: 100;
+}
+.border-radius_card {
+    border-radius: 30px;
+}
+
+.thin-input {
+    font-weight: 300;
+}
+
+.navbar-container {
+    background-color: var(--bs-blue);
+}
+
+.navbar {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.btn-primary {
+    background-color: var(--bs-soft-blue);
+    font-weight: 400;
+    border-color: var(--bs-soft-blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--bs-orange);
+    font-weight: 400;
+    border-color: var(--bs-orange);
+}
+
+.btn-primary:active {
+    background-color: var(--bs-orange);
+    font-weight: 400;
+}
+
+   .dropdown-toggle::after {
+        display: none !important;
+    }

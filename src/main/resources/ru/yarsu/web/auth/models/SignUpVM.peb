@@ -7,11 +7,13 @@
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
     <div class="container">
-        <div class="card max-width-500 mx-auto">
+        <div class="card max-width-700 mx-auto border-radius_card mt-5 mb-5">
             <div class="row px-2">
-                <div class="col">
-                    <p class="text-center"><h2>Регистрация</h2></p>
-                    <form method="post">
+                <div class="col px-0">
+                    <div class="card-header text-center mb-2">
+                        <h2 class="bold-heavy">Регистрация</h2>
+                    </div>
+                    <form method="post" class="px-3">
                         <div class="mb-3">
                                 {% for error in model.form.errors.values() %}
                                 <p class="text-danger">
@@ -27,7 +29,7 @@
                             </label>
                             <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="name"
                                     name="name"
                                     placeholder="Иван"
@@ -42,7 +44,7 @@
                             </label>
                             <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="surname"
                                     name="surname"
                                     placeholder="Иванов"
@@ -57,7 +59,7 @@
                             </label>
                             <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="login"
                                     name="login"
                                     placeholder="iivanov"
@@ -72,7 +74,7 @@
                             </label>
                             <input
                                     type="tel"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="phoneNumber"
                                     name="phoneNumber"
                                     placeholder="79991112233"
@@ -87,7 +89,7 @@
                             </label>
                             <input
                                     type="email"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="email"
                                     name="email"
                                     placeholder="example@mail.com"
@@ -102,7 +104,7 @@
                             </label>
                             <input
                                     type="password"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="password"
                                     name="password"
                                     placeholder="Пароль"
@@ -117,7 +119,7 @@
                             </label>
                             <input
                                     type="password"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="repeat_password"
                                     name="repeat_password"
                                     placeholder="Повтор пароля"
@@ -132,7 +134,7 @@
                             </label>
                             <input
                                     type="url"
-                                    class="form-control"
+                                    class="form-control thin-input"
                                     id="vk_link"
                                     name="vk_link"
                                     placeholder="https://vk.com/id000"

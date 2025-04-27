@@ -1,37 +1,22 @@
 <nav class="navbar-container">
     <nav class="navbar">
         <div class="container">
-            <a class="navbar-brand logo" href="/">
-                <img src="/static/images/wepb.svg" alt="logo" width="40" height="60" class="" />
-                Информационный портал пробюро факультета ИВТ
-            </a>
-            <ul class="navbar">
-                <li class="nav-item">
-                    {% if model.user == null %}
-                        <a class="nav-item btn btn-primary mx-2" href="/auth/sign-up">Регистрация</a>
-                    {% elseif model.user.isAuthorized()%}
+                <div class="row">
+                    <div class="col-2">
                         <div class="dropdown">
-                            <a class="nav-link" href="" role="button" id="manageAccountActions" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/static/images/profilePicturePlaceholder.jpg" width="25" height="25" class="" alt="Profile Picture" />
-                                <u>{{ model.user.name }}</u>
+                            <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="/static/images/Novaya-Sova.svg" alt="logo" width="100" height="55" class="" />
                             </a>
-                            <ul class="dropdown-menu" style="z-index: 999; position: absolute;">
-                                <li><a class="dropdown-item" href="/profile/{{ model.user.name }}">Profile</a></li>
-                                {% if model.user.isModerator() %}
-                                    <li><a class="dropdown-item" href="">Moderation Posts</a></li>
-                                    <li><a class="dropdown-item" href="">New Post</a></li>
-                                {% elseif model.user.isWriter() %}
-                                    <li><a class="dropdown-item" href="">Draft Posts</a></li>
-                                    <li><a class="dropdown-item" href="">New Post</a></li>
-                                {% elseif model.user.isAdmin() %}
-                                    <a class="nav-item btn btn-primary mx-2" href="/admin/manage_users">Manage Users</a>
-                                {% endif %}
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="nav-item btn btn-primary mx-2" href="/auth/sign-up">Регистрация</a></li>
+                                <li><a class="nav-item btn btn-primary mx-2 mt-2" href="/auth/sign-in">Вход</a></li>
                             </ul>
                         </div>
-                        <a class="nav-item btn btn-secondary mx-2" href="/auth/logout">Log Out</a>
-                    {% endif %}
-                </li>
-            </ul>
+                    </div>
+                    <div class="col mt-2">
+                        <h4 class="medium text-white">Информационный портал пробюро факультета ИВТ</h4>
+                    </div>
+                </div>
         </div>
     </nav>
 </nav>
