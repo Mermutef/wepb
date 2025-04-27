@@ -27,6 +27,11 @@ class SignInHandler(
     private val config: AuthConfig,
     private val jwtTools: JWTTools,
 ) : HttpHandler {
+    companion object {
+        private const val PHONE_LENGTH = 11
+    }
+
+
     override fun invoke(request: Request): Response {
         val form = UserWebLenses.sigInLens(request)
         return if (form.errors.isNotEmpty()) {
@@ -66,11 +71,19 @@ class SignInHandler(
         userOperations: UserOperationsHolder,
         config: AuthConfig,
     ): Result<User, SignInError> {
-        val login = UserWebLenses.nameField(form)
+        val login = UserWebLenses.loginField(form)
         val password = UserWebLenses.passwordSignInField(form)
+
+
+        val result = when {
+            isEmail(login) -> userOperations.fetchUserByEmail(login)
+            isPhone(login) -> userOperations.fetchUserByPhone(login)
+            else -> userOperations.fetchUserByLogin(login)
+
+        }
         // todo наврала, вроде аутентификация пока только по логину, а надо еще
         // по номеру телефона и почте (необходимо создать функцию в бд - fetch по номеру телефона, по почте уже есть)
-        return when (val result = userOperations.fetchUserByLogin(login)) { // поиск юзера с данным логином
+        return when (result) {
             is Failure -> when (result.reason) {
                 UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(SignInError.UNKNOWN_DATABASE_ERROR)
                 UserFetchingError.NO_SUCH_USER -> Failure(SignInError.INCORRECT_LOGIN_OR_PASS)
@@ -82,6 +95,17 @@ class SignInHandler(
                 Failure(SignInError.INCORRECT_LOGIN_OR_PASS)
             }
         }
+    }
+
+    // проверка, что это email
+    private fun isEmail(input: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+        return emailRegex.matches(input)
+    }// проверка того, что это номер
+
+    private fun isPhone(input: String): Boolean {
+        val digitOnly = input.replace("[^0-9]".toRegex(), "")
+        return digitOnly.length == PHONE_LENGTH
     }
 }
 // todo здесь нужно внести возможные ошибки с текстом,
