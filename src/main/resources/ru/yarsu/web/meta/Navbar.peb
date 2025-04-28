@@ -1,22 +1,61 @@
-<nav class="navbar-container">
-    <nav class="navbar">
-        <div class="container">
-                <div class="row">
-                    <div class="col-2">
-                        <div class="dropdown">
-                            <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="/static/images/Novaya-Sova.svg" alt="logo" width="100" height="55" class="" />
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <li><a class="nav-item btn btn-primary mx-2" href="/auth/sign-up">Регистрация</a></li>
-                                <li><a class="nav-item btn btn-primary mx-2 mt-2" href="/auth/sign-in">Вход</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col mt-2">
-                        <h4 class="medium text-white">Информационный портал пробюро факультета ИВТ</h4>
-                    </div>
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <div class="d-flex justify-content-between w-100 align-items-center">
+            <div class="col-2">
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand me-3" href="#">
+                        <img src="/static/images/Novaya-Sova.svg" alt="logo" width="100" height="55">
+                    </a>
+    {#                <h4 class="medium text-white mb-0 d-none d-md-block">Информационный портал пробюро факультета ИВТ</h4>#}
                 </div>
+            </div>
+            <div class="col">
+                <div class="d-flex justify-content-end">
+                    <button class="navbar-toggler btn btn-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                    {% if user != null %}
+                        {% if user.isReader() %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-primary mx-2 my-1" href="#">{{ user.name }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-primary mx-2 my-1" href="#">Список постов</a>
+                            </li>
+                        {% elseif model.user.isWriter() %}
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-primary mx-2 my-1" href="#">Новый пост</a>
+                                </li>
+                        {% elseif model.user.isAdmin() %}
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-primary mx-2 my-1" href="#">Список пользователей</a>
+                                </li>
+                        {% endif %}
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-0.5">
+                {% if user == null %}
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 my-1" href="/auth/sign-in">
+                            <i class="bi bi-door-closed" style="color:white; font-size: 3rem"></i>
+                        </a>
+                    </li>
+                {% else%}
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 my-1" href="/auth/sign-out">
+                            <i class="bi bi-door-open" style="color:white; font-size: 3rem"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </div>
         </div>
-    </nav>
+    </div>
 </nav>

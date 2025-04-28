@@ -23,7 +23,7 @@ private fun createMainRouter(
     config: AppConfig,
     jwtTools: JWTTools,
 ) = routes(
-    "/" bind Method.GET to HomeHandler(contextTools.render),
+    "/" bind Method.GET to HomeHandler( contextTools.render, contextTools.userLens),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
     AUTH_SEGMENT bind authRouter(
         contextTools = contextTools,
