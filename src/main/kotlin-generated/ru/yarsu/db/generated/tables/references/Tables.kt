@@ -4,15 +4,39 @@
 package ru.yarsu.db.generated.tables.references
 
 
+import ru.yarsu.db.generated.tables.Hashtag
 import ru.yarsu.db.generated.tables.Media
+import ru.yarsu.db.generated.tables.PostToHashtag
+import ru.yarsu.db.generated.tables.PostToMedia
+import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
 
 
 
 /**
+ * The table <code>public.hashtag</code>.
+ */
+val HASHTAG: Hashtag = Hashtag.HASHTAG
+
+/**
  * The table <code>public.media</code>.
  */
 val MEDIA: Media = Media.MEDIA
+
+/**
+ * The table <code>public.post_to_hashtag</code>.
+ */
+val POST_TO_HASHTAG: PostToHashtag = PostToHashtag.POST_TO_HASHTAG
+
+/**
+ * The table <code>public.post_to_media</code>.
+ */
+val POST_TO_MEDIA: PostToMedia = PostToMedia.POST_TO_MEDIA
+
+/**
+ * The table <code>public.posts</code>.
+ */
+val POSTS: Posts = Posts.POSTS
 
 /**
  * The table <code>public.users</code>.
