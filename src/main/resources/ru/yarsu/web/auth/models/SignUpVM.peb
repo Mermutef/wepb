@@ -148,7 +148,11 @@
                                 </button>
                             </div>
                         </div>
-                        <p class="mt-3 mb-1 text-center"><a href="{{ model.signInLink }}" class="text-black">Уже есть аккаунт? Вход</a></p>
+                        <p class="mt-3 mb-1 text-center">
+                            <a href="{{ model.signInLink }}" class="text-black">
+                                Уже есть аккаунт? Вход
+                            </a>
+                        </p>
                     </form>
                 </div>
             </div>

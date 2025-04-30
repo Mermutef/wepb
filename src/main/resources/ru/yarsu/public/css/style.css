@@ -53,8 +53,8 @@ body {
 }
 
 .navbar-container {
-    height: 80px;
-    min-height: 80px;
+    height: 50px;
+    min-height: 50px;
 }
 .text-white {
     font-colour: ffffff
@@ -82,21 +82,30 @@ body {
 
 .btn-primary {
     background-color: var(--bs-soft-blue);
-    font-weight: 400;
+    font-weight: 500;
+    font-size: 15px;
     border-color: var(--bs-soft-blue);
+}
+
+.nav-text-min {
+    font-size: 15px;
 }
 
 .btn-primary:hover {
     background-color: var(--bs-orange);
-    font-weight: 400;
+    font-weight: 500;
     border-color: var(--bs-orange);
 }
 
 .btn-primary:active {
     background-color: var(--bs-orange);
-    font-weight: 400;
+    font-weight: 500;
 }
 
-   .dropdown-toggle::after {
-        display: none !important;
-    }
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.nav-button-size {
+    width = 100px;
+}

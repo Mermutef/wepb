@@ -27,25 +27,20 @@ class SignUpHandler(
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
         val form = UserWebLenses.signUpLens(request)
-        // если форма содержит ошибки при заполнении полей, которые отлавливают линзы,
-        // то пользователю возвращается форма с текстом ошибки
         return if (form.errors.isNotEmpty()) {
             Response(Status.OK).with(render(request) of SignUpVM(form = form.toCustomForm()))
         } else {
-            // пытаемся добавить нового пользователя в базу данных
             when (val userInsertResult = tryInsert(form = form, userOperations = userOperations)) {
                 is Failure -> {
                     render(request) extract SignUpVM(
                         form = form.toCustomForm().addFailure(
                             name = userInsertResult.reason.toString(),
-                            description = userInsertResult.reason.errorText // вот как раз здесь передается
-                            // текст ошибки
+                            description = userInsertResult.reason.errorText
                         ),
                     )
                 }
 
                 is Success -> {
-                    // здесь выдаем токен
                     when (val tokenResult = jwtTools.createUserJwt(userInsertResult.value.id)) {
                         is Failure -> {
                             render(request) extract SignUpVM(
@@ -56,7 +51,7 @@ class SignUpHandler(
                             )
                         }
 
-                        is Success -> redirect("/") // перенаправление на список постов
+                        is Success -> redirect("/")
                             .globalCookie("auth", tokenResult.value)
                     }
                 }
@@ -68,7 +63,6 @@ class SignUpHandler(
         form: WebForm,
         userOperations: UserOperationsHolder,
     ): Result<User, SignUpError> {
-        // получение всех необходимых полей из формы
         val password = UserWebLenses.passwordSignUpField(form)
         val repeatPassword = UserWebLenses.repeatPasswordField(form)
         if (repeatPassword != password) return Failure(SignUpError.PASSWORDS_DO_NOT_MATCH)
@@ -78,14 +72,12 @@ class SignUpHandler(
         val surname = UserWebLenses.surnameField(form)
         val phoneNumber = UserWebLenses.phoneNumberField(form)
         val vkLink = UserWebLenses.vkLinkField(form)
-        // создаем пользователя
         return when (
             val result = userOperations
                 .createUser(name, surname, login, email, phoneNumber, password, vkLink, Role.READER)
         ) {
-            is Success -> Success(result.value) // если успех, то нам приходит  обьект User
-            is Failure -> Failure( // в случае ошибки идентифицируем ее с ошибкой регистрации, чтобы показать
-                // пользователю
+            is Success -> Success(result.value)
+            is Failure -> Failure(
                 when (result.failureOrNull()) {
                     UserCreationError.LOGIN_ALREADY_EXISTS -> SignUpError.LOGIN_ALREADY_EXISTS
                     UserCreationError.INVALID_USER_DATA -> SignUpError.INVALID_USER_DATA

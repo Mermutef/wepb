@@ -18,6 +18,5 @@
     <body data-bs-theme="pedbStyle">
         {% block page %}{% endblock %}
         <script src="/static/js/bootstrap.bundle.min.js"></script>
-        <script src="/static/js/bundle-scripts.js"></script>
     </body>
 </html>

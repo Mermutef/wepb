@@ -24,7 +24,7 @@ data class User (
             password: String,
             vkLink: String?,
         ): UserValidationResult =
-           validateName(name)
+            validateName(name)
                 ?: validateSurname(surname)
                 ?: validateLogin(login)
                 ?: validateEmail(email)
@@ -32,7 +32,6 @@ data class User (
                 ?: validatePassword(password)
                 ?: validateVKLink(vkLink)
                 ?: UserValidationResult.ALL_OK
-
 
         fun validateName(name: String): UserValidationResult? {
             return when {

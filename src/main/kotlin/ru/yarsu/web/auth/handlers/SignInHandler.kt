@@ -8,7 +8,6 @@ import org.http4k.lens.WebForm
 import ru.yarsu.config.AuthConfig
 import ru.yarsu.domain.accounts.PasswordHasher
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
 import ru.yarsu.domain.operations.users.UserFetchingError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.domain.tools.JWTTools
@@ -30,7 +29,6 @@ class SignInHandler(
     companion object {
         private const val PHONE_LENGTH = 11
     }
-
 
     override fun invoke(request: Request): Response {
         val form = UserWebLenses.sigInLens(request)
@@ -74,15 +72,11 @@ class SignInHandler(
         val login = UserWebLenses.loginField(form)
         val password = UserWebLenses.passwordSignInField(form)
 
-
         val result = when {
             isEmail(login) -> userOperations.fetchUserByEmail(login)
             isPhone(login) -> userOperations.fetchUserByPhone(login)
             else -> userOperations.fetchUserByLogin(login)
-
         }
-        // todo наврала, вроде аутентификация пока только по логину, а надо еще
-        // по номеру телефона и почте (необходимо создать функцию в бд - fetch по номеру телефона, по почте уже есть)
         return when (result) {
             is Failure -> when (result.reason) {
                 UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(SignInError.UNKNOWN_DATABASE_ERROR)
@@ -97,25 +91,21 @@ class SignInHandler(
         }
     }
 
-    // проверка, что это email
     private fun isEmail(input: String): Boolean {
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
         return emailRegex.matches(input)
-    }// проверка того, что это номер
+    }
 
     private fun isPhone(input: String): Boolean {
         val digitOnly = input.replace("[^0-9]".toRegex(), "")
         return digitOnly.length == PHONE_LENGTH
     }
 }
-// todo здесь нужно внести возможные ошибки с текстом,
-// текст будет показываться пользователю на страничке формы входа посмотри какие есть в SignUpHandler
 
 enum class SignInError(val errorText: String) {
     LOGIN_IS_BLANK_OR_EMPTY("Имя пользователя должно быть не пустым"),
     PASSWORD_IS_BLANK_OR_EMPTY("Пароль должен быть не пустым"),
-    LOGIN_IS_TOO_LONG("Имя пользователя должно быть короче $MAX_LOGIN_LENGTH символов"),
-    INCORRECT_LOGIN_OR_PASS("Неверный логин или пароль"),
+    INCORRECT_LOGIN_OR_PASS("Неверный логин/номер телефона/почта или пароль"),
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
     TOKEN_CREATION_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
 }

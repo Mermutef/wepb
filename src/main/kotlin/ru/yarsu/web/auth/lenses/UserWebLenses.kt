@@ -15,7 +15,12 @@ import org.http4k.lens.string
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.models.User.Companion.MAX_EMAIL_LENGTH
 import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
+import ru.yarsu.domain.models.User.Companion.MAX_NAME_LENGTH
 import ru.yarsu.domain.models.User.Companion.emailPattern
+import ru.yarsu.domain.models.User.Companion.loginPattern
+import ru.yarsu.domain.models.User.Companion.namePattern
+import ru.yarsu.domain.models.User.Companion.phonePattern
+import ru.yarsu.domain.models.User.Companion.vkLinkPattern
 import ru.yarsu.domain.operations.users.UserFetchingError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.web.auth.handlers.SignInError
@@ -49,7 +54,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { name: String ->
                     name.takeIf {
-                        name.length in 1..MAX_LOGIN_LENGTH
+                        name.length in 1..MAX_NAME_LENGTH && namePattern.matches(name)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -63,7 +68,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { surname: String ->
                     surname.takeIf {
-                        surname.length in 1..MAX_LOGIN_LENGTH
+                        surname.length in 1..MAX_NAME_LENGTH && namePattern.matches(surname)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -77,7 +82,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { login: String ->
                     login.takeIf {
-                        login.length in 1..MAX_LOGIN_LENGTH
+                        login.length in 1..MAX_LOGIN_LENGTH && loginPattern.matches(login)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -91,7 +96,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { phone: String ->
                     phone.takeIf {
-                        phone.length in 1..MAX_LOGIN_LENGTH
+                        phone.length in 1..MAX_LOGIN_LENGTH && phonePattern.matches(phone)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -125,12 +130,12 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { vkLink: String ->
                     vkLink.takeIf {
-                        vkLink.length in 1..MAX_LOGIN_LENGTH
+                        vkLink.length in 1..MAX_LOGIN_LENGTH && vkLinkPattern.matches(vkLink)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
             )
-        ).optional("vk_link")
+        ).optional("vk_link", UserLensErrors.VKLINK_NOT_CORRECT.errorText)
 
     val repeatPasswordField = FormField.nonEmptyString().nonBlankString()
         .required("repeat_password", SignUpError.REPEAT_PASSWORD_IS_BLANK_OR_EMPTY.errorText)
@@ -192,5 +197,8 @@ enum class UserLensErrors(val errorText: String) {
     ),
     PHONE_NOT_CORRECT(
         "Необходимо ввести корреткный номер телефона"
+    ),
+    VKLINK_NOT_CORRECT(
+        "Необходимо ввести корреткную ссылку на vk-страницу"
     ),
 }
