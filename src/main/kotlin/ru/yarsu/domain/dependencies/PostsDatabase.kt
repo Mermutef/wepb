@@ -19,7 +19,7 @@ interface PostsDatabase {
 
     fun insertPost(
         title: String,
-        preview: MediaFile,
+        preview: String,
         textBody: String,
         eventDate: LocalDateTime?,
         authorId: Int,
@@ -34,7 +34,7 @@ interface PostsDatabase {
 
     fun updatePreview(
         postID: Int,
-        newPreview: MediaFile,
+        newPreview: String,
     ): Post?
 
     fun updateTextBody(
@@ -53,12 +53,12 @@ interface PostsDatabase {
     ): Post?
 
     fun updateModeratorId(
-        postId: Int,
+        postID: Int,
         newModeratorId: Int,
     ): Post?
 
     fun updateStatus(
-        postID: Int,
+        post: Post,
         newStatus: Status,
     ): Post?
 }
