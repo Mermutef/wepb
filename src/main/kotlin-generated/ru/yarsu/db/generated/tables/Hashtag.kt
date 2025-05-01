@@ -33,8 +33,8 @@ import org.jooq.impl.TableImpl
 
 import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.keys.HASHTAG_PKEY
-import ru.yarsu.db.generated.keys.POST_TO_HASHTAG__POST_TO_HASHTAG_HASHTAGID_FKEY
-import ru.yarsu.db.generated.tables.PostToHashtag.PostToHashtagPath
+import ru.yarsu.db.generated.keys.POST_AND_HASHTAG__POST_AND_HASHTAG_HASHTAGID_FKEY
+import ru.yarsu.db.generated.tables.PostAndHashtag.PostAndHashtagPath
 import ru.yarsu.db.generated.tables.records.HashtagRecord
 
 
@@ -129,21 +129,21 @@ open class Hashtag(
     override fun getIdentity(): Identity<HashtagRecord, Int?> = super.getIdentity() as Identity<HashtagRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<HashtagRecord> = HASHTAG_PKEY
 
-    private lateinit var _postToHashtag: PostToHashtagPath
+    private lateinit var _postAndHashtag: PostAndHashtagPath
 
     /**
      * Get the implicit to-many join path to the
-     * <code>public.post_to_hashtag</code> table
+     * <code>public.post_and_hashtag</code> table
      */
-    fun postToHashtag(): PostToHashtagPath {
-        if (!this::_postToHashtag.isInitialized)
-            _postToHashtag = PostToHashtagPath(this, null, POST_TO_HASHTAG__POST_TO_HASHTAG_HASHTAGID_FKEY.inverseKey)
+    fun postAndHashtag(): PostAndHashtagPath {
+        if (!this::_postAndHashtag.isInitialized)
+            _postAndHashtag = PostAndHashtagPath(this, null, POST_AND_HASHTAG__POST_AND_HASHTAG_HASHTAGID_FKEY.inverseKey)
 
-        return _postToHashtag;
+        return _postAndHashtag;
     }
 
-    val postToHashtag: PostToHashtagPath
-        get(): PostToHashtagPath = postToHashtag()
+    val postAndHashtag: PostAndHashtagPath
+        get(): PostAndHashtagPath = postAndHashtag()
     override fun `as`(alias: String): Hashtag = Hashtag(DSL.name(alias), this)
     override fun `as`(alias: Name): Hashtag = Hashtag(alias, this)
     override fun `as`(alias: Table<*>): Hashtag = Hashtag(alias.qualifiedName, this)

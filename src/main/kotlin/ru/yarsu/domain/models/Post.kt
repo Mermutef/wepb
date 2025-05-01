@@ -1,16 +1,17 @@
 package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class Post(
     val id: Int,
     val title: String,
-    val preview: MediaFile,
-    val textBody: String,
-    val mediaFiles: List<MediaFile>,
-    val hashtag: List<Hashtag>,
-    val eventDate: LocalDateTime?,
+    val preview: String,
+    val content: String,
+    val hashtag: Hashtag,
+    val eventDate: ZonedDateTime?,
+    val creationDate: ZonedDateTime,
+    val lastModifiedDate: ZonedDateTime,
     val authorId: Int,
     val moderatorId: Int,
     val status: Status,

@@ -40,11 +40,11 @@ import ru.yarsu.db.generated.keys.POSTS_PKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_MODERATORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_PREVIEW_FKEY
-import ru.yarsu.db.generated.keys.POST_TO_HASHTAG__POST_TO_HASHTAG_POSTID_FKEY
-import ru.yarsu.db.generated.keys.POST_TO_MEDIA__POST_TO_MEDIA_POSTID_FKEY
+import ru.yarsu.db.generated.keys.POST_AND_HASHTAG__POST_AND_HASHTAG_POSTID_FKEY
+import ru.yarsu.db.generated.keys.POST_AND_MEDIA__POST_AND_MEDIA_POSTID_FKEY
 import ru.yarsu.db.generated.tables.Media.MediaPath
-import ru.yarsu.db.generated.tables.PostToHashtag.PostToHashtagPath
-import ru.yarsu.db.generated.tables.PostToMedia.PostToMediaPath
+import ru.yarsu.db.generated.tables.PostAndHashtag.PostAndHashtagPath
+import ru.yarsu.db.generated.tables.PostAndMedia.PostAndMediaPath
 import ru.yarsu.db.generated.tables.Users.UsersPath
 import ru.yarsu.db.generated.tables.records.PostsRecord
 
@@ -228,37 +228,37 @@ open class Posts(
     val postsModeratoridFkey: UsersPath
         get(): UsersPath = postsModeratoridFkey()
 
-    private lateinit var _postToHashtag: PostToHashtagPath
+    private lateinit var _postAndHashtag: PostAndHashtagPath
 
     /**
      * Get the implicit to-many join path to the
-     * <code>public.post_to_hashtag</code> table
+     * <code>public.post_and_hashtag</code> table
      */
-    fun postToHashtag(): PostToHashtagPath {
-        if (!this::_postToHashtag.isInitialized)
-            _postToHashtag = PostToHashtagPath(this, null, POST_TO_HASHTAG__POST_TO_HASHTAG_POSTID_FKEY.inverseKey)
+    fun postAndHashtag(): PostAndHashtagPath {
+        if (!this::_postAndHashtag.isInitialized)
+            _postAndHashtag = PostAndHashtagPath(this, null, POST_AND_HASHTAG__POST_AND_HASHTAG_POSTID_FKEY.inverseKey)
 
-        return _postToHashtag;
+        return _postAndHashtag;
     }
 
-    val postToHashtag: PostToHashtagPath
-        get(): PostToHashtagPath = postToHashtag()
+    val postAndHashtag: PostAndHashtagPath
+        get(): PostAndHashtagPath = postAndHashtag()
 
-    private lateinit var _postToMedia: PostToMediaPath
+    private lateinit var _postAndMedia: PostAndMediaPath
 
     /**
      * Get the implicit to-many join path to the
-     * <code>public.post_to_media</code> table
+     * <code>public.post_and_media</code> table
      */
-    fun postToMedia(): PostToMediaPath {
-        if (!this::_postToMedia.isInitialized)
-            _postToMedia = PostToMediaPath(this, null, POST_TO_MEDIA__POST_TO_MEDIA_POSTID_FKEY.inverseKey)
+    fun postAndMedia(): PostAndMediaPath {
+        if (!this::_postAndMedia.isInitialized)
+            _postAndMedia = PostAndMediaPath(this, null, POST_AND_MEDIA__POST_AND_MEDIA_POSTID_FKEY.inverseKey)
 
-        return _postToMedia;
+        return _postAndMedia;
     }
 
-    val postToMedia: PostToMediaPath
-        get(): PostToMediaPath = postToMedia()
+    val postAndMedia: PostAndMediaPath
+        get(): PostAndMediaPath = postAndMedia()
     override fun `as`(alias: String): Posts = Posts(DSL.name(alias), this)
     override fun `as`(alias: Name): Posts = Posts(alias, this)
     override fun `as`(alias: Table<*>): Posts = Posts(alias.qualifiedName, this)
