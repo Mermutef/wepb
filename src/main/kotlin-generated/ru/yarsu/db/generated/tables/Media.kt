@@ -38,8 +38,8 @@ import ru.yarsu.db.generated.enums.ContentType
 import ru.yarsu.db.generated.keys.MEDIA_PKEY
 import ru.yarsu.db.generated.keys.MEDIA__MEDIA_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_PREVIEW_FKEY
-import ru.yarsu.db.generated.keys.POST_TO_MEDIA__POST_TO_MEDIA_MEDIA_NAME_FKEY
-import ru.yarsu.db.generated.tables.PostToMedia.PostToMediaPath
+import ru.yarsu.db.generated.keys.POST_AND_MEDIA__POST_AND_MEDIA_MEDIA_NAME_FKEY
+import ru.yarsu.db.generated.tables.PostAndMedia.PostAndMediaPath
 import ru.yarsu.db.generated.tables.Posts.PostsPath
 import ru.yarsu.db.generated.tables.Users.UsersPath
 import ru.yarsu.db.generated.tables.records.MediaRecord
@@ -171,21 +171,21 @@ open class Media(
     val users: UsersPath
         get(): UsersPath = users()
 
-    private lateinit var _postToMedia: PostToMediaPath
+    private lateinit var _postAndMedia: PostAndMediaPath
 
     /**
      * Get the implicit to-many join path to the
-     * <code>public.post_to_media</code> table
+     * <code>public.post_and_media</code> table
      */
-    fun postToMedia(): PostToMediaPath {
-        if (!this::_postToMedia.isInitialized)
-            _postToMedia = PostToMediaPath(this, null, POST_TO_MEDIA__POST_TO_MEDIA_MEDIA_NAME_FKEY.inverseKey)
+    fun postAndMedia(): PostAndMediaPath {
+        if (!this::_postAndMedia.isInitialized)
+            _postAndMedia = PostAndMediaPath(this, null, POST_AND_MEDIA__POST_AND_MEDIA_MEDIA_NAME_FKEY.inverseKey)
 
-        return _postToMedia;
+        return _postAndMedia;
     }
 
-    val postToMedia: PostToMediaPath
-        get(): PostToMediaPath = postToMedia()
+    val postAndMedia: PostAndMediaPath
+        get(): PostAndMediaPath = postAndMedia()
 
     private lateinit var _posts: PostsPath
 

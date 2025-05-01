@@ -1,17 +1,14 @@
 package ru.yarsu.domain.dependencies
 
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.Post
-import java.time.LocalDateTime
 
-interface HashtagOperations {
+
+interface HashtagDatabase {
     fun selectHashtagByID(hashtagId: Int): Hashtag?
 
     fun selectHashtagByTitle(title: String): Hashtag?
 
-    fun selectAllHashtags(): List<Post>
+    fun selectAllHashtags(): List<Hashtag>
 
     fun insertHashtag(
         title: String
