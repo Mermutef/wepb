@@ -7,22 +7,15 @@ import org.http4k.lens.Lens
 import org.http4k.lens.LensFailure
 import org.http4k.lens.MultipartForm
 import org.http4k.lens.Path
-import org.http4k.lens.RequestContextKey
-import org.http4k.lens.RequestContextLens
 import org.http4k.lens.Validator
 import org.http4k.lens.WebForm
 import org.http4k.lens.int
 import org.http4k.lens.webForm
-import ru.yarsu.domain.models.User
 
 /**
  * Lenses, that provides abstract methods and lenses
  */
 object GeneralWebLenses {
-
-    fun userLens(contexts: RequestContexts): RequestContextLens<User?> =
-        RequestContextKey
-            .optional(contexts, "user")
 
     /**
      * Lens for getting {id} from request path

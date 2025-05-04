@@ -9,7 +9,7 @@ import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.cookies.clearGlobalCookie
 
-class AddUserFilter(
+class AuthenticationFilter(
     private val userLens: RequestContextLens<User?>,
     private val userOperations: UserOperationsHolder,
     private val jwtTools: JWTTools,

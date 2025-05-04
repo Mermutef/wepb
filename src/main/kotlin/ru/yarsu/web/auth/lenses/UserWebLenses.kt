@@ -33,7 +33,6 @@ import ru.yarsu.web.lenses.GeneralWebLenses.lensOrNull
 import ru.yarsu.web.lenses.GeneralWebLenses.makeBodyLensForFields
 
 object UserWebLenses {
-    // todo добавить регулярки и ошикбки (мое)
     val nameFromPathLens = Path.string().of("name")
 
     private val passwordFieldTemplate = FormField
@@ -143,6 +142,9 @@ object UserWebLenses {
     val repeatPasswordField = FormField.nonEmptyString().nonBlankString()
         .required("repeat_password", SignUpError.REPEAT_PASSWORD_IS_BLANK_OR_EMPTY.errorText)
 
+    val specialSignInField = FormField.nonEmptyString().nonBlankString()
+        .required("login_or_phone_or_email", SignInError.SIGN_IN_DATA_IS_BLANK_OR_EMPTY.errorText)
+
     val signUpLens = makeBodyLensForFields(
         nameField,
         surnameField,
@@ -155,7 +157,7 @@ object UserWebLenses {
     )
 
     val sigInLens = makeBodyLensForFields(
-        loginField,
+        specialSignInField,
         passwordSignInField,
     )
 
@@ -190,15 +192,15 @@ enum class UserLensErrors(val errorText: String) {
     ),
     NAME_NOT_CORRECT(
         "Имя должно быть не пустым, иметь длину менее $MAX_NAME_LENGTH символов " +
-            "и содержать только кириллические бувы, цифры, знаки \"_\", \".\" и \"-\""
+            "и содержать только кириллические бувы и знак \"-\""
     ),
     SURNAME_NOT_CORRECT(
         "Фамилия должна быть не пустой, иметь длину менее $MAX_SURNAME_LENGTH символов " +
-            "и содержать только кириллические бувы, цифры, знаки \"_\", \".\" и \"-\""
+            "и содержать только кириллические бувы и знак \"-\""
     ),
     PHONE_NOT_CORRECT(
-        "Необходимо ввести корреткный номер телефона, номер телефона должен иметь длину" +
-            "$MAX_PHONE_NUMBER_LENGTH"
+        "Необходимо ввести корреткный номер телефона, номер телефона должен иметь длину " +
+            "$MAX_PHONE_NUMBER_LENGTH и начинаться с цифры \"7\""
     ),
     VKLINK_NOT_CORRECT(
         "Необходимо ввести корреткную ссылку на vk-страницу, длина которой менне $MAX_VK_LINK_LENGTH"

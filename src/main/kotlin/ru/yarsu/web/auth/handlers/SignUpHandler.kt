@@ -28,7 +28,7 @@ class SignUpHandler(
     override fun invoke(request: Request): Response {
         val form = UserWebLenses.signUpLens(request)
         return if (form.errors.isNotEmpty()) {
-            Response(Status.OK).with(render(request) of SignUpVM(form = form.toCustomForm()))
+            render(request) extract SignUpVM(form.toCustomForm())
         } else {
             when (val userInsertResult = tryInsert(form = form, userOperations = userOperations)) {
                 is Failure -> {
@@ -51,7 +51,7 @@ class SignUpHandler(
                             )
                         }
 
-                        is Success -> redirect("/")
+                        is Success -> redirect()
                             .globalCookie("auth", tokenResult.value)
                     }
                 }

@@ -13,7 +13,7 @@ import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
-import ru.yarsu.web.filters.AddUserFilter
+import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
 import java.io.InputStream
@@ -52,7 +52,7 @@ fun createApp(
     return ServerFilters
         .InitialiseRequestContext(contexts.appContexts)
         .then(
-            AddUserFilter(
+            AuthenticationFilter(
                 userLens = contexts.userLens,
                 userOperations = operations.userOperations,
                 jwtTools = jwtTools

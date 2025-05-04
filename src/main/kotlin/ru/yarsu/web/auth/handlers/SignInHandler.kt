@@ -56,7 +56,7 @@ class SignInHandler(
                             )
                         }
 
-                        is Success -> redirect("/")
+                        is Success -> redirect()
                             .globalCookie("auth", tokenResult.value)
                     }
                 }
@@ -69,7 +69,7 @@ class SignInHandler(
         userOperations: UserOperationsHolder,
         config: AuthConfig,
     ): Result<User, SignInError> {
-        val login = UserWebLenses.loginField(form)
+        val login = UserWebLenses.specialSignInField(form)
         val password = UserWebLenses.passwordSignInField(form)
 
         val result = when {
@@ -91,19 +91,18 @@ class SignInHandler(
         }
     }
 
-    private fun isEmail(input: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
-        return emailRegex.matches(input)
+    private fun isEmail(email: String): Boolean {
+        return User.emailPattern.matches(email)
     }
 
-    private fun isPhone(input: String): Boolean {
-        val digitOnly = input.replace("[^0-9]".toRegex(), "")
+    private fun isPhone(phone: String): Boolean {
+        val digitOnly = phone.filter { it.isDigit() }
         return digitOnly.length == PHONE_LENGTH
     }
 }
 
 enum class SignInError(val errorText: String) {
-    LOGIN_IS_BLANK_OR_EMPTY("Имя пользователя должно быть не пустым"),
+    SIGN_IN_DATA_IS_BLANK_OR_EMPTY("Необходимо ввести корректные логин, номер телефона или почту"),
     PASSWORD_IS_BLANK_OR_EMPTY("Пароль должен быть не пустым"),
     INCORRECT_LOGIN_OR_PASS("Неверный логин/номер телефона/почта или пароль"),
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
