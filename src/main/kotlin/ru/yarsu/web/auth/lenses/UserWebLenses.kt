@@ -16,6 +16,9 @@ import ru.yarsu.domain.models.User
 import ru.yarsu.domain.models.User.Companion.MAX_EMAIL_LENGTH
 import ru.yarsu.domain.models.User.Companion.MAX_LOGIN_LENGTH
 import ru.yarsu.domain.models.User.Companion.MAX_NAME_LENGTH
+import ru.yarsu.domain.models.User.Companion.MAX_PHONE_NUMBER_LENGTH
+import ru.yarsu.domain.models.User.Companion.MAX_SURNAME_LENGTH
+import ru.yarsu.domain.models.User.Companion.MAX_VK_LINK_LENGTH
 import ru.yarsu.domain.models.User.Companion.emailPattern
 import ru.yarsu.domain.models.User.Companion.loginPattern
 import ru.yarsu.domain.models.User.Companion.namePattern
@@ -96,7 +99,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { phone: String ->
                     phone.takeIf {
-                        phone.length in 1..MAX_LOGIN_LENGTH && phonePattern.matches(phone)
+                        phone.length in 1..MAX_LOGIN_LENGTH && phonePattern.matches(phone.filter { it.isDigit() })
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -176,8 +179,6 @@ object UserWebLenses {
     }
 }
 
-// todo внести необходимые тексты ошибок (я внесу сама) точно ли надо толкьо латинские буквы?
-
 enum class UserLensErrors(val errorText: String) {
     LOGIN_NOT_CORRECT(
         "Логин должен быть быть не пустым, иметь длину менее $MAX_LOGIN_LENGTH символов " +
@@ -188,17 +189,18 @@ enum class UserLensErrors(val errorText: String) {
             "и содержать только латинские бувы, цифры, знаки \"_\", \".\" и \"-\""
     ),
     NAME_NOT_CORRECT(
-        "Имя должно быть не пустым, иметь длину менее $MAX_EMAIL_LENGTH символов " +
-            "и содержать только латинские бувы, цифры, знаки \"_\", \".\" и \"-\""
+        "Имя должно быть не пустым, иметь длину менее $MAX_NAME_LENGTH символов " +
+            "и содержать только кириллические бувы, цифры, знаки \"_\", \".\" и \"-\""
     ),
     SURNAME_NOT_CORRECT(
-        "Фамилия должна быть не пустой, иметь длину менее $MAX_EMAIL_LENGTH символов " +
-            "и содержать только латинские бувы, цифры, знаки \"_\", \".\" и \"-\""
+        "Фамилия должна быть не пустой, иметь длину менее $MAX_SURNAME_LENGTH символов " +
+            "и содержать только кириллические бувы, цифры, знаки \"_\", \".\" и \"-\""
     ),
     PHONE_NOT_CORRECT(
-        "Необходимо ввести корреткный номер телефона"
+        "Необходимо ввести корреткный номер телефона, номер телефона должен иметь длину" +
+            "$MAX_PHONE_NUMBER_LENGTH"
     ),
     VKLINK_NOT_CORRECT(
-        "Необходимо ввести корреткную ссылку на vk-страницу"
+        "Необходимо ввести корреткную ссылку на vk-страницу, длина которой менне $MAX_VK_LINK_LENGTH"
     ),
 }
