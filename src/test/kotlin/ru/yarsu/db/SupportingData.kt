@@ -53,5 +53,22 @@ val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00").withZoneSa
 val validHashtagTitle = "validTitle"
 
 @Suppress("MayBeConst")
+val validDirectionName = "Спортивное направление"
+
+@Suppress("MayBeConst")
+val validDirectionDescription = "Спорт - это круто!"
+
+@Suppress("MayBeConst")
+val validFileName = "img.img"
+
+@Suppress("MayBeConst")
+val validPhoneNumbers = arrayOf(
+    "+7(997)256-23-54",
+    "+7(996)256-23-54",
+    "+7(995)256-23-54",
+    "+7(994)256-23-54"
+)
+
+@Suppress("MayBeConst")
 val validCommentContent = "Лучший пост! Лучшее направление! Лучший университет! Кто писал бд - красавчик, " +
     "и усы у него классные"
