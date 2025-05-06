@@ -44,35 +44,35 @@ enum class PasswordChangingError {
     PASSWORD_IS_TOO_LONG,
 }
 
-class ChangeStringField(
+class ChangeStringFieldInUser(
     private val maxLength: Int,
     private val pattern: Regex,
-    private val changeField: (userID: Int, newName: String) -> User?,
-) : (User, String) -> Result4k<User, FieldChangingError> {
+    private val changeName: (userID: Int, newName: String) -> User?,
+) : (User, String) -> Result4k<User, FieldInUserChangingError> {
     override operator fun invoke(
         user: User,
         newField: String,
-    ): Result4k<User, FieldChangingError> =
+    ): Result4k<User, FieldInUserChangingError> =
         try {
             when {
                 newField.isBlank() ->
-                    Failure(FieldChangingError.FIELD_IS_BLANK_OR_EMPTY)
+                    Failure(FieldInUserChangingError.FIELD_IS_BLANK_OR_EMPTY)
                 newField.length > maxLength ->
-                    Failure(FieldChangingError.FIELD_IS_TOO_LONG)
+                    Failure(FieldInUserChangingError.FIELD_IS_TOO_LONG)
                 !pattern.matches(newField) ->
-                    Failure(FieldChangingError.FIELD_PATTERN_MISMATCH)
-                else -> when (val updatedUser = changeField(user.id, newField)) {
-                    is User -> Success(updatedUser)
+                    Failure(FieldInUserChangingError.FIELD_PATTERN_MISMATCH)
+                else -> when (val userWithNewPassword = changeName(user.id, newField)) {
+                    is User -> Success(userWithNewPassword)
 
-                    else -> Failure(FieldChangingError.UNKNOWN_CHANGING_ERROR)
+                    else -> Failure(FieldInUserChangingError.UNKNOWN_CHANGING_ERROR)
                 }
             }
         } catch (_: DataAccessException) {
-            Failure(FieldChangingError.UNKNOWN_DATABASE_ERROR)
+            Failure(FieldInUserChangingError.UNKNOWN_DATABASE_ERROR)
         }
 }
 
-enum class FieldChangingError {
+enum class FieldInUserChangingError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_CHANGING_ERROR,
     FIELD_IS_BLANK_OR_EMPTY,
