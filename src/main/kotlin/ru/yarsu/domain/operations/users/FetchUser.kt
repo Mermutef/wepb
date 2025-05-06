@@ -77,24 +77,24 @@ class FetchUserByPhone (
 }
 
 class FetchUsersByRole (
-    private val fetchUsersByRole: (Role) -> List<User>,
+    private val selectUsersByRole: (Role) -> List<User>,
 ) : (Role) -> Result4k<List<User>, UserFetchingError> {
 
     override operator fun invoke(role: Role): Result4k<List<User>, UserFetchingError> =
         try {
-            Success(fetchUsersByRole(role))
+            Success(selectUsersByRole(role))
         } catch (_: DataAccessException) {
             Failure(UserFetchingError.UNKNOWN_DATABASE_ERROR)
         }
 }
 
 class FetchAllUsers (
-    private val fetchAllUsers: () -> List<User>,
+    private val selectAllUsers: () -> List<User>,
 ) : () -> Result4k<List<User>, UserFetchingError> {
 
     override operator fun invoke(): Result4k<List<User>, UserFetchingError> =
         try {
-            Success(fetchAllUsers())
+            Success(selectAllUsers())
         } catch (_: DataAccessException) {
             Failure(UserFetchingError.UNKNOWN_DATABASE_ERROR)
         }
