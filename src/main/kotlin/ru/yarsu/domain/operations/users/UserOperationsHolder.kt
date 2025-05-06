@@ -54,35 +54,35 @@ class UserOperationsHolder (
                     role = role
                 )
             },
-            fetchUserByLogin = usersDatabase::selectUserByLogin,
-            fetchUserByEmail = usersDatabase::selectUserByEmail,
-            fetchUserByPhone = usersDatabase::selectUserByPhone,
+            selectUserByLogin = usersDatabase::selectUserByLogin,
+            selectUserByEmail = usersDatabase::selectUserByEmail,
+            selectUserByPhone = usersDatabase::selectUserByPhone,
             config = config
         )
 
     val changeName: (User, String) -> Result4k<User, FieldChangingError> =
-        ChangeStringField(
+        ChangeStringFieldInUser(
             maxLength = User.MAX_NAME_LENGTH,
             pattern = User.namePattern,
             changeField = usersDatabase::updateName
         )
 
     val changeSurname: (User, String) -> Result4k<User, FieldChangingError> =
-        ChangeStringField(
+        ChangeStringFieldInUser(
             maxLength = User.MAX_SURNAME_LENGTH,
             pattern = User.namePattern,
             changeField = usersDatabase::updateSurname
         )
 
     val changeEmail: (User, String) -> Result4k<User, FieldChangingError> =
-        ChangeStringField(
+        ChangeStringFieldInUser(
             maxLength = User.MAX_EMAIL_LENGTH,
             pattern = User.emailPattern,
             changeField = usersDatabase::updateEmail
         )
 
     val changePhoneNumber: (User, String) -> Result4k<User, FieldChangingError> =
-        ChangeStringField(
+        ChangeStringFieldInUser(
             maxLength = User.MAX_PHONE_NUMBER_LENGTH,
             pattern = User.phonePattern,
             changeField = usersDatabase::updatePhoneNumber
@@ -96,7 +96,7 @@ class UserOperationsHolder (
         )
 
     val changeVKLink: (User, String) -> Result4k<User, FieldChangingError> =
-        ChangeStringField(
+        ChangeStringFieldInUser(
             maxLength = User.MAX_VK_LINK_LENGTH,
             pattern = User.vkLinkPattern,
             changeField = usersDatabase::updateVKLink

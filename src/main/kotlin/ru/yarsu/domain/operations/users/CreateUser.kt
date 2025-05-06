@@ -20,9 +20,9 @@ class CreateUser (
         vkLink: String?,
         role: Role,
     ) -> User?,
-    private val fetchUserByLogin: (String) -> User?,
-    private val fetchUserByEmail: (String) -> User?,
-    private val fetchUserByPhone: (String) -> User?,
+    private val selectUserByLogin: (String) -> User?,
+    private val selectUserByEmail: (String) -> User?,
+    private val selectUserByPhone: (String) -> User?,
     config: AppConfig,
 ) : (String, String, String, String, String, String, String?, Role) -> Result4k<User, UserCreationError> {
 
@@ -67,19 +67,19 @@ class CreateUser (
         }
 
     private fun loginAlreadyExists(login: String): Boolean =
-        when (fetchUserByLogin(login)) {
+        when (selectUserByLogin(login)) {
             is User -> true
             else -> false
         }
 
     private fun emailAlreadyExists(email: String): Boolean =
-        when (fetchUserByEmail(email)) {
+        when (selectUserByEmail(email)) {
             is User -> true
             else -> false
         }
 
     private fun phoneAlreadyExists(phone: String): Boolean =
-        when (fetchUserByPhone(phone)) {
+        when (selectUserByPhone(phone)) {
             is User -> true
             else -> false
         }
