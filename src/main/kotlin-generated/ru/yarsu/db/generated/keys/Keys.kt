@@ -9,16 +9,12 @@ import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
 
-import ru.yarsu.db.generated.tables.Hashtag
+import ru.yarsu.db.generated.tables.Hashtags
 import ru.yarsu.db.generated.tables.Media
-import ru.yarsu.db.generated.tables.PostAndHashtag
-import ru.yarsu.db.generated.tables.PostAndMedia
 import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
-import ru.yarsu.db.generated.tables.records.HashtagRecord
+import ru.yarsu.db.generated.tables.records.HashtagsRecord
 import ru.yarsu.db.generated.tables.records.MediaRecord
-import ru.yarsu.db.generated.tables.records.PostAndHashtagRecord
-import ru.yarsu.db.generated.tables.records.PostAndMediaRecord
 import ru.yarsu.db.generated.tables.records.PostsRecord
 import ru.yarsu.db.generated.tables.records.UsersRecord
 
@@ -28,10 +24,8 @@ import ru.yarsu.db.generated.tables.records.UsersRecord
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val HASHTAG_PKEY: UniqueKey<HashtagRecord> = Internal.createUniqueKey(Hashtag.HASHTAG, DSL.name("hashtag_pkey"), arrayOf(Hashtag.HASHTAG.ID), true)
+val HASHTAGS_PKEY: UniqueKey<HashtagsRecord> = Internal.createUniqueKey(Hashtags.HASHTAGS, DSL.name("hashtags_pkey"), arrayOf(Hashtags.HASHTAGS.ID), true)
 val MEDIA_PKEY: UniqueKey<MediaRecord> = Internal.createUniqueKey(Media.MEDIA, DSL.name("media_pkey"), arrayOf(Media.MEDIA.FILENAME), true)
-val POST_AND_HASHTAG_PKEY: UniqueKey<PostAndHashtagRecord> = Internal.createUniqueKey(PostAndHashtag.POST_AND_HASHTAG, DSL.name("post_and_hashtag_pkey"), arrayOf(PostAndHashtag.POST_AND_HASHTAG.ID), true)
-val POST_AND_MEDIA_PKEY: UniqueKey<PostAndMediaRecord> = Internal.createUniqueKey(PostAndMedia.POST_AND_MEDIA, DSL.name("post_and_media_pkey"), arrayOf(PostAndMedia.POST_AND_MEDIA.ID), true)
 val POSTS_PKEY: UniqueKey<PostsRecord> = Internal.createUniqueKey(Posts.POSTS, DSL.name("posts_pkey"), arrayOf(Posts.POSTS.ID), true)
 val USERS_EMAIL_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_email_key"), arrayOf(Users.USERS.EMAIL), true)
 val USERS_LOGIN_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_login_key"), arrayOf(Users.USERS.LOGIN), true)
@@ -43,10 +37,7 @@ val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, D
 // -------------------------------------------------------------------------
 
 val MEDIA__MEDIA_AUTHORID_FKEY: ForeignKey<MediaRecord, UsersRecord> = Internal.createForeignKey(Media.MEDIA, DSL.name("media_authorid_fkey"), arrayOf(Media.MEDIA.AUTHORID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
-val POST_AND_HASHTAG__POST_AND_HASHTAG_HASHTAGID_FKEY: ForeignKey<PostAndHashtagRecord, HashtagRecord> = Internal.createForeignKey(PostAndHashtag.POST_AND_HASHTAG, DSL.name("post_and_hashtag_hashtagid_fkey"), arrayOf(PostAndHashtag.POST_AND_HASHTAG.HASHTAGID), ru.yarsu.db.generated.keys.HASHTAG_PKEY, arrayOf(Hashtag.HASHTAG.ID), true)
-val POST_AND_HASHTAG__POST_AND_HASHTAG_POSTID_FKEY: ForeignKey<PostAndHashtagRecord, PostsRecord> = Internal.createForeignKey(PostAndHashtag.POST_AND_HASHTAG, DSL.name("post_and_hashtag_postid_fkey"), arrayOf(PostAndHashtag.POST_AND_HASHTAG.POSTID), ru.yarsu.db.generated.keys.POSTS_PKEY, arrayOf(Posts.POSTS.ID), true)
-val POST_AND_MEDIA__POST_AND_MEDIA_MEDIA_NAME_FKEY: ForeignKey<PostAndMediaRecord, MediaRecord> = Internal.createForeignKey(PostAndMedia.POST_AND_MEDIA, DSL.name("post_and_media_media_name_fkey"), arrayOf(PostAndMedia.POST_AND_MEDIA.MEDIA_NAME), ru.yarsu.db.generated.keys.MEDIA_PKEY, arrayOf(Media.MEDIA.FILENAME), true)
-val POST_AND_MEDIA__POST_AND_MEDIA_POSTID_FKEY: ForeignKey<PostAndMediaRecord, PostsRecord> = Internal.createForeignKey(PostAndMedia.POST_AND_MEDIA, DSL.name("post_and_media_postid_fkey"), arrayOf(PostAndMedia.POST_AND_MEDIA.POSTID), ru.yarsu.db.generated.keys.POSTS_PKEY, arrayOf(Posts.POSTS.ID), true)
 val POSTS__POSTS_AUTHORID_FKEY: ForeignKey<PostsRecord, UsersRecord> = Internal.createForeignKey(Posts.POSTS, DSL.name("posts_authorid_fkey"), arrayOf(Posts.POSTS.AUTHORID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val POSTS__POSTS_HASHTAG_FKEY: ForeignKey<PostsRecord, HashtagsRecord> = Internal.createForeignKey(Posts.POSTS, DSL.name("posts_hashtag_fkey"), arrayOf(Posts.POSTS.HASHTAG), ru.yarsu.db.generated.keys.HASHTAGS_PKEY, arrayOf(Hashtags.HASHTAGS.ID), true)
 val POSTS__POSTS_MODERATORID_FKEY: ForeignKey<PostsRecord, UsersRecord> = Internal.createForeignKey(Posts.POSTS, DSL.name("posts_moderatorid_fkey"), arrayOf(Posts.POSTS.MODERATORID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
 val POSTS__POSTS_PREVIEW_FKEY: ForeignKey<PostsRecord, MediaRecord> = Internal.createForeignKey(Posts.POSTS, DSL.name("posts_preview_fkey"), arrayOf(Posts.POSTS.PREVIEW), ru.yarsu.db.generated.keys.MEDIA_PKEY, arrayOf(Media.MEDIA.FILENAME), true)

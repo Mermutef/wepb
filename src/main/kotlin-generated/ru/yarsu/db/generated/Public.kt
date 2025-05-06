@@ -12,10 +12,8 @@ import org.jooq.Catalog
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
 
-import ru.yarsu.db.generated.tables.Hashtag
+import ru.yarsu.db.generated.tables.Hashtags
 import ru.yarsu.db.generated.tables.Media
-import ru.yarsu.db.generated.tables.PostAndHashtag
-import ru.yarsu.db.generated.tables.PostAndMedia
 import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
 
@@ -43,24 +41,14 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     }
 
     /**
-     * The table <code>public.hashtag</code>.
+     * The table <code>public.hashtags</code>.
      */
-    val HASHTAG: Hashtag get() = Hashtag.HASHTAG
+    val HASHTAGS: Hashtags get() = Hashtags.HASHTAGS
 
     /**
      * The table <code>public.media</code>.
      */
     val MEDIA: Media get() = Media.MEDIA
-
-    /**
-     * The table <code>public.post_and_hashtag</code>.
-     */
-    val POST_AND_HASHTAG: PostAndHashtag get() = PostAndHashtag.POST_AND_HASHTAG
-
-    /**
-     * The table <code>public.post_and_media</code>.
-     */
-    val POST_AND_MEDIA: PostAndMedia get() = PostAndMedia.POST_AND_MEDIA
 
     /**
      * The table <code>public.posts</code>.
@@ -75,10 +63,8 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
-        Hashtag.HASHTAG,
+        Hashtags.HASHTAGS,
         Media.MEDIA,
-        PostAndHashtag.POST_AND_HASHTAG,
-        PostAndMedia.POST_AND_MEDIA,
         Posts.POSTS,
         Users.USERS
     )
