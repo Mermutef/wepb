@@ -42,33 +42,37 @@ open class PostsRecord() : UpdatableRecordImpl<PostsRecord>(Posts.POSTS) {
         set(value): Unit = set(2, value)
         get(): String? = get(2) as String?
 
-    open var textBody: String?
+    open var content: String?
         set(value): Unit = set(3, value)
         get(): String? = get(3) as String?
 
-    open var eventDate: LocalDateTime?
+    open var hashtag: Int?
         set(value): Unit = set(4, value)
-        get(): LocalDateTime? = get(4) as LocalDateTime?
+        get(): Int? = get(4) as Int?
 
-    open var creationDate: LocalDateTime?
+    open var eventDate: LocalDateTime?
         set(value): Unit = set(5, value)
         get(): LocalDateTime? = get(5) as LocalDateTime?
 
-    open var lastModifiedDate: LocalDateTime?
+    open var creationDate: LocalDateTime?
         set(value): Unit = set(6, value)
         get(): LocalDateTime? = get(6) as LocalDateTime?
 
-    open var authorid: Int?
+    open var lastModifiedDate: LocalDateTime?
         set(value): Unit = set(7, value)
-        get(): Int? = get(7) as Int?
+        get(): LocalDateTime? = get(7) as LocalDateTime?
 
-    open var moderatorid: Int?
+    open var authorid: Int?
         set(value): Unit = set(8, value)
         get(): Int? = get(8) as Int?
 
-    open var status: PostStatus?
+    open var moderatorid: Int?
         set(value): Unit = set(9, value)
-        get(): PostStatus? = get(9) as PostStatus?
+        get(): Int? = get(9) as Int?
+
+    open var status: PostStatus?
+        set(value): Unit = set(10, value)
+        get(): PostStatus? = get(10) as PostStatus?
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -79,11 +83,12 @@ open class PostsRecord() : UpdatableRecordImpl<PostsRecord>(Posts.POSTS) {
     /**
      * Create a detached, initialised PostsRecord
      */
-    constructor(id: Int? = null, title: String? = null, preview: String? = null, textBody: String? = null, eventDate: LocalDateTime? = null, creationDate: LocalDateTime? = null, lastModifiedDate: LocalDateTime? = null, authorid: Int? = null, moderatorid: Int? = null, status: PostStatus? = null): this() {
+    constructor(id: Int? = null, title: String? = null, preview: String? = null, content: String? = null, hashtag: Int? = null, eventDate: LocalDateTime? = null, creationDate: LocalDateTime? = null, lastModifiedDate: LocalDateTime? = null, authorid: Int? = null, moderatorid: Int? = null, status: PostStatus? = null): this() {
         this.id = id
         this.title = title
         this.preview = preview
-        this.textBody = textBody
+        this.content = content
+        this.hashtag = hashtag
         this.eventDate = eventDate
         this.creationDate = creationDate
         this.lastModifiedDate = lastModifiedDate
