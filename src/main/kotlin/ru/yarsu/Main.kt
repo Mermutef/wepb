@@ -13,21 +13,18 @@ import ru.yarsu.web.createApp
 const val ADMIN_USERNAME = "admin"
 const val ADMIN_USER_ID = -1
 const val MAIN_CLASS = "ru.yarsu.Main"
+const val JWT_ISSUER = "Wepb"
 
 fun main() {
     val config = AppConfig.fromEnvironment()
     val jooqContext = createJooqContext(config.databaseConfig)
     val database = DatabaseOperationsHolder(jooqContext)
     val operations = OperationsHolder(database, config)
-
     operations.initApplication(config)
 
     val app = createApp(operations, config)
 
-    val filters = Filter.NoOp
-
-    val server = filters
-        .then(app)
-        .asServer(Netty(config.webConfig.port)).start()
+    val server = app.asServer(Netty(config.webConfig.port)).start()
     println("Running on port http://localhost:${server.port()}/")
+    server.block()
 }

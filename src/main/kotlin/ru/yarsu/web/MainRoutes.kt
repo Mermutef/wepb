@@ -1,15 +1,19 @@
 package ru.yarsu.web
 
-import org.http4k.core.Method
-import org.http4k.core.Response
-import org.http4k.core.Status
-import org.http4k.core.with
+import org.http4k.core.*
+import org.http4k.filter.ServerFilters
 import org.http4k.lens.BiDiBodyLens
 import org.http4k.routing.*
 import org.http4k.template.ViewModel
+import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.operations.OperationsHolder
+import ru.yarsu.domain.tools.JWTTools
+import ru.yarsu.web.auth.AUTH_SEGMENT
+import ru.yarsu.web.auth.authRouter
+import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
+import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
 import java.io.InputStream
@@ -18,9 +22,17 @@ import java.io.InputStream
 private fun createMainRouter(
     contextTools: ContextTools,
     operations: OperationsHolder,
+    config: AppConfig,
+    jwtTools: JWTTools,
 ) = routes(
-    "/" bind Method.GET to { _ -> ok("pong") },
+    "/" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
+    AUTH_SEGMENT bind authRouter(
+        contextTools = contextTools,
+        config = config,
+        operations = operations,
+        jwtTools = jwtTools
+    ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 
@@ -29,13 +41,23 @@ fun createApp(
     config: AppConfig,
 ): RoutingHttpHandler {
     val contexts = ContextTools(config.webConfig)
-
+    val jwtTools = JWTTools(config.authConfig.secret, JWT_ISSUER)
     val app = createMainRouter(
-        operations = operations,
         contextTools = contexts,
+        operations = operations,
+        config = config,
+        jwtTools = jwtTools
     )
 
-    return app
+    return ServerFilters
+        .InitialiseRequestContext(contexts.appContexts)
+        .then(
+            AuthenticationFilter(
+                userLens = contexts.userLens,
+                userOperations = operations.userOperations,
+                jwtTools = jwtTools
+            )
+        ).then(app)
 }
 
 infix fun BiDiBodyLens<ViewModel>.extract(viewModel: ViewModel?) =

@@ -16,6 +16,7 @@ import org.http4k.lens.webForm
  * Lenses, that provides abstract methods and lenses
  */
 object GeneralWebLenses {
+
     /**
      * Lens for getting {id} from request path
      */
