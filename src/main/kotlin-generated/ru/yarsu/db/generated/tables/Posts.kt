@@ -38,13 +38,11 @@ import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.enums.PostStatus
 import ru.yarsu.db.generated.keys.POSTS_PKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_AUTHORID_FKEY
+import ru.yarsu.db.generated.keys.POSTS__POSTS_HASHTAG_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_MODERATORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_PREVIEW_FKEY
-import ru.yarsu.db.generated.keys.POST_AND_HASHTAG__POST_AND_HASHTAG_POSTID_FKEY
-import ru.yarsu.db.generated.keys.POST_AND_MEDIA__POST_AND_MEDIA_POSTID_FKEY
+import ru.yarsu.db.generated.tables.Hashtags.HashtagsPath
 import ru.yarsu.db.generated.tables.Media.MediaPath
-import ru.yarsu.db.generated.tables.PostAndHashtag.PostAndHashtagPath
-import ru.yarsu.db.generated.tables.PostAndMedia.PostAndMediaPath
 import ru.yarsu.db.generated.tables.Users.UsersPath
 import ru.yarsu.db.generated.tables.records.PostsRecord
 
@@ -111,9 +109,14 @@ open class Posts(
     val PREVIEW: TableField<PostsRecord, String?> = createField(DSL.name("preview"), SQLDataType.VARCHAR(256).nullable(false), this, "")
 
     /**
-     * The column <code>public.posts.text_body</code>.
+     * The column <code>public.posts.content</code>.
      */
-    val TEXT_BODY: TableField<PostsRecord, String?> = createField(DSL.name("text_body"), SQLDataType.VARCHAR(2048).nullable(false), this, "")
+    val CONTENT: TableField<PostsRecord, String?> = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "")
+
+    /**
+     * The column <code>public.posts.hashtag</code>.
+     */
+    val HASHTAG: TableField<PostsRecord, Int?> = createField(DSL.name("hashtag"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>public.posts.event_date</code>.
@@ -123,12 +126,12 @@ open class Posts(
     /**
      * The column <code>public.posts.creation_date</code>.
      */
-    val CREATION_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("creation_date"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "")
+    val CREATION_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("creation_date"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "")
 
     /**
      * The column <code>public.posts.last_modified_date</code>.
      */
-    val LAST_MODIFIED_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("last_modified_date"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "")
+    val LAST_MODIFIED_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("last_modified_date"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "")
 
     /**
      * The column <code>public.posts.authorid</code>.
@@ -138,7 +141,7 @@ open class Posts(
     /**
      * The column <code>public.posts.moderatorid</code>.
      */
-    val MODERATORID: TableField<PostsRecord, Int?> = createField(DSL.name("moderatorid"), SQLDataType.INTEGER.nullable(false), this, "")
+    val MODERATORID: TableField<PostsRecord, Int?> = createField(DSL.name("moderatorid"), SQLDataType.INTEGER, this, "")
 
     /**
      * The column <code>public.posts.status</code>.
@@ -179,7 +182,7 @@ open class Posts(
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<PostsRecord, Int?> = super.getIdentity() as Identity<PostsRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PostsRecord> = POSTS_PKEY
-    override fun getReferences(): List<ForeignKey<PostsRecord, *>> = listOf(POSTS__POSTS_PREVIEW_FKEY, POSTS__POSTS_AUTHORID_FKEY, POSTS__POSTS_MODERATORID_FKEY)
+    override fun getReferences(): List<ForeignKey<PostsRecord, *>> = listOf(POSTS__POSTS_PREVIEW_FKEY, POSTS__POSTS_HASHTAG_FKEY, POSTS__POSTS_AUTHORID_FKEY, POSTS__POSTS_MODERATORID_FKEY)
 
     private lateinit var _media: MediaPath
 
@@ -195,6 +198,21 @@ open class Posts(
 
     val media: MediaPath
         get(): MediaPath = media()
+
+    private lateinit var _hashtags: HashtagsPath
+
+    /**
+     * Get the implicit join path to the <code>public.hashtags</code> table.
+     */
+    fun hashtags(): HashtagsPath {
+        if (!this::_hashtags.isInitialized)
+            _hashtags = HashtagsPath(this, POSTS__POSTS_HASHTAG_FKEY, null)
+
+        return _hashtags;
+    }
+
+    val hashtags: HashtagsPath
+        get(): HashtagsPath = hashtags()
 
     private lateinit var _postsAuthoridFkey: UsersPath
 
@@ -227,38 +245,6 @@ open class Posts(
 
     val postsModeratoridFkey: UsersPath
         get(): UsersPath = postsModeratoridFkey()
-
-    private lateinit var _postAndHashtag: PostAndHashtagPath
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.post_and_hashtag</code> table
-     */
-    fun postAndHashtag(): PostAndHashtagPath {
-        if (!this::_postAndHashtag.isInitialized)
-            _postAndHashtag = PostAndHashtagPath(this, null, POST_AND_HASHTAG__POST_AND_HASHTAG_POSTID_FKEY.inverseKey)
-
-        return _postAndHashtag;
-    }
-
-    val postAndHashtag: PostAndHashtagPath
-        get(): PostAndHashtagPath = postAndHashtag()
-
-    private lateinit var _postAndMedia: PostAndMediaPath
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.post_and_media</code> table
-     */
-    fun postAndMedia(): PostAndMediaPath {
-        if (!this::_postAndMedia.isInitialized)
-            _postAndMedia = PostAndMediaPath(this, null, POST_AND_MEDIA__POST_AND_MEDIA_POSTID_FKEY.inverseKey)
-
-        return _postAndMedia;
-    }
-
-    val postAndMedia: PostAndMediaPath
-        get(): PostAndMediaPath = postAndMedia()
     override fun `as`(alias: String): Posts = Posts(DSL.name(alias), this)
     override fun `as`(alias: Name): Posts = Posts(alias, this)
     override fun `as`(alias: Table<*>): Posts = Posts(alias.qualifiedName, this)

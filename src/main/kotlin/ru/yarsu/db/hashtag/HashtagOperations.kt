@@ -2,7 +2,7 @@ package ru.yarsu.db.hashtag
 
 import org.jooq.DSLContext
 import org.jooq.Record
-import ru.yarsu.db.generated.tables.references.HASHTAG
+import ru.yarsu.db.generated.tables.references.HASHTAGS
 import ru.yarsu.db.generated.tables.references.POSTS
 import ru.yarsu.db.utils.safeLet
 import ru.yarsu.domain.dependencies.HashtagDatabase
@@ -13,13 +13,13 @@ class HashtagOperations(
 ): HashtagDatabase {
     override fun selectHashtagByID(hashtagId: Int): Hashtag? =
         selectFromHashtags()
-            .where(HASHTAG.ID.eq(hashtagId))
+            .where(HASHTAGS.ID.eq(hashtagId))
             .fetchOne()
             ?.toHashtag()
 
     override fun selectHashtagByTitle(title: String): Hashtag? =
         selectFromHashtags()
-            .where(HASHTAG.TITLE.eq(title))
+            .where(HASHTAGS.TITLE.eq(title))
             .fetchOne()
             ?.toHashtag()
 
@@ -29,15 +29,15 @@ class HashtagOperations(
             .mapNotNull { it.toHashtag() }
 
     override fun insertHashtag(title: String): Hashtag? =
-        jooqContext.insertInto(HASHTAG)
-            .set(HASHTAG.TITLE, title)
+        jooqContext.insertInto(HASHTAGS)
+            .set(HASHTAGS.TITLE, title)
             .returningResult()
             .fetchOne()
             ?.toHashtag()
 
     override fun updateTitle(hashtagId: Int, newTitle: String): Hashtag? =
-        jooqContext.update(HASHTAG)
-            .set(HASHTAG.TITLE, newTitle)
+        jooqContext.update(HASHTAGS)
+            .set(HASHTAGS.TITLE, newTitle)
             .where(POSTS.ID.eq(hashtagId))
             .returningResult()
             .fetchOne()
@@ -46,16 +46,16 @@ class HashtagOperations(
     private fun selectFromHashtags() =
         jooqContext
             .select(
-                HASHTAG.ID,
-                HASHTAG.TITLE
+                HASHTAGS.ID,
+                HASHTAGS.TITLE
             )
-            .from(HASHTAG)
+            .from(HASHTAGS)
 }
 
 private fun Record.toHashtag(): Hashtag? =
     safeLet(
-        this[HASHTAG.ID],
-        this[HASHTAG.TITLE]
+        this[HASHTAGS.ID],
+        this[HASHTAGS.TITLE]
     ) { id, title ->
         Hashtag(
             id = id,

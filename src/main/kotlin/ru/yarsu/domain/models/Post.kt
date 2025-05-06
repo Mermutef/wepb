@@ -1,6 +1,7 @@
 package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class Post(
@@ -8,10 +9,13 @@ data class Post(
     val title: String,
     val preview: String,
     val content: String,
-    val hashtag: Hashtag,
-    val eventDate: ZonedDateTime?,
-    val creationDate: ZonedDateTime,
-    val lastModifiedDate: ZonedDateTime,
+    val hashtagId: Int,
+//    val eventDate: ZonedDateTime?,
+//    val creationDate: ZonedDateTime,
+//    val lastModifiedDate: ZonedDateTime,
+    val eventDate: LocalDateTime?,
+    val creationDate: LocalDateTime,
+    val lastModifiedDate: LocalDateTime,
     val authorId: Int,
     val moderatorId: Int,
     val status: Status,
@@ -19,10 +23,12 @@ data class Post(
     companion object {
         fun validatePostData(
             title: String,
-            textBody: String
+            preview: String,
+            content: String,
         ): PostValidationResult =
             validateTitle(title)
-                ?: validateTextBody(textBody)
+                ?: validatePreview(preview)
+                ?: validateContent(content)
                 ?: PostValidationResult.ALL_OK
 
         fun validateTitle(title: String) : PostValidationResult? {
@@ -34,20 +40,27 @@ data class Post(
             }
         }
 
-        fun validateTextBody(textBody: String): PostValidationResult? {
+        fun validatePreview(preview: String) : PostValidationResult? {
             return when {
-                textBody.isBlank() -> PostValidationResult.TEXT_BODY_IS_BLANK_OR_EMPTY
-                textBody.length > MAX_TEXT_BODY_LENGTH -> PostValidationResult.TEXT_BODY_IS_TOO_LONG
-                !textBodyPattern.matches(textBody) -> PostValidationResult.TEXT_BODY_PATTERN_MISMATCH
+                preview.isBlank() -> PostValidationResult.PREVIEW_IS_BLANK_OR_EMPTY
+                preview.length > MAX_PREVIEW_LENGTH -> PostValidationResult.PREVIEW_IS_TOO_LONG
+                !previewPattern.matches(preview) -> PostValidationResult.PREVIEW_PATTERN_MISMATCH
+                else -> null
+            }
+        }
+
+        fun validateContent(content: String): PostValidationResult? {
+            return when {
+                content.isBlank() -> PostValidationResult.CONTENT_IS_BLANK_OR_EMPTY
                 else -> null
             }
         }
 
         const val MAX_TITLE_LENGTH = 100
-        const val MAX_TEXT_BODY_LENGTH = 2048
+        const val MAX_PREVIEW_LENGTH = 256
 
         val titlePattern = Regex("^[\\w-.]+\$")
-        val textBodyPattern = Regex("^[\\w-.]+\$")
+        val previewPattern = Regex("^[\\w-.]+$")
     }
 }
 
@@ -55,8 +68,9 @@ enum class PostValidationResult {
     TITLE_IS_BLANK_OR_EMPTY,
     TITLE_IS_TOO_LONG,
     TITLE_PATTERN_MISMATCH,
-    TEXT_BODY_IS_BLANK_OR_EMPTY,
-    TEXT_BODY_IS_TOO_LONG,
-    TEXT_BODY_PATTERN_MISMATCH,
+    PREVIEW_IS_BLANK_OR_EMPTY,
+    PREVIEW_IS_TOO_LONG,
+    PREVIEW_PATTERN_MISMATCH,
+    CONTENT_IS_BLANK_OR_EMPTY,
     ALL_OK,
 }

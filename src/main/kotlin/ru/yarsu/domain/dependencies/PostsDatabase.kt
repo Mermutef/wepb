@@ -7,21 +7,38 @@ import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 interface PostsDatabase {
     fun selectPostByID(postID: Int): Post?
 
-    fun selectPostByTitle(title: String): Post?
+    fun selectPostsByIdHashtag(idHashtag: Int):List<Post>
+
+    fun selectNNewPosts(countN: Int): List<Post>
+
+    fun selectPostsByAuthorId(authorId: Int): List<Post>
+
+    fun selectPostsByModeratorId(moderatorId: Int): List<Post>
 
     fun selectPostByStatus(status: Status): List<Post>
+
+//    fun selectPostsByTimeInterval(startDate: ZonedDateTime, endDate: ZonedDateTime): List<Post>
+
+    fun selectPostsByTimeInterval(startDate: LocalDateTime, endDate: LocalDateTime): List<Post>
 
     fun selectAllPosts(): List<Post>
 
     fun insertPost(
         title: String,
         preview: String,
-        textBody: String,
+        content: String,
+        hashtagId: Int,
+//        eventDate: ZonedDateTime?,
+//        creationDate: ZonedDateTime,
+//        lastModifiedDate: ZonedDateTime,
         eventDate: LocalDateTime?,
+        creationDate: LocalDateTime,
+        lastModifiedDate: LocalDateTime,
         authorId: Int,
         moderatorId: Int,
         status: Status
@@ -37,9 +54,14 @@ interface PostsDatabase {
         newPreview: String,
     ): Post?
 
-    fun updateTextBody(
+    fun updateContent(
         postID: Int,
-        newTextBody: String,
+        newContent: String,
+    ): Post?
+
+    fun updateHashtagId(
+        postID: Int,
+        newHashtagId: Int,
     ): Post?
 
     fun updateEventDate(
