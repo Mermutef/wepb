@@ -9,6 +9,7 @@ import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.models.Post
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class PostsOperations(
     private val jooqContext: DSLContext,
@@ -19,17 +20,43 @@ class PostsOperations(
             .fetchOne()
             ?.toPost()
 
-    override fun selectPostByTitle(title: String): Post? =
+    override fun selectPostsByIdHashtag(idHashtag: Int): List<Post> =
         selectFromPosts()
-            .where(POSTS.TITLE.eq(title))
-            .fetchOne()
-            ?.toPost()
+            .where(POSTS.HASHTAG.eq(idHashtag))
+            .fetch()
+            .mapNotNull { it.toPost() }
+
+    override fun selectNNewPosts(countN: Int): List<Post> =
+        selectFromPosts()
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
+            .limit(countN)
+            .fetch()
+            .mapNotNull { it.toPost() }
+
+    override fun selectPostsByAuthorId(authorId: Int): List<Post> =
+        selectFromPosts()
+            .where(POSTS.AUTHORID.eq(authorId))
+            .fetch()
+            .mapNotNull { it.toPost() }
+
+    override fun selectPostsByModeratorId(moderatorId: Int): List<Post> =
+        selectFromPosts()
+            .where(POSTS.MODERATORID.eq(moderatorId))
+            .fetch()
+            .mapNotNull { it.toPost() }
 
     override fun selectPostByStatus(status: Status): List<Post> =
         selectFromPosts()
             .where(POSTS.STATUS.eq(status.asDbStatus()))
             .fetch()
             .mapNotNull { it.toPost() }
+
+    override fun selectPostsByTimeInterval(startDate: LocalDateTime, endDate: LocalDateTime): List<Post> =
+        selectFromPosts()
+            .where(POSTS.LAST_MODIFIED_DATE.between(startDate, endDate))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
+            .fetch()
+            .map { it.toPost() }
 
     override fun selectAllPosts(): List<Post> =
         selectFromPosts()
@@ -39,8 +66,11 @@ class PostsOperations(
     override fun insertPost(
         title: String,
         preview: String,
-        textBody: String,
+        content: String,
+        hashtagId: Int,
         eventDate: LocalDateTime?,
+        creationDate: LocalDateTime,
+        lastModifiedDate: LocalDateTime,
         authorId: Int,
         moderatorId: Int,
         status: Status
@@ -51,8 +81,11 @@ class PostsOperations(
                 jooqContext.insertInto(POSTS)
                     .set(POSTS.TITLE, title)
                     .set(POSTS.PREVIEW, preview)
-                    .set(POSTS.TEXT_BODY, textBody)
+                    .set(POSTS.CONTENT, content)
+                    .set(POSTS.HASHTAG, hashtagId)
                     .set(POSTS.EVENT_DATE, eventDate)
+                    .set(POSTS.CREATION_DATE, creationDate)
+                    .set(POSTS.LAST_MODIFIED_DATE, lastModifiedDate)
                     .set(POSTS.AUTHORID, authorId)
                     .set(POSTS.MODERATORID, moderatorId)
                     .set(POSTS.STATUS, dbStatus)
@@ -77,10 +110,18 @@ class PostsOperations(
             .fetchOne()
             ?.toPost()
 
-
-    override fun updateTextBody(postID: Int, newTextBody: String): Post? =
+    override fun updateContent(postID: Int, newContent: String): Post? =
         jooqContext.update(POSTS)
-            .set(POSTS.TEXT_BODY, newTextBody)
+            .set(POSTS.CONTENT, newContent)
+            .where(POSTS.ID.eq(postID))
+            .returningResult()
+            .fetchOne()
+            ?.toPost()
+
+
+    override fun updateHashtagId(postID: Int, newHashtagId: Int): Post? =
+        jooqContext.update(POSTS)
+            .set(POSTS.HASHTAG, newHashtagId)
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -130,7 +171,8 @@ class PostsOperations(
                 POSTS.ID,
                 POSTS.TITLE,
                 POSTS.PREVIEW,
-                POSTS.TEXT_BODY,
+                POSTS.CONTENT,
+                POSTS.HASHTAG,
                 POSTS.EVENT_DATE,
                 POSTS.CREATION_DATE,
                 POSTS.LAST_MODIFIED_DATE,
@@ -146,21 +188,20 @@ private fun Record.toPost(): Post? =
         this[POSTS.ID],
         this[POSTS.TITLE],
         this[POSTS.PREVIEW],
-        this[POSTS.TEXT_BODY],
+        this[POSTS.CONTENT],
+        this[POSTS.HASHTAG],
         this[POSTS.CREATION_DATE],
         this[POSTS.LAST_MODIFIED_DATE],
         this[POSTS.AUTHORID],
         this[POSTS.MODERATORID],
         this[POSTS.STATUS]
-    ) { id, title, preview, textBody, creationDate, lastModifiedDate, authorId, moderatorId, status ->
+    ) { id, title, preview, content, hashtagId, creationDate, lastModifiedDate, authorId, moderatorId, status ->
         Post(
             id = id,
             title = title,
             preview = preview,
-            filePreview = null,
-            content = textBody,
-            mediaFiles = listOf(),
-            hashtag = listOf(),
+            content = content,
+            hashtagId = hashtagId,
             eventDate = this[POSTS.EVENT_DATE],
             creationDate = creationDate,
             lastModifiedDate = lastModifiedDate,
