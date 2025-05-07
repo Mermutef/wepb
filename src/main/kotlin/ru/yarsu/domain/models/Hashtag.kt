@@ -2,16 +2,14 @@ package ru.yarsu.domain.models
 
 class Hashtag(
     val id: Int,
-    val title: String
+    val title: String,
 ) {
     companion object {
-        fun validateHashtagData(
-            title: String,
-        ): HashtagValidationResult =
+        fun validateHashtagData(title: String): HashtagValidationResult =
             validateTitle(title)
                 ?: HashtagValidationResult.ALL_OK
 
-        fun validateTitle(title: String) : HashtagValidationResult? {
+        fun validateTitle(title: String): HashtagValidationResult? {
             return when {
                 title.isBlank() -> HashtagValidationResult.TITLE_IS_BLANK_OR_EMPTY
                 title.length > MAX_TITLE_LENGTH -> HashtagValidationResult.TITLE_IS_TOO_LONG
