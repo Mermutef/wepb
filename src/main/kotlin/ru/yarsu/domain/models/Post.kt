@@ -1,6 +1,7 @@
 package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class Post(
