@@ -20,9 +20,9 @@ CREATE TABLE posts (
 	preview VARCHAR(256) NOT NULL REFERENCES media(filename),
 	content TEXT NOT NULL,
 	hashtag INT NOT NULL REFERENCES hashtags(id),
-	event_date TIMESTAMP,
-	creation_date TIMESTAMP NOT NULL,
-	last_modified_date TIMESTAMP NOT NULL,
+	event_date TIMESTAMP WITH TIME ZONE,
+	creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
+	last_modified_date TIMESTAMP WITH TIME ZONE NOT NULL,
 	authorId INT NOT NULL REFERENCES users(id),
 	moderatorId INT REFERENCES users(id),
 	status post_status NOT NULL

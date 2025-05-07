@@ -154,17 +154,17 @@ inline fun <
 
 @Suppress("detekt:LongParameterList")
 inline fun <
-        IN1 : Any,
-        IN2 : Any,
-        IN3 : Any,
-        IN4 : Any,
-        IN5 : Any,
-        IN6 : Any,
-        IN7 : Any,
-        IN8 : Any,
-        IN9 : Any,
-        OUT : Any,
-        > safeLet(
+    IN1 : Any,
+    IN2 : Any,
+    IN3 : Any,
+    IN4 : Any,
+    IN5 : Any,
+    IN6 : Any,
+    IN7 : Any,
+    IN8 : Any,
+    IN9 : Any,
+    OUT : Any,
+> safeLet(
     arg1: IN1?,
     arg2: IN2?,
     arg3: IN3?,

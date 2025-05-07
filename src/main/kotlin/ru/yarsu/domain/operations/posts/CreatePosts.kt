@@ -7,7 +7,7 @@ import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.PostValidationResult
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class CreatePosts(
     private val insertPost: (
@@ -15,27 +15,27 @@ class CreatePosts(
         preview: String,
         content: String,
         hashtagId: Int,
-        eventDate: LocalDateTime?,
-        creationDate: LocalDateTime,
-        lastModifiedDate: LocalDateTime,
+        eventDate: ZonedDateTime?,
+        creationDate: ZonedDateTime,
+        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int,
-        status: Status
-            ) -> Post?,
-    private val selectHashtagById: (id: Int) -> Hashtag?
-): (String, String, String, Int, LocalDateTime?, LocalDateTime, LocalDateTime, Int, Int, Status)
--> Result4k<Post, PostCreationError> {
+        status: Status,
+    ) -> Post?,
+    private val selectHashtagById: (id: Int) -> Hashtag?,
+) : (String, String, String, Int, ZonedDateTime?, ZonedDateTime, ZonedDateTime, Int, Int, Status)
+    -> Result4k<Post, PostCreationError> {
     override operator fun invoke(
         title: String,
         preview: String,
         content: String,
         hashtagId: Int,
-        eventDate: LocalDateTime?,
-        creationDate: LocalDateTime,
-        lastModifiedDate: LocalDateTime,
+        eventDate: ZonedDateTime?,
+        creationDate: ZonedDateTime,
+        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int,
-        status: Status
+        status: Status,
     ): Result4k<Post, PostCreationError> =
         when {
             Post.validatePostData(title, preview, content) != PostValidationResult.ALL_OK ->

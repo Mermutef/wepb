@@ -60,28 +60,28 @@ class UserOperationsHolder (
             config = config
         )
 
-    val changeName: (User, String) -> Result4k<User, FieldChangingError> =
+    val changeName: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_NAME_LENGTH,
             pattern = User.namePattern,
             changeField = usersDatabase::updateName
         )
 
-    val changeSurname: (User, String) -> Result4k<User, FieldChangingError> =
+    val changeSurname: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_SURNAME_LENGTH,
             pattern = User.namePattern,
             changeField = usersDatabase::updateSurname
         )
 
-    val changeEmail: (User, String) -> Result4k<User, FieldChangingError> =
+    val changeEmail: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_EMAIL_LENGTH,
             pattern = User.emailPattern,
             changeField = usersDatabase::updateEmail
         )
 
-    val changePhoneNumber: (User, String) -> Result4k<User, FieldChangingError> =
+    val changePhoneNumber: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_PHONE_NUMBER_LENGTH,
             pattern = User.phonePattern,
@@ -95,7 +95,7 @@ class UserOperationsHolder (
             config = config,
         )
 
-    val changeVKLink: (User, String) -> Result4k<User, FieldChangingError> =
+    val changeVKLink: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_VK_LINK_LENGTH,
             pattern = User.vkLinkPattern,

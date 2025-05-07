@@ -1,7 +1,6 @@
 package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 data class Post(
@@ -13,9 +12,9 @@ data class Post(
 //    val eventDate: ZonedDateTime?,
 //    val creationDate: ZonedDateTime,
 //    val lastModifiedDate: ZonedDateTime,
-    val eventDate: LocalDateTime?,
-    val creationDate: LocalDateTime,
-    val lastModifiedDate: LocalDateTime,
+    val eventDate: ZonedDateTime?,
+    val creationDate: ZonedDateTime,
+    val lastModifiedDate: ZonedDateTime,
     val authorId: Int,
     val moderatorId: Int,
     val status: Status,
@@ -31,7 +30,7 @@ data class Post(
                 ?: validateContent(content)
                 ?: PostValidationResult.ALL_OK
 
-        fun validateTitle(title: String) : PostValidationResult? {
+        fun validateTitle(title: String): PostValidationResult? {
             return when {
                 title.isBlank() -> PostValidationResult.TITLE_IS_BLANK_OR_EMPTY
                 title.length > MAX_TITLE_LENGTH -> PostValidationResult.TITLE_IS_TOO_LONG
@@ -40,11 +39,11 @@ data class Post(
             }
         }
 
-        fun validatePreview(preview: String) : PostValidationResult? {
+        fun validatePreview(preview: String): PostValidationResult? {
             return when {
                 preview.isBlank() -> PostValidationResult.PREVIEW_IS_BLANK_OR_EMPTY
                 preview.length > MAX_PREVIEW_LENGTH -> PostValidationResult.PREVIEW_IS_TOO_LONG
-                !previewPattern.matches(preview) -> PostValidationResult.PREVIEW_PATTERN_MISMATCH
+//                !previewPattern.matches(preview) -> PostValidationResult.PREVIEW_PATTERN_MISMATCH
                 else -> null
             }
         }
@@ -60,7 +59,7 @@ data class Post(
         const val MAX_PREVIEW_LENGTH = 256
 
         val titlePattern = Regex("^[\\w-.]+\$")
-        val previewPattern = Regex("^[\\w-.]+$")
+//        val previewPattern = Regex("^[\\w-.]+$")
     }
 }
 
@@ -70,7 +69,8 @@ enum class PostValidationResult {
     TITLE_PATTERN_MISMATCH,
     PREVIEW_IS_BLANK_OR_EMPTY,
     PREVIEW_IS_TOO_LONG,
-    PREVIEW_PATTERN_MISMATCH,
+
+//    PREVIEW_PATTERN_MISMATCH,
     CONTENT_IS_BLANK_OR_EMPTY,
     ALL_OK,
 }
