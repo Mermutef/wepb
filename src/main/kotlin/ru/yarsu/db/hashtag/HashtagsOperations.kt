@@ -3,14 +3,13 @@ package ru.yarsu.db.hashtag
 import org.jooq.DSLContext
 import org.jooq.Record
 import ru.yarsu.db.generated.tables.references.HASHTAGS
-import ru.yarsu.db.generated.tables.references.POSTS
 import ru.yarsu.db.utils.safeLet
-import ru.yarsu.domain.dependencies.HashtagDatabase
+import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.models.Hashtag
 
-class HashtagOperations(
+class HashtagsOperations(
     private val jooqContext: DSLContext,
-): HashtagDatabase {
+) : HashtagsDatabase {
     override fun selectHashtagByID(hashtagId: Int): Hashtag? =
         selectFromHashtags()
             .where(HASHTAGS.ID.eq(hashtagId))
@@ -35,13 +34,21 @@ class HashtagOperations(
             .fetchOne()
             ?.toHashtag()
 
-    override fun updateTitle(hashtagId: Int, newTitle: String): Hashtag? =
+    override fun updateTitle(
+        hashtagId: Int,
+        newTitle: String,
+    ): Hashtag? =
         jooqContext.update(HASHTAGS)
             .set(HASHTAGS.TITLE, newTitle)
-            .where(POSTS.ID.eq(hashtagId))
+            .where(HASHTAGS.ID.eq(hashtagId))
             .returningResult()
             .fetchOne()
             ?.toHashtag()
+
+    override fun deleteHashtagById(hashtagId: Int): Int? =
+        jooqContext.delete(HASHTAGS)
+            .where(HASHTAGS.ID.eq(hashtagId))
+            .execute()
 
     private fun selectFromHashtags() =
         jooqContext

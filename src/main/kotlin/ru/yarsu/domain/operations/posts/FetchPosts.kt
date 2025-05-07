@@ -4,12 +4,8 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Post
-import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.users.UserFetchingError
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 class FetchPostById (
@@ -88,28 +84,19 @@ class FetchPostByStatus(
 }
 
 class FetchPostsByTimeInterval(
-    private val selectPostsByTimeInterval: (LocalDateTime, LocalDateTime) -> List<Post>,
-) : (LocalDateTime, LocalDateTime) -> Result4k<List<Post>, PostFetchingError> {
+    private val selectPostsByTimeInterval: (ZonedDateTime, ZonedDateTime) -> List<Post>,
+) : (ZonedDateTime, ZonedDateTime) -> Result4k<List<Post>, PostFetchingError> {
 
-    override operator fun invoke(startDate: LocalDateTime, endDate: LocalDateTime): Result4k<List<Post>, PostFetchingError> =
+    override operator fun invoke(
+        startDate: ZonedDateTime,
+        endDate: ZonedDateTime,
+    ): Result4k<List<Post>, PostFetchingError> =
         try {
             Success(selectPostsByTimeInterval(startDate, endDate))
         } catch (_: DataAccessException) {
             Failure(PostFetchingError.UNKNOWN_DATABASE_ERROR)
         }
 }
-
-//class FetchPostsByTimeInterval(
-//    private val selectPostsByTimeInterval: (ZonedDateTime, ZonedDateTime) -> List<Post>,
-//) : (ZonedDateTime, ZonedDateTime) -> Result4k<List<Post>, PostFetchingError> {
-//
-//    override operator fun invoke(startDate: ZonedDateTime, endDate: ZonedDateTime): Result4k<List<Post>, PostFetchingError> =
-//        try {
-//            Success(selectPostsByTimeInterval(startDate, endDate))
-//        } catch (_: DataAccessException) {
-//            Failure(PostFetchingError.UNKNOWN_DATABASE_ERROR)
-//        }
-//}
 
 class FetchAllPosts(
     private val selectAllPosts: () -> List<Post>,

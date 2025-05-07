@@ -8,12 +8,12 @@ import ru.yarsu.db.utils.safeLet
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.models.Post
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
+@Suppress("detekt:TooManyFunctions")
 class PostsOperations(
     private val jooqContext: DSLContext,
-): PostsDatabase {
+) : PostsDatabase {
     override fun selectPostByID(postID: Int): Post? =
         selectFromPosts()
             .where(POSTS.ID.eq(postID))
@@ -51,19 +51,15 @@ class PostsOperations(
             .fetch()
             .mapNotNull { it.toPost() }
 
-    override fun selectPostsByTimeInterval(startDate: LocalDateTime, endDate: LocalDateTime): List<Post> =
+    override fun selectPostsByTimeInterval(
+        startDate: ZonedDateTime,
+        endDate: ZonedDateTime,
+    ): List<Post> =
         selectFromPosts()
-            .where(POSTS.LAST_MODIFIED_DATE.between(startDate, endDate))
+            .where(POSTS.LAST_MODIFIED_DATE.between(startDate.toOffsetDateTime(), endDate.toOffsetDateTime()))
             .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .map { it.toPost() }
-
-//    override fun selectPostsByTimeInterval(startDate: ZonedDateTime, endDate: ZonedDateTime): List<Post> =
-//        selectFromPosts()
-//            .where(POSTS.LAST_MODIFIED_DATE.between(startDate, endDate))
-//            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
-//            .fetch()
-//            .map { it.toPost() }
 
     override fun selectAllPosts(): List<Post> =
         selectFromPosts()
@@ -75,12 +71,12 @@ class PostsOperations(
         preview: String,
         content: String,
         hashtagId: Int,
-        eventDate: LocalDateTime?,
-        creationDate: LocalDateTime,
-        lastModifiedDate: LocalDateTime,
+        eventDate: ZonedDateTime?,
+        creationDate: ZonedDateTime,
+        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int,
-        status: Status
+        status: Status,
     ): Post? =
         status
             .asDbStatus()
@@ -90,9 +86,9 @@ class PostsOperations(
                     .set(POSTS.PREVIEW, preview)
                     .set(POSTS.CONTENT, content)
                     .set(POSTS.HASHTAG, hashtagId)
-                    .set(POSTS.EVENT_DATE, eventDate)
-                    .set(POSTS.CREATION_DATE, creationDate)
-                    .set(POSTS.LAST_MODIFIED_DATE, lastModifiedDate)
+                    .set(POSTS.EVENT_DATE, eventDate?.toOffsetDateTime())
+                    .set(POSTS.CREATION_DATE, creationDate.toOffsetDateTime())
+                    .set(POSTS.LAST_MODIFIED_DATE, lastModifiedDate.toOffsetDateTime())
                     .set(POSTS.AUTHORID, authorId)
                     .set(POSTS.MODERATORID, moderatorId)
                     .set(POSTS.STATUS, dbStatus)
@@ -101,95 +97,114 @@ class PostsOperations(
                     ?.toPost()
             }
 
-    override fun updateTitle(postID: Int, newTitle: String): Post? =
+    override fun updateTitle(
+        postID: Int,
+        newTitle: String,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.TITLE, newTitle)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-    override fun updatePreview(postID: Int, newPreview: String): Post? =
+    override fun updatePreview(
+        postID: Int,
+        newPreview: String,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.PREVIEW, newPreview)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-    override fun updateContent(postID: Int, newContent: String): Post? =
+    override fun updateContent(
+        postID: Int,
+        newContent: String,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.CONTENT, newContent)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-    override fun updateHashtagId(postID: Int, newHashtagId: Int): Post? =
+    override fun updateHashtagId(
+        postID: Int,
+        newHashtagId: Int,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.HASHTAG, newHashtagId)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-    override fun updateEventDate(postID: Int, newEventBody: LocalDateTime): Post? =
+    override fun updateEventDate(
+        postID: Int,
+        newEventBody: ZonedDateTime,
+    ): Post? =
         jooqContext.update(POSTS)
-            .set(POSTS.EVENT_DATE, newEventBody)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.EVENT_DATE, newEventBody.toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-    override fun updateAuthorId(postID: Int, newAuthorId: Int): Post? =
+    override fun updateAuthorId(
+        postID: Int,
+        newAuthorId: Int,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.AUTHORID, newAuthorId)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-
-    override fun updateModeratorId(postID: Int, newModeratorId: Int): Post? =
+    override fun updateModeratorId(
+        postID: Int,
+        newModeratorId: Int,
+    ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.MODERATORID, newModeratorId)
-            .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
             ?.toPost()
 
-
-    override fun updateStatus(post: Post, newStatus: Status): Post? {
-        if (newStatus == Status.PUBLISHED)
-        {
+    override fun updateStatus(
+        post: Post,
+        newStatus: Status,
+    ): Post? {
+        if (newStatus == Status.PUBLISHED) {
             return newStatus
                 .asDbStatus()
                 .let { status ->
                     jooqContext.update(POSTS)
                         .set(POSTS.STATUS, status)
-                        .set(POSTS.CREATION_DATE, LocalDateTime.now())
-                        .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+                        .set(POSTS.CREATION_DATE, ZonedDateTime.now().toOffsetDateTime())
+                        .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
                         .where(POSTS.ID.eq(post.id))
                         .returningResult()
                         .fetchOne()
                         ?.toPost()
                 }
-        }
-        else
-        {
+        } else {
             return newStatus
                 .asDbStatus()
                 .let { status ->
                     jooqContext.update(POSTS)
                         .set(POSTS.STATUS, status)
-                        .set(POSTS.LAST_MODIFIED_DATE, LocalDateTime.now())
+                        .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
                         .where(POSTS.ID.eq(post.id))
                         .returningResult()
                         .fetchOne()
@@ -235,9 +250,9 @@ private fun Record.toPost(): Post? =
             preview = preview,
             content = content,
             hashtagId = hashtagId,
-            eventDate = this[POSTS.EVENT_DATE],
-            creationDate = creationDate,
-            lastModifiedDate = lastModifiedDate,
+            eventDate = this[POSTS.EVENT_DATE]?.toZonedDateTime(),
+            creationDate = creationDate.toZonedDateTime(),
+            lastModifiedDate = lastModifiedDate.toZonedDateTime(),
             authorId = authorId,
             moderatorId = moderatorId,
             status = status.asAppStatus(),
