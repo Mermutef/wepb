@@ -4,7 +4,7 @@
 package ru.yarsu.db.generated.tables
 
 
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 import javax.annotation.processing.Generated
 
@@ -121,17 +121,17 @@ open class Posts(
     /**
      * The column <code>public.posts.event_date</code>.
      */
-    val EVENT_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("event_date"), SQLDataType.LOCALDATETIME(6), this, "")
+    val EVENT_DATE: TableField<PostsRecord, OffsetDateTime?> = createField(DSL.name("event_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
     /**
      * The column <code>public.posts.creation_date</code>.
      */
-    val CREATION_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("creation_date"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "")
+    val CREATION_DATE: TableField<PostsRecord, OffsetDateTime?> = createField(DSL.name("creation_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.posts.last_modified_date</code>.
      */
-    val LAST_MODIFIED_DATE: TableField<PostsRecord, LocalDateTime?> = createField(DSL.name("last_modified_date"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "")
+    val LAST_MODIFIED_DATE: TableField<PostsRecord, OffsetDateTime?> = createField(DSL.name("last_modified_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.posts.authorid</code>.

@@ -4,7 +4,7 @@
 package ru.yarsu.db.generated.tables.records
 
 
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 import javax.annotation.processing.Generated
 
@@ -50,17 +50,17 @@ open class PostsRecord() : UpdatableRecordImpl<PostsRecord>(Posts.POSTS) {
         set(value): Unit = set(4, value)
         get(): Int? = get(4) as Int?
 
-    open var eventDate: LocalDateTime?
+    open var eventDate: OffsetDateTime?
         set(value): Unit = set(5, value)
-        get(): LocalDateTime? = get(5) as LocalDateTime?
+        get(): OffsetDateTime? = get(5) as OffsetDateTime?
 
-    open var creationDate: LocalDateTime?
+    open var creationDate: OffsetDateTime?
         set(value): Unit = set(6, value)
-        get(): LocalDateTime? = get(6) as LocalDateTime?
+        get(): OffsetDateTime? = get(6) as OffsetDateTime?
 
-    open var lastModifiedDate: LocalDateTime?
+    open var lastModifiedDate: OffsetDateTime?
         set(value): Unit = set(7, value)
-        get(): LocalDateTime? = get(7) as LocalDateTime?
+        get(): OffsetDateTime? = get(7) as OffsetDateTime?
 
     open var authorid: Int?
         set(value): Unit = set(8, value)
@@ -83,7 +83,7 @@ open class PostsRecord() : UpdatableRecordImpl<PostsRecord>(Posts.POSTS) {
     /**
      * Create a detached, initialised PostsRecord
      */
-    constructor(id: Int? = null, title: String? = null, preview: String? = null, content: String? = null, hashtag: Int? = null, eventDate: LocalDateTime? = null, creationDate: LocalDateTime? = null, lastModifiedDate: LocalDateTime? = null, authorid: Int? = null, moderatorid: Int? = null, status: PostStatus? = null): this() {
+    constructor(id: Int? = null, title: String? = null, preview: String? = null, content: String? = null, hashtag: Int? = null, eventDate: OffsetDateTime? = null, creationDate: OffsetDateTime? = null, lastModifiedDate: OffsetDateTime? = null, authorid: Int? = null, moderatorid: Int? = null, status: PostStatus? = null): this() {
         this.id = id
         this.title = title
         this.preview = preview

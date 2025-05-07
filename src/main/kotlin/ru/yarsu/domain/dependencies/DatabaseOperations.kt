@@ -4,5 +4,5 @@ interface DatabaseOperations {
     val userOperations: UsersDatabase
     val mediaOperations: MediaDatabase
     val postsOperations: PostsDatabase
-    val hashtagOperations: HashtagDatabase
+    val hashtagOperations: HashtagsDatabase
 }
