@@ -19,11 +19,11 @@ class CreatePosts(
         creationDate: ZonedDateTime,
         lastModifiedDate: ZonedDateTime,
         authorId: Int,
-        moderatorId: Int,
+        moderatorId: Int?,
         status: Status,
     ) -> Post?,
     private val selectHashtagById: (id: Int) -> Hashtag?,
-) : (String, String, String, Int, ZonedDateTime?, ZonedDateTime, ZonedDateTime, Int, Int, Status)
+) : (String, String, String, Int, ZonedDateTime?, Int, Int?, Status)
     -> Result4k<Post, PostCreationError> {
     override operator fun invoke(
         title: String,
@@ -31,10 +31,8 @@ class CreatePosts(
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
         authorId: Int,
-        moderatorId: Int,
+        moderatorId: Int?,
         status: Status,
     ): Result4k<Post, PostCreationError> =
         when {
@@ -50,8 +48,8 @@ class CreatePosts(
                         content,
                         hashtagId,
                         eventDate,
-                        creationDate,
-                        lastModifiedDate,
+                        ZonedDateTime.now(),
+                        ZonedDateTime.now(),
                         authorId,
                         moderatorId,
                         status

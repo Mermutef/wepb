@@ -16,7 +16,7 @@ data class Post(
     val creationDate: ZonedDateTime,
     val lastModifiedDate: ZonedDateTime,
     val authorId: Int,
-    val moderatorId: Int,
+    val moderatorId: Int?,
     val status: Status,
 ) {
     companion object {
