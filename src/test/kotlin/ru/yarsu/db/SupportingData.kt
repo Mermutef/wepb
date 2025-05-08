@@ -2,6 +2,7 @@ package ru.yarsu.db
 
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.PasswordHasher
+import java.time.ZonedDateTime
 
 @Suppress("MayBeConst")
 val validName = "Иван"
@@ -29,3 +30,22 @@ val validVKLink = "https://vk.com/id564657468"
 
 val appConfig = AppConfig.fromEnvironment()
 val appConfiguredPasswordHasher = PasswordHasher(appConfig.authConfig)
+
+@Suppress("MayBeConst")
+val validPostTitle = "validTitle"
+
+@Suppress("MayBeConst")
+val validPostPreview = "validPreview"
+
+@Suppress("MayBeConst")
+val validPostContent = "validContent"
+
+@Suppress("MayBeConst")
+val validPostDate1 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00")
+
+@Suppress("MayBeConst")
+val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00")
+
+@Suppress("MayBeConst")
+val validHashtagTitle = "validTitle"
+

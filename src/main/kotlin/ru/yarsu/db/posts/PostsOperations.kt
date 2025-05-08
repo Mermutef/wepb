@@ -56,8 +56,8 @@ class PostsOperations(
         endDate: ZonedDateTime,
     ): List<Post> =
         selectFromPosts()
-            .where(POSTS.LAST_MODIFIED_DATE.between(startDate.toOffsetDateTime(), endDate.toOffsetDateTime()))
-            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
+            .where(POSTS.CREATION_DATE.between(startDate.toOffsetDateTime(), endDate.toOffsetDateTime()))
+            .orderBy(POSTS.CREATION_DATE.desc())
             .fetch()
             .map { it.toPost() }
 
@@ -75,7 +75,7 @@ class PostsOperations(
         creationDate: ZonedDateTime,
         lastModifiedDate: ZonedDateTime,
         authorId: Int,
-        moderatorId: Int,
+        moderatorId: Int?,
         status: Status,
     ): Post? =
         status
@@ -100,10 +100,11 @@ class PostsOperations(
     override fun updateTitle(
         postID: Int,
         newTitle: String,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.TITLE, newTitle)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -112,10 +113,11 @@ class PostsOperations(
     override fun updatePreview(
         postID: Int,
         newPreview: String,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.PREVIEW, newPreview)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -124,10 +126,11 @@ class PostsOperations(
     override fun updateContent(
         postID: Int,
         newContent: String,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.CONTENT, newContent)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -136,10 +139,11 @@ class PostsOperations(
     override fun updateHashtagId(
         postID: Int,
         newHashtagId: Int,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.HASHTAG, newHashtagId)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -148,10 +152,11 @@ class PostsOperations(
     override fun updateEventDate(
         postID: Int,
         newEventBody: ZonedDateTime,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.EVENT_DATE, newEventBody.toOffsetDateTime())
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -160,10 +165,11 @@ class PostsOperations(
     override fun updateAuthorId(
         postID: Int,
         newAuthorId: Int,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.AUTHORID, newAuthorId)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -172,10 +178,11 @@ class PostsOperations(
     override fun updateModeratorId(
         postID: Int,
         newModeratorId: Int,
+        dateNow: ZonedDateTime
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.MODERATORID, newModeratorId)
-            .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
             .where(POSTS.ID.eq(postID))
             .returningResult()
             .fetchOne()
@@ -184,6 +191,7 @@ class PostsOperations(
     override fun updateStatus(
         post: Post,
         newStatus: Status,
+        dateNow: ZonedDateTime
     ): Post? {
         if (newStatus == Status.PUBLISHED) {
             return newStatus
@@ -191,8 +199,8 @@ class PostsOperations(
                 .let { status ->
                     jooqContext.update(POSTS)
                         .set(POSTS.STATUS, status)
-                        .set(POSTS.CREATION_DATE, ZonedDateTime.now().toOffsetDateTime())
-                        .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+                        .set(POSTS.CREATION_DATE, dateNow.toOffsetDateTime())
+                        .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
                         .where(POSTS.ID.eq(post.id))
                         .returningResult()
                         .fetchOne()
@@ -204,7 +212,7 @@ class PostsOperations(
                 .let { status ->
                     jooqContext.update(POSTS)
                         .set(POSTS.STATUS, status)
-                        .set(POSTS.LAST_MODIFIED_DATE, ZonedDateTime.now().toOffsetDateTime())
+                        .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
                         .where(POSTS.ID.eq(post.id))
                         .returningResult()
                         .fetchOne()
@@ -241,9 +249,8 @@ private fun Record.toPost(): Post? =
         this[POSTS.CREATION_DATE],
         this[POSTS.LAST_MODIFIED_DATE],
         this[POSTS.AUTHORID],
-        this[POSTS.MODERATORID],
         this[POSTS.STATUS]
-    ) { id, title, preview, content, hashtagId, creationDate, lastModifiedDate, authorId, moderatorId, status ->
+    ) { id, title, preview, content, hashtagId, creationDate, lastModifiedDate, authorId, status ->
         Post(
             id = id,
             title = title,
@@ -254,7 +261,7 @@ private fun Record.toPost(): Post? =
             creationDate = creationDate.toZonedDateTime(),
             lastModifiedDate = lastModifiedDate.toZonedDateTime(),
             authorId = authorId,
-            moderatorId = moderatorId,
+            moderatorId = this[POSTS.MODERATORID],
             status = status.asAppStatus(),
         )
     }

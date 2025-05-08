@@ -26,6 +26,11 @@ class HashtagsOperationsHolder(
                 hashtagsDatabase.insertHashtag(
                     title = title
                 )
+            },
+            selectHashtagByTitle = {title ->
+                hashtagsDatabase.selectHashtagByTitle(
+                    title = title
+                )
             }
         )
 
