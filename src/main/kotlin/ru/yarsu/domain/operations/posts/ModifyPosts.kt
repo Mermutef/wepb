@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 class ChangeStringFieldInPost(
     private val maxLength: Int,
     private val pattern: Regex,
-    private val changeField: (postID: Int, newField: String) -> Post?,
+    private val changeField: (postID: Int, newField: String, dateNow: ZonedDateTime) -> Post?,
 ) : (Post, String) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
         post: Post,
@@ -26,7 +26,7 @@ class ChangeStringFieldInPost(
                     Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
                 pattern != Regex("") && !pattern.matches(newField) ->
                     Failure(FieldInPostChangingError.FIELD_PATTERN_MISMATCH)
-                else -> when (val postWithNewStringField = changeField(post.id, newField)) {
+                else -> when (val postWithNewStringField = changeField(post.id, newField, ZonedDateTime.now())) {
                     is Post -> Success(postWithNewStringField)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
@@ -37,14 +37,14 @@ class ChangeStringFieldInPost(
 }
 
 class ChangeIntFieldInPost(
-    private val changeField: (postID: Int, newField: Int) -> Post?,
+    private val changeField: (postID: Int, newField: Int, dateNow: ZonedDateTime) -> Post?,
 ) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
         post: Post,
         newField: Int,
     ): Result4k<Post, FieldInPostChangingError> =
         try {
-            when (val postWithNewIntField = changeField(post.id, newField)) {
+            when (val postWithNewIntField = changeField(post.id, newField, ZonedDateTime.now())) {
                 is Post -> Success(postWithNewIntField)
                 else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
             }
@@ -54,14 +54,14 @@ class ChangeIntFieldInPost(
 }
 
 class ChangeDateFieldInPost(
-    private val changeField: (postID: Int, newField: ZonedDateTime) -> Post?,
+    private val changeField: (postID: Int, newField: ZonedDateTime, dateNow: ZonedDateTime) -> Post?,
 ) : (Post, ZonedDateTime) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
         post: Post,
         newField: ZonedDateTime,
     ): Result4k<Post, FieldInPostChangingError> =
         try {
-            when (val postWithNewDateField = changeField(post.id, newField)) {
+            when (val postWithNewDateField = changeField(post.id, newField, ZonedDateTime.now())) {
                 is Post -> Success(postWithNewDateField)
                 else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
             }
@@ -72,7 +72,7 @@ class ChangeDateFieldInPost(
 
 @Suppress("detekt:ReturnCount")
 class ChangeHashtagIdInPost(
-    private val changeHashtagId: (postID: Int, newHashtagId: Int) -> Post?,
+    private val changeHashtagId: (postID: Int, newHashtagId: Int, dateNow: ZonedDateTime) -> Post?,
     private val selectHashtagById: (id: Int) -> Hashtag?,
 ) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
@@ -83,7 +83,7 @@ class ChangeHashtagIdInPost(
             if (selectHashtagById(newHashtagId) == null) {
                 return Failure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
             }
-            return when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId)) {
+            return when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId, ZonedDateTime.now())) {
                 is Post -> Success(postWithNewHashtag)
                 else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
             }
@@ -105,7 +105,7 @@ enum class FieldInPostChangingError {
 class StatusChanger<R : Status, E : Enum<E>>(
     private val targetStatus: R,
     private val alreadyHasStatusError: E,
-    private val updateStatus: (post: Post, newStatus: Status) -> Post?,
+    private val updateStatus: (post: Post, newStatus: Status, dateNow: ZonedDateTime) -> Post?,
     private val unknownError: E,
 ) : (Post) -> Result4k<Post, E> {
     override operator fun invoke(post: Post): Result4k<Post, E> {
@@ -113,7 +113,7 @@ class StatusChanger<R : Status, E : Enum<E>>(
             return Failure(alreadyHasStatusError)
         }
 
-        return when (val newPost = updateStatus(post, targetStatus)) {
+        return when (val newPost = updateStatus(post, targetStatus, ZonedDateTime.now())) {
             is Post -> Success(newPost)
             else -> Failure(unknownError)
         }
