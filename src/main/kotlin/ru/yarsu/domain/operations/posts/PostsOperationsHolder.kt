@@ -43,10 +43,8 @@ class PostsOperationsHolder(
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
         authorId: Int,
-        moderatorId: Int,
+        moderatorId: Int?,
         status: Status,
     ) -> Result4k<Post, PostCreationError> =
         CreatePosts(
@@ -56,8 +54,8 @@ class PostsOperationsHolder(
                     content,
                     hashtagId,
                     eventDate,
-                    creationDate,
-                    lastModifiedDate,
+                    _,
+                    _,
                     authorId,
                     moderatorId,
                     status,
@@ -68,8 +66,8 @@ class PostsOperationsHolder(
                     content = content,
                     hashtagId = hashtagId,
                     eventDate = eventDate,
-                    creationDate = creationDate,
-                    lastModifiedDate = lastModifiedDate,
+                    creationDate = ZonedDateTime.now(),
+                    lastModifiedDate = ZonedDateTime.now(),
                     authorId = authorId,
                     moderatorId = moderatorId,
                     status = status

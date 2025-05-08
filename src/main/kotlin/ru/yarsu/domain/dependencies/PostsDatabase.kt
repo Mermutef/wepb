@@ -37,47 +37,55 @@ interface PostsDatabase {
         creationDate: ZonedDateTime,
         lastModifiedDate: ZonedDateTime,
         authorId: Int,
-        moderatorId: Int,
+        moderatorId: Int?,
         status: Status,
     ): Post?
 
     fun updateTitle(
         postID: Int,
         newTitle: String,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updatePreview(
         postID: Int,
         newPreview: String,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateContent(
         postID: Int,
         newContent: String,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateHashtagId(
         postID: Int,
         newHashtagId: Int,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateEventDate(
         postID: Int,
         newEventBody: ZonedDateTime,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateAuthorId(
         postID: Int,
         newAuthorId: Int,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateModeratorId(
         postID: Int,
         newModeratorId: Int,
+        dateNow: ZonedDateTime
     ): Post?
 
     fun updateStatus(
         post: Post,
         newStatus: Status,
+        dateNow: ZonedDateTime
     ): Post?
 }
