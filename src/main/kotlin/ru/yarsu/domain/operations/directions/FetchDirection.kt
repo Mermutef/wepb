@@ -1,70 +1,51 @@
-package ru.yarsu.domain.operations.media
+package ru.yarsu.domain.operations.users
 
 import dev.forkhandles.result4k.Failure
-import dev.forkhandles.result4k.Result
+import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.MediaType
+import ru.yarsu.domain.accounts.Role
+import ru.yarsu.domain.models.Direction
 import ru.yarsu.domain.models.User
 
-class FetchMediaWithMeta(
-    val fetchMediaWithMeta: (String) -> MediaFile?,
-) : (String) -> Result<MediaFile, MediaFetchingError> {
-    override fun invoke(filename: String): Result<MediaFile, MediaFetchingError> =
+class FetchDirectionByID (
+    private val selectDirectionByID: (Int) -> Direction?,
+) : (Int) -> Result4k<Direction, DirectionFetchingError> {
+
+    override operator fun invoke(directionId: Int): Result4k<Direction, DirectionFetchingError> =
         try {
-            when (val fetchedMedia = fetchMediaWithMeta(filename)) {
-                is MediaFile -> Success(fetchedMedia)
-                else -> Failure(MediaFetchingError.NO_SUCH_MEDIA)
+            when (val direction = selectDirectionByID(directionId)) {
+                is Direction -> Success(direction)
+                else -> Failure(DirectionFetchingError.NO_SUCH_DIRECTION)
             }
         } catch (_: DataAccessException) {
-            Failure(MediaFetchingError.UNKNOWN_DATABASE_ERROR)
+            Failure(DirectionFetchingError.UNKNOWN_DATABASE_ERROR)
         }
 }
 
-class FetchOnlyMedia(
-    val fetchOnlyMedia: (String) -> ByteArray?,
-) : (String) -> Result<ByteArray, MediaFetchingError> {
-    override fun invoke(filename: String): Result<ByteArray, MediaFetchingError> =
+class FetchDirectionByName (
+    private val selectDirectionByName: (String) -> Direction?,
+) : (String) -> Result4k<Direction, DirectionFetchingError> {
+
+    override operator fun invoke(directionName: String): Result4k<Direction, DirectionFetchingError> =
         try {
-            when (val fetchedMedia = fetchOnlyMedia(filename)) {
-                is ByteArray -> Success(fetchedMedia)
-                else -> Failure(MediaFetchingError.NO_SUCH_MEDIA)
-            }
+            selectDirectionByName(directionName)
+                .let { direction ->
+                    when (direction) {
+                        is Direction -> Success(direction)
+                        else -> Failure(DirectionFetchingError.NO_SUCH_DIRECTION)
+                    }
+                }
         } catch (_: DataAccessException) {
-            Failure(MediaFetchingError.UNKNOWN_DATABASE_ERROR)
+            Failure(DirectionFetchingError.UNKNOWN_DATABASE_ERROR)
         }
 }
 
-class FetchOnlyMeta(
-    val fetchOnlyMeta: (String) -> MediaFile?,
-) : (String) -> Result<MediaFile, MediaFetchingError> {
-    override fun invoke(filename: String): Result<MediaFile, MediaFetchingError> =
-        try {
-            when (val fetchedMedia = fetchOnlyMeta(filename)) {
-                is MediaFile -> Success(fetchedMedia)
-                else -> Failure(MediaFetchingError.NO_SUCH_MEDIA)
-            }
-        } catch (_: DataAccessException) {
-            Failure(MediaFetchingError.UNKNOWN_DATABASE_ERROR)
-        }
-}
 
-class FetchMediaByUserAndMediaType(
-    val fetchMediaByUserIDAndMediaType: (userID: Int, mediaType: MediaType) -> List<MediaFile>,
-) : (User, MediaType) -> Result<List<MediaFile>, MediaFetchingError> {
-    override fun invoke(
-        user: User,
-        mediaType: MediaType,
-    ): Result<List<MediaFile>, MediaFetchingError> =
-        try {
-            Success(fetchMediaByUserIDAndMediaType(user.id, mediaType))
-        } catch (_: DataAccessException) {
-            Failure(MediaFetchingError.UNKNOWN_DATABASE_ERROR)
-        }
-}
 
-enum class MediaFetchingError {
-    NO_SUCH_MEDIA,
+
+
+enum class DirectionFetchingError {
     UNKNOWN_DATABASE_ERROR,
+    NO_SUCH_DIRECTION,
 }
