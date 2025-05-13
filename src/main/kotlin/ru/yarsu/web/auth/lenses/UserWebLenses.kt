@@ -33,8 +33,6 @@ import ru.yarsu.web.lenses.GeneralWebLenses.lensOrNull
 import ru.yarsu.web.lenses.GeneralWebLenses.makeBodyLensForFields
 
 object UserWebLenses {
-    val nameFromPathLens = Path.string().of("name")
-
     val loginFromPathLens = Path.string().of("login")
 
     private val passwordFieldTemplate = FormField
