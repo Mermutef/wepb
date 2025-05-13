@@ -35,7 +35,7 @@
                                 </li>
                         {% endif %}
                             <li class="nav-item text-center">
-                                <a class="text-white nav-text-min mx-2;" href="#"><u>{{ user.name }}</u></a>
+                                <a class="text-white nav-text-min mx-2;" href="/profile/{{ user.login }}"><u>{{ user.name }}</u></a>
                             </li>
                             <li class="nav-item text-center">
                                 <a class="nav-link" href="/auth/sign-out">

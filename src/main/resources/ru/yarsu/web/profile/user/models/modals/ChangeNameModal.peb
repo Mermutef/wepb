@@ -1,0 +1,51 @@
+<div class="modal fade"
+     id="changeNameModal"
+     tabindex="-1"
+     aria-labelledby="changeNameModalLabel"
+     aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-radius_card">
+            <form method="post" action="{{ model.changePasswordLink }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeNameModalLabel"><b>Смена имени</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        {% for error in model.form.errors.values() %}
+                            {% if error.name == "no-specific" %}
+                                <p class="text-danger mb-2">
+                                    {{ error.description }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                        <label
+                                    for="name"
+                                    class="form-label">
+                                        Имя
+                            </label>
+                            <input
+                                    type="text"
+                                    class="form-control thin-input"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Иван"
+                                    value="{{ model.form.fields["name"] | first }}"
+                            >
+                        {% for error in model.form.errors.values() %}
+                            {% if error.name == "name" %}
+                                <p class="text-danger mb-2">
+                                    {{ error.description }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mx-auto">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

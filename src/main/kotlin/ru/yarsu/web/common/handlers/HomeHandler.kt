@@ -11,8 +11,5 @@ class HomeHandler(
     private val render: ContextAwareViewRender,
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
-    override fun invoke(request: Request): Response {
-        println(userLens(request))
-        return render(request) extract HomeVM(userLens(request))
-    }
+    override fun invoke(request: Request): Response = render(request) extract HomeVM(userLens(request))
 }

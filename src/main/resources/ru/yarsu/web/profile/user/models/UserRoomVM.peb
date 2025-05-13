@@ -1,0 +1,167 @@
+{# @pebvariable name="model" type="ru.yarsu.web.profile.user.models.UserRoomVM" #}
+    {% extends "../../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Личный кабинет
+    {% endblock %}
+{% block page %}
+    {% include "../../../meta/Navbar.peb" %}
+<div class="container">
+    <div class="card max-width-500 mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Профиль {{ user.login }}</h2>
+                </div>
+                <div class="row align-items-center px-3 pb-2">
+                    <div class="col-md-4 d-block">
+                        <div class="h-100" style="max-height: 100%; overflow: hidden;">
+                            <img
+                                    class="img-thumbnail w-100 h-100 border-radius_card"
+                                    style="object-fit: cover; aspect-ratio: 1/1;"
+                                    src="/static/images/profile-picture-placeholder.jpg"
+                                    alt="Profile image"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-12 align-items-center my-3">
+                        <ul class="list-group">
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeNameModal"
+                                            id="changeNameBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>Имя:</b> {{ user.name }}</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeSurnameModal"
+                                            id="changeSurnameBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>Фамилия:</b> {{ user.surname }}</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeEmailModal"
+                                            id="changeEmailBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>Почта:</b> {{ user.email }}</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changePhoneModal"
+                                            id="changePhoneBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>Телефон:</b> {{ user.phoneNumber }}</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changePasswordModal"
+                                            id="changePasswordBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>Пароль:</b> ********</span>
+                                </div>
+                            </li>
+                            <li class="list-group-item ps-2">
+                                <div class="d-flex align-items-center text-truncate">
+                                    <a
+                                            class="btn btn-sm btn-primary me-1 flex-shrink-0"
+                                            href
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeVKModal"
+                                            id="changeVKBtn"
+                                    >
+                                        <i class="bi bi-pen"></i>
+                                    </a>
+                                    <span class="text-truncate"><b>ВК:</b>
+                                        {% if user.vkLink is not null %}
+                                        {{ user.vkLink }}
+                                            {% else %}
+                                            Нет
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    {% include "./modals/ChangeEmailModal.peb" %}
+                    {% include "./modals/ChangeNameModal.peb" %}
+                    {% include "./modals/ChangePasswordModal.peb" %}
+                    {% include "./modals/ChangePhoneModal.peb" %}
+                    {% include "./modals/ChangeSurnameModal.peb" %}
+                    {% include "./modals/ChangeVKModal.peb" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script async src="/static/js/jquery-3.7.1.min.js"></script>
+<script async>
+    {% if model.showPasswordModal %}
+    $(window).on('load', function() {
+        $('#changePasswordModal').modal('show');
+    });
+{% endif %}
+    {% if model.showEmailModal %}
+        $(window).on('load', function() {
+            $('#changeEmailModal').modal('show');
+        });
+    {% endif %}
+    {% if model.showNameModal %}
+        $(window).on('load', function() {
+            $('#changeNameModal').modal('show');
+        });
+    {% endif %}
+    {% if model.showPhoneModal %}
+        $(window).on('load', function() {
+            $('#changePhoneModal').modal('show');
+        });
+    {% endif %}
+    {% if model.showSurnameModal %}
+        $(window).on('load', function() {
+            $('#changeSurnameModal').modal('show');
+        });
+    {% endif %}
+    {% if model.showVKModal %}
+        $(window).on('load', function() {
+            $('#changeVKModal').modal('show');
+        });
+    {% endif %}
+
+
+
+</script>
+{% endblock %}

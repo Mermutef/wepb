@@ -7,7 +7,7 @@
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
     <div class="container">
-        <div class="card max-width-700 mx-auto border-radius_card mt-5 mb-5">
+        <div class="card max-width-700 mx-auto border-radius_card my-3">
             <div class="row px-2">
                 <div class="col px-0">
                     <div class="card-header text-center mb-2">
@@ -130,7 +130,7 @@
                             <label
                                     for="vk_link"
                                     class="form-label">
-                                        Cсылка на страницу ВКонтакте
+                                        Cсылка на страницу ВК
                             </label>
                             <input
                                     type="url"
@@ -141,14 +141,14 @@
                                     value="{{ model.form.fields["vk_link"] | first }}"
                             >
                         </div>
-                        <div class="row">
-                            <div class="col-6 m-auto pe-0">
+                        <div class="row justify-content-center">
+                            <div class="col-10 col-lg-6">
                                 <button type="submit" class="btn btn-primary w-100">
                                     Зарегистрироваться
                                 </button>
                             </div>
                         </div>
-                        <p class="mt-3 mb-1 text-center">
+                        <p class="mt-2 mb-3 text-center">
                             <a href="{{ model.signInLink }}" class="text-black">
                                 Уже есть аккаунт? Вход
                             </a>
