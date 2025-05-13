@@ -16,6 +16,8 @@ import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
+import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.profileRoutes
 import java.io.InputStream
 
 @Suppress("LongParameterList")
@@ -32,6 +34,9 @@ private fun createMainRouter(
         config = config,
         operations = operations,
         jwtTools = jwtTools
+    ),
+    PROFILE_SEGMENT bind profileRoutes(
+        contextTools = contextTools,
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )

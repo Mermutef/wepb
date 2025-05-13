@@ -35,6 +35,8 @@ import ru.yarsu.web.lenses.GeneralWebLenses.makeBodyLensForFields
 object UserWebLenses {
     val nameFromPathLens = Path.string().of("name")
 
+    val loginFromPathLens = Path.string().of("login")
+
     private val passwordFieldTemplate = FormField
         .nonEmptyString()
         .nonBlankString()
@@ -171,10 +173,10 @@ object UserWebLenses {
     }
 
     fun Request.authorizeUserFromPath(userLens: RequestContextLens<User?>): Result<User, UserFetchingError> {
-        return lensOrNull(nameFromPathLens, this)?.let { userNameFromPath ->
+        return lensOrNull(loginFromPathLens, this)?.let { userLoginFromPath ->
             val authUser = userLens(this)
             when {
-                authUser is User && authUser.name == userNameFromPath -> Success(authUser)
+                authUser is User && authUser.login == userLoginFromPath -> Success(authUser)
                 else -> Failure(UserFetchingError.NO_SUCH_USER)
             }
         } ?: Failure(UserFetchingError.NO_SUCH_USER)
