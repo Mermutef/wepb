@@ -3,6 +3,7 @@ package ru.yarsu.web.profile.user.models
 import org.http4k.template.ViewModel
 import ru.yarsu.web.form.CustomWebForm
 
+@Suppress("detekt:LongParameterList")
 class UserRoomVM(
     val form: CustomWebForm? = null,
     val showPasswordModal: Boolean = false,

@@ -2,18 +2,15 @@ package ru.yarsu.web.profile.user.handlers
 
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Success
-import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.with
 import org.http4k.lens.RequestContextLens
 import org.http4k.lens.WebForm
-import org.http4k.lens.webForm
 import ru.yarsu.domain.models.User
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.auth.lenses.UserWebLenses.emailField
-import ru.yarsu.web.auth.lenses.UserWebLenses.loginField
 import ru.yarsu.web.auth.lenses.UserWebLenses.nameField
 import ru.yarsu.web.auth.lenses.UserWebLenses.phoneNumberField
 import ru.yarsu.web.auth.lenses.UserWebLenses.surnameField
@@ -49,5 +46,4 @@ class UserHandler(
                 )
             }
         }
-
 }
