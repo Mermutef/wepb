@@ -109,6 +109,14 @@ data class User (
         val namePattern = Regex("^[а-яА-Я -]+\$")
         val phonePattern = Regex("^79\\d{9}\$")
     }
+
+    fun isModerator() = role == Role.MODERATOR
+
+    fun isAdmin() = role == Role.ADMIN
+
+    fun isWriter() = role == Role.WRITER
+
+    fun isReader() = role == Role.READER
 }
 
 enum class UserValidationResult {
