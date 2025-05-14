@@ -1,4 +1,19 @@
-// todo удалить Suppress после наполнения файла контентом
-@file:Suppress("ktlint:standard:no-empty-file")
-
 package ru.yarsu.web.profile.admin
+import dev.forkhandles.result4k.Failure
+import dev.forkhandles.result4k.Result
+import dev.forkhandles.result4k.Success
+import org.http4k.core.*
+import org.http4k.lens.RequestContextLens
+import ru.yarsu.db.posts.PostsOperations
+import ru.yarsu.domain.accounts.Role
+import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.User
+import ru.yarsu.domain.operations.posts.PostFetchingError
+import ru.yarsu.domain.operations.posts.PostsOperationsHolder
+import ru.yarsu.domain.operations.users.UserOperationsHolder
+import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
+import ru.yarsu.web.context.templates.ContextAwareViewRender
+import ru.yarsu.web.extract
+import ru.yarsu.web.notFound
+import ru.yarsu.web.profile.writer.models.AdminRoomVM
+
