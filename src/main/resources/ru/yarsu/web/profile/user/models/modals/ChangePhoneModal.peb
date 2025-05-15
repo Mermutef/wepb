@@ -6,41 +6,39 @@
 >
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-radius_card">
-            <form method="post" action="{{ model.changePasswordLink }}">
+            <form method="post" action="{{ model.changePhoneLink }}">
                 <div class="modal-header">
                     <h5 class="modal-title" id="changePhoneModalLabel"><b>Смена телефона</b></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        {% for error in model.form.errors.values() %}
-                            {% if error.name == "no-specific" %}
-                                <p class="text-danger mb-2">
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "no-specific" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
-                                </p>
-                            {% endif %}
-                        {% endfor %}
-                        <label
-                                    for="phoneNumber"
-                                    class="form-label">
-                                        Номер телефона
-                            </label>
-                            <input
-                                    type="tel"
-                                    class="form-control thin-input"
-                                    id="phoneNumber"
-                                    name="phoneNumber"
-                                    placeholder="79991112233"
-                                    value="{{ model.form.fields["phoneNumber"] | first }}"
-                            >
-                        {% for error in model.form.errors.values() %}
-                            {% if error.name == "old-password" %}
-                                <p class="text-danger mb-2">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="phoneNumber"
+                            class="form-label">
+                        Номер телефона
+                    </label>
+                    <input
+                            type="tel"
+                            class="form-control thin-input"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            placeholder="79991112233"
+                            value="{{ model.form.fields["phoneNumber"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "phoneNumber" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
-                                </p>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary mx-auto">Сохранить</button>

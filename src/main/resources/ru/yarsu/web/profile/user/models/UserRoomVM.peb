@@ -10,7 +10,7 @@
         <div class="row px-2">
             <div class="col px-0">
                 <div class="card-header text-center mb-2">
-                    <h2 class="bold-heavy">Профиль {{ user.login }}</h2>
+                    <h2 class="bold-heavy">{{ user.login }}</h2>
                 </div>
                 <div class="row align-items-center px-3 pb-2">
                     <div class="col-md-4 d-block">
@@ -128,8 +128,8 @@
         </div>
     </div>
 </div>
-<script async src="/static/js/jquery-3.7.1.min.js"></script>
-<script async>
+<script src="/static/js/jquery-3.7.1.min.js"></script>
+<script>
     {% if model.showPasswordModal %}
     $(window).on('load', function() {
         $('#changePasswordModal').modal('show');
@@ -160,8 +160,5 @@
             $('#changeVKModal').modal('show');
         });
     {% endif %}
-
-
-
 </script>
 {% endblock %}

@@ -70,7 +70,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { surname: String ->
                     surname.takeIf {
-                        surname.length in 1..MAX_NAME_LENGTH && namePattern.matches(surname)
+                        surname.length in 1..MAX_SURNAME_LENGTH && namePattern.matches(surname)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -97,9 +97,9 @@ object UserWebLenses {
         .map(
             BiDiMapping(
                 asOut = { phone: String ->
-                    phone.takeIf {
-                        phone.length in 1..MAX_LOGIN_LENGTH && phonePattern.matches(phone.filter { it.isDigit() })
-                    } ?: throw IllegalArgumentException("")
+                    phone.filter { it.isDigit() }.takeIf {
+                        phone.length in 1..MAX_PHONE_NUMBER_LENGTH && phonePattern.matches(phone)
+                    }?.replaceFirstChar { "7" } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
             )
@@ -111,14 +111,9 @@ object UserWebLenses {
         .map(
             BiDiMapping(
                 asOut = { email: String ->
-                    (
-                        email.takeIf {
-                            email.length in 1..MAX_EMAIL_LENGTH &&
-                                emailPattern.matches(email)
-                        }
-                            ?: throw IllegalArgumentException("")
-                    ).takeIf {
-                        emailPattern.matches(email)
+                    email.takeIf {
+                        email.length in 1..MAX_EMAIL_LENGTH &&
+                            emailPattern.matches(email)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -132,7 +127,7 @@ object UserWebLenses {
             BiDiMapping(
                 asOut = { vkLink: String ->
                     vkLink.takeIf {
-                        vkLink.length in 1..MAX_LOGIN_LENGTH && vkLinkPattern.matches(vkLink)
+                        vkLink.length in 1..MAX_VK_LINK_LENGTH && vkLinkPattern.matches(vkLink)
                     } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
@@ -142,10 +137,13 @@ object UserWebLenses {
     val repeatPasswordField = FormField.nonEmptyString().nonBlankString()
         .required("repeat_password", SignUpError.REPEAT_PASSWORD_IS_BLANK_OR_EMPTY.errorText)
 
+    val oldPasswordField = FormField.nonEmptyString().nonBlankString()
+        .required("old-password", "Неверный текущий пароль")
+
     val specialSignInField = FormField.nonEmptyString().nonBlankString()
         .required("login_or_phone_or_email", SignInError.SIGN_IN_DATA_IS_BLANK_OR_EMPTY.errorText)
 
-    val signUpLens = makeBodyLensForFields(
+    val signUpForm = makeBodyLensForFields(
         nameField,
         surnameField,
         loginField,
@@ -156,7 +154,7 @@ object UserWebLenses {
         vkLinkField
     )
 
-    val sigInLens = makeBodyLensForFields(
+    val sigInForm = makeBodyLensForFields(
         specialSignInField,
         passwordSignInField,
     )

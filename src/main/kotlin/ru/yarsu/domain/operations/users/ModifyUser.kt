@@ -47,7 +47,7 @@ enum class PasswordChangingError {
 class ChangeStringField(
     private val maxLength: Int,
     private val pattern: Regex,
-    private val changeName: (userID: Int, newName: String) -> User?,
+    private val changeField: (userID: Int, newName: String) -> User?,
 ) : (User, String) -> Result4k<User, FieldChangingError> {
     override operator fun invoke(
         user: User,
@@ -61,8 +61,8 @@ class ChangeStringField(
                     Failure(FieldChangingError.FIELD_IS_TOO_LONG)
                 !pattern.matches(newField) ->
                     Failure(FieldChangingError.FIELD_PATTERN_MISMATCH)
-                else -> when (val userWithNewPassword = changeName(user.id, newField)) {
-                    is User -> Success(userWithNewPassword)
+                else -> when (val updatedUser = changeField(user.id, newField)) {
+                    is User -> Success(updatedUser)
 
                     else -> Failure(FieldChangingError.UNKNOWN_CHANGING_ERROR)
                 }

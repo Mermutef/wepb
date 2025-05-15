@@ -1,161 +1,201 @@
 {# @pebvariable name="model" type="ru.yarsu.web.auth.models.SignUpVM" #}
 
-{% extends "../../meta/BaseLayout.peb" %}
-{% block title %}
-    Sign Up
-{% endblock %}
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Регистрация
+    {% endblock %}
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
-    <div class="container">
-        <div class="card max-width-700 mx-auto border-radius_card my-3">
-            <div class="row px-2">
-                <div class="col px-0">
-                    <div class="card-header text-center mb-2">
-                        <h2 class="bold-heavy">Регистрация</h2>
-                    </div>
-                    <form method="post" class="px-3">
-                        <div class="mb-3">
-                                {% for error in model.form.errors.values() %}
-                                <p class="text-danger">
-                                        {{error.description}}
-                                </p>
-                                {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="name"
-                                    class="form-label">
-                                        Имя
-                            </label>
-                            <input
-                                    type="text"
-                                    class="form-control thin-input"
-                                    id="name"
-                                    name="name"
-                                    placeholder="Иван"
-                                    value="{{ model.form.fields["name"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="surname"
-                                    class="form-label">
-                                        Фамилия
-                            </label>
-                            <input
-                                    type="text"
-                                    class="form-control thin-input"
-                                    id="surname"
-                                    name="surname"
-                                    placeholder="Иванов"
-                                    value="{{ model.form.fields["surname"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="login"
-                                    class="form-label">
-                                        Логин
-                            </label>
-                            <input
-                                    type="text"
-                                    class="form-control thin-input"
-                                    id="login"
-                                    name="login"
-                                    placeholder="iivanov"
-                                    value="{{ model.form.fields["login"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="phoneNumber"
-                                    class="form-label">
-                                        Номер телефона
-                            </label>
-                            <input
-                                    type="tel"
-                                    class="form-control thin-input"
-                                    id="phoneNumber"
-                                    name="phoneNumber"
-                                    placeholder="79991112233"
-                                    value="{{ model.form.fields["phoneNumber"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="email"
-                                    class="form-label">
-                                        Почта
-                            </label>
-                            <input
-                                    type="email"
-                                    class="form-control thin-input"
-                                    id="email"
-                                    name="email"
-                                    placeholder="example@mail.com"
-                                    value="{{ model.form.fields["email"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="password"
-                                    class="form-label">
-                                        Пароль
-                            </label>
-                            <input
-                                    type="password"
-                                    class="form-control thin-input"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Пароль"
-                                    value="{{ model.form.fields["password"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="repeat_password"
-                                    class="form-label">
-                                        Повторите пароль
-                            </label>
-                            <input
-                                    type="password"
-                                    class="form-control thin-input"
-                                    id="repeat_password"
-                                    name="repeat_password"
-                                    placeholder="Повтор пароля"
-                                    value="{{ model.form.fields["repeat_password"] | first }}"
-                            >
-                        </div>
-                        <div class="mb-3">
-                            <label
-                                    for="vk_link"
-                                    class="form-label">
-                                        Cсылка на страницу ВК
-                            </label>
-                            <input
-                                    type="url"
-                                    class="form-control thin-input"
-                                    id="vk_link"
-                                    name="vk_link"
-                                    placeholder="https://vk.com/id000"
-                                    value="{{ model.form.fields["vk_link"] | first }}"
-                            >
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-10 col-lg-6">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    Зарегистрироваться
-                                </button>
-                            </div>
-                        </div>
-                        <p class="mt-2 mb-3 text-center">
-                            <a href="{{ model.signInLink }}" class="text-black">
-                                Уже есть аккаунт? Вход
-                            </a>
-                        </p>
-                    </form>
+<div class="container">
+    <div class="card max-width-700 mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Регистрация</h2>
                 </div>
+                <form method="post" class="px-3">
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "no-specific" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="name"
+                            class="form-label">
+                        Имя
+                    </label>
+                    <input
+                            type="text"
+                            class="form-control thin-input"
+                            id="name"
+                            name="name"
+                            placeholder="Иван"
+                            value="{{ model.form.fields["name"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="surname"
+                            class="form-label">
+                        Фамилия
+                    </label>
+                    <input
+                            type="text"
+                            class="form-control thin-input"
+                            id="surname"
+                            name="surname"
+                            placeholder="Иванов"
+                            value="{{ model.form.fields["surname"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="login"
+                            class="form-label">
+                        Логин
+                    </label>
+                    <input
+                            type="text"
+                            class="form-control thin-input"
+                            id="login"
+                            name="login"
+                            placeholder="iivanov"
+                            value="{{ model.form.fields["login"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="phoneNumber"
+                            class="form-label">
+                        Номер телефона
+                    </label>
+                    <input
+                            type="tel"
+                            class="form-control thin-input"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            placeholder="79991112233"
+                            value="{{ model.form.fields["phoneNumber"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="email"
+                            class="form-label">
+                        Почта
+                    </label>
+                    <input
+                            type="email"
+                            class="form-control thin-input"
+                            id="email"
+                            name="email"
+                            placeholder="example@mail.com"
+                            value="{{ model.form.fields["email"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="password"
+                            class="form-label">
+                        Пароль
+                    </label>
+                    <input
+                            type="password"
+                            class="form-control thin-input"
+                            id="password"
+                            name="password"
+                            placeholder="Пароль"
+                            value="{{ model.form.fields["password"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="repeat_password"
+                            class="form-label">
+                        Повторите пароль
+                    </label>
+                    <input
+                            type="password"
+                            class="form-control thin-input"
+                            id="repeat_password"
+                            name="repeat_password"
+                            placeholder="Повтор пароля"
+                            value="{{ model.form.fields["repeat_password"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="vk_link"
+                            class="form-label">
+                        Cсылка на страницу ВК
+                    </label>
+                    <input
+                            type="url"
+                            class="form-control thin-input"
+                            id="vk_link"
+                            name="vk_link"
+                            placeholder="https://vk.com/id000"
+                            value="{{ model.form.fields["vk_link"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "password" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="row justify-content-center">
+                        <div class="col-10 col-lg-6">
+                            <button type="submit" class="btn btn-primary w-100">
+                                Зарегистрироваться
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mt-2 mb-3 text-center">
+                        <a href="{{ model.signInLink }}" class="text-black">
+                            Уже есть аккаунт? Вход
+                        </a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

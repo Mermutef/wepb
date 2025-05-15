@@ -42,7 +42,8 @@ private fun createMainRouter(
     ),
     USER bind userRoutes(
         contextTools = contextTools,
-//        operations = operations,
+        operations = operations,
+        config = config,
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
