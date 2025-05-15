@@ -16,9 +16,7 @@ interface PostsDatabase {
 
     fun selectPostsByModeratorId(moderatorId: Int): List<Post>
 
-    fun selectPostByStatus(status: Status): List<Post>
-
-//    fun selectPostsByTimeInterval(startDate: ZonedDateTime, endDate: ZonedDateTime): List<Post>
+    fun selectPostsByStatus(status: Status): List<Post>
 
     fun selectPostsByTimeInterval(
         startDate: ZonedDateTime,

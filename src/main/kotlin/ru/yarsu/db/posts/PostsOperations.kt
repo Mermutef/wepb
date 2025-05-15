@@ -28,7 +28,7 @@ class PostsOperations(
 
     override fun selectNNewPosts(countN: Int): List<Post> =
         selectFromPosts()
-            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
+            .orderBy(POSTS.CREATION_DATE.desc())
             .limit(countN)
             .fetch()
             .mapNotNull { it.toPost() }
@@ -45,7 +45,7 @@ class PostsOperations(
             .fetch()
             .mapNotNull { it.toPost() }
 
-    override fun selectPostByStatus(status: Status): List<Post> =
+    override fun selectPostsByStatus(status: Status): List<Post> =
         selectFromPosts()
             .where(POSTS.STATUS.eq(status.asDbStatus()))
             .fetch()

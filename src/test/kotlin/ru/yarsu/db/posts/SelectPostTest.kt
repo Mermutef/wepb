@@ -15,6 +15,7 @@ import ru.yarsu.db.validPass
 import ru.yarsu.db.validPhoneNumber
 import ru.yarsu.db.validPostContent
 import ru.yarsu.db.validPostDate1
+import ru.yarsu.db.validPostDate2
 import ru.yarsu.db.validPostPreview
 import ru.yarsu.db.validPostTitle
 import ru.yarsu.db.validSecondPhoneNumber
@@ -153,24 +154,6 @@ class SelectPostTest: TestcontainerSpec({ context ->
         fetchedPost.status.shouldBe(Status.DRAFT)
     }
 
-    test("Post can be fetched by valid ID") {
-        val fetchedPost =
-            postOperations
-                .selectPostByID(insertedPost.id)
-                .shouldNotBeNull()
-
-        fetchedPost.title.shouldBe(validPostTitle)
-        fetchedPost.preview.shouldBe(validPostPreview)
-        fetchedPost.content.shouldBe(validPostContent)
-        fetchedPost.hashtagId.shouldBe(insertedHashtag.id)
-        fetchedPost.eventDate.shouldBe(validPostDate1)
-        fetchedPost.creationDate.shouldBe(validPostDate1)
-        fetchedPost.lastModifiedDate.shouldBe(validPostDate1)
-        fetchedPost.authorId.shouldBe(insertedWriter.id)
-        fetchedPost.moderatorId.shouldBe(insertedModerator.id)
-        fetchedPost.status.shouldBe(Status.DRAFT)
-    }
-
     test("Post can be fetched by valid hashtagId") {
         postOperations
             .insertPost(
@@ -239,4 +222,205 @@ class SelectPostTest: TestcontainerSpec({ context ->
         fetchedPost.status.shouldBe(Status.DRAFT)
     }
 
+    test("N new posts can be fetched (n < count, n = count, n > count)") {
+        for (i in 1..3)
+            postOperations
+                .insertPost(
+                    validPostTitle,
+                    validPostPreview,
+                    validPostContent,
+                    insertedHashtag.id,
+                    validPostDate1,
+                    validPostDate2,
+                    validPostDate2,
+                    insertedWriter.id,
+                    insertedModerator.id,
+                    Status.DRAFT
+                ).shouldNotBeNull()
+        val fetchedPosts = postOperations
+            .selectNNewPosts(3)
+            .shouldNotBeNull()
+
+        fetchedPosts.size.shouldBe(3)
+        for(i in 0..2)
+            fetchedPosts[i].creationDate.shouldBe(validPostDate2)
+
+        postOperations
+            .selectNNewPosts(4)
+            .shouldNotBeNull()
+            .size
+            .shouldBe(4)
+
+        postOperations
+            .selectNNewPosts(4000)
+            .shouldNotBeNull()
+            .size
+            .shouldBe(4)
+    }
+
+    test("Post can be fetched by valid authorId") {
+        for (i in 1..2)
+            postOperations
+                .insertPost(
+                    validPostTitle,
+                    validPostPreview,
+                    validPostContent,
+                    insertedHashtag.id,
+                    validPostDate1,
+                    validPostDate1,
+                    validPostDate1,
+                    insertedWriter.id,
+                    insertedModerator.id,
+                    Status.DRAFT
+                ).shouldNotBeNull()
+
+        postOperations
+            .insertPost(
+                validPostTitle,
+                validPostPreview,
+                validPostContent,
+                insertedHashtag.id,
+                validPostDate1,
+                validPostDate1,
+                validPostDate1,
+                insertedModerator.id,
+                insertedWriter.id,
+                Status.DRAFT
+            ).shouldNotBeNull()
+
+        val fetchedPosts = postOperations
+            .selectPostsByAuthorId(insertedWriter.id)
+
+        fetchedPosts.size.shouldBe(3)
+        for (i in 0..2)
+            fetchedPosts[i].authorId.shouldBe(insertedWriter.id)
+
+        postOperations
+            .selectPostsByAuthorId(insertedModerator.id)
+            .size
+            .shouldBe(1)
+    }
+
+    test("Post can be fetched by valid moderatorId") {
+        for (i in 1..2)
+            postOperations
+                .insertPost(
+                    validPostTitle,
+                    validPostPreview,
+                    validPostContent,
+                    insertedHashtag.id,
+                    validPostDate1,
+                    validPostDate1,
+                    validPostDate1,
+                    insertedWriter.id,
+                    insertedModerator.id,
+                    Status.DRAFT
+                ).shouldNotBeNull()
+
+        postOperations
+            .insertPost(
+                validPostTitle,
+                validPostPreview,
+                validPostContent,
+                insertedHashtag.id,
+                validPostDate1,
+                validPostDate1,
+                validPostDate1,
+                insertedModerator.id,
+                insertedWriter.id,
+                Status.DRAFT
+            ).shouldNotBeNull()
+
+        val fetchedPosts = postOperations
+            .selectPostsByModeratorId(insertedModerator.id)
+
+        fetchedPosts.size.shouldBe(3)
+        for (i in 0..2)
+            fetchedPosts[i].moderatorId.shouldBe(insertedModerator.id)
+
+        postOperations
+            .selectPostsByModeratorId(insertedWriter.id)
+            .size
+            .shouldBe(1)
+    }
+
+    test("Post can be fetched by valid status") {
+        for (i in 1..3)
+            postOperations
+                .insertPost(
+                    validPostTitle,
+                    validPostPreview,
+                    validPostContent,
+                    insertedHashtag.id,
+                    validPostDate1,
+                    validPostDate1,
+                    validPostDate1,
+                    insertedWriter.id,
+                    insertedModerator.id,
+                    Status.MODERATION
+                ).shouldNotBeNull()
+
+        postOperations
+            .insertPost(
+                validPostTitle,
+                validPostPreview,
+                validPostContent,
+                insertedHashtag.id,
+                validPostDate1,
+                validPostDate1,
+                validPostDate1,
+                insertedModerator.id,
+                insertedWriter.id,
+                Status.HIDDEN
+            ).shouldNotBeNull()
+
+        val fetchedPosts = postOperations
+            .selectPostsByStatus(Status.MODERATION)
+
+        fetchedPosts.size.shouldBe(3)
+        for (i in 0..2)
+            fetchedPosts[i].status.shouldBe(Status.MODERATION)
+
+        postOperations
+            .selectPostsByStatus(Status.HIDDEN)
+            .size
+            .shouldBe(1)
+    }
+
+    test("Post can be fetched by valid time interval") {
+        for (i in 1..3)
+            postOperations
+                .insertPost(
+                    validPostTitle,
+                    validPostPreview,
+                    validPostContent,
+                    insertedHashtag.id,
+                    validPostDate1,
+                    validPostDate2,
+                    validPostDate2,
+                    insertedWriter.id,
+                    insertedModerator.id,
+                    Status.DRAFT
+                ).shouldNotBeNull()
+
+        val fetchedPosts = postOperations
+            .selectPostsByTimeInterval(validPostDate2, validPostDate2)
+
+        fetchedPosts.size.shouldBe(3)
+
+        for (i in 0..2)
+            fetchedPosts[i].creationDate.shouldBe(validPostDate2)
+
+        val fetchedPosts2 = postOperations
+            .selectPostsByTimeInterval(validPostDate1, validPostDate1)
+
+        fetchedPosts2.size.shouldBe(1)
+
+        fetchedPosts2[0].creationDate.shouldBe(validPostDate1)
+
+        postOperations
+            .selectPostsByTimeInterval(validPostDate1, validPostDate2)
+            .size
+            .shouldBe(4)
+    }
 })

@@ -30,7 +30,7 @@ class PostsOperationsHolder(
         FetchPostsByModeratorId { moderatorId: Int -> postsDatabase.selectPostsByModeratorId(moderatorId) }
 
     val fetchPostsByStatus: (Status) -> Result4k<List<Post>, PostFetchingError> =
-        FetchPostByStatus { status: Status -> postsDatabase.selectPostByStatus(status) }
+        FetchPostByStatus { status: Status -> postsDatabase.selectPostsByStatus(status) }
 
     val fetchPostsByTimeInterval: (ZonedDateTime, ZonedDateTime) -> Result4k<List<Post>, PostFetchingError> =
         FetchPostsByTimeInterval { startDate: ZonedDateTime, endDate: ZonedDateTime ->
