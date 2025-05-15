@@ -26,7 +26,7 @@ class SignUpHandler(
     private val jwtTools: JWTTools,
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
-        val form = UserWebLenses.signUpLens(request)
+        val form = UserWebLenses.signUpForm(request)
         return if (form.errors.isNotEmpty()) {
             render(request) extract SignUpVM(form.toCustomForm())
         } else {
@@ -34,7 +34,7 @@ class SignUpHandler(
                 is Failure -> {
                     render(request) extract SignUpVM(
                         form = form.toCustomForm().addFailure(
-                            name = userInsertResult.reason.toString(),
+                            name = "no-specific",
                             description = userInsertResult.reason.errorText
                         ),
                     )
@@ -45,7 +45,7 @@ class SignUpHandler(
                         is Failure -> {
                             render(request) extract SignUpVM(
                                 form = form.toCustomForm().addFailure(
-                                    name = SignUpError.TOKEN_CREATION_ERROR.toString(),
+                                    name = "no-specific",
                                     description = SignUpError.TOKEN_CREATION_ERROR.errorText
                                 ),
                             )

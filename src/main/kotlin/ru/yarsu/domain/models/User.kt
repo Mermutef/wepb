@@ -107,7 +107,7 @@ data class User (
         val loginPattern = Regex("^[\\w-.]+\$")
         val vkLinkPattern = Regex("^https:\\/\\/vk.com\\/[\\w.-]+\$")
         val namePattern = Regex("^[а-яА-Я -]+\$")
-        val phonePattern = Regex("^79\\d{9}\$")
+        val phonePattern = Regex("^[78]9\\d{9}\$")
     }
 
     fun isModerator() = role == Role.MODERATOR

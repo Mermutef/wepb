@@ -31,7 +31,7 @@ class SignInHandler(
     }
 
     override fun invoke(request: Request): Response {
-        val form = UserWebLenses.sigInLens(request)
+        val form = UserWebLenses.sigInForm(request)
         return if (form.errors.isNotEmpty()) {
             render(request) extract SignInVM(form.toCustomForm())
         } else {
@@ -39,7 +39,7 @@ class SignInHandler(
                 is Failure -> {
                     render(request) extract SignInVM(
                         form = form.toCustomForm().addFailure(
-                            name = signInResult.reason.toString(),
+                            name = "no-specific",
                             description = signInResult.reason.errorText
                         )
                     )
@@ -50,7 +50,7 @@ class SignInHandler(
                         is Failure -> {
                             render(request) extract SignInVM(
                                 form = form.toCustomForm().addFailure(
-                                    name = SignInError.TOKEN_CREATION_ERROR.toString(),
+                                    name = "no-specific",
                                     description = SignInError.TOKEN_CREATION_ERROR.errorText,
                                 )
                             )
