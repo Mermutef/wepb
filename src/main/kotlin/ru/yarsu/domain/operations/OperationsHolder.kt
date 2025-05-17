@@ -19,7 +19,7 @@ class OperationsHolder(
     val mediaOperations: MediaOperationsHolder = MediaOperationsHolder(database.mediaOperations)
 
     val postOperations: PostsOperationsHolder =
-        PostsOperationsHolder(database.postsOperations, database.hashtagOperations)
+        PostsOperationsHolder(database.postsOperations, database.hashtagOperations, database.userOperations)
 
     val hashtagOperations: HashtagsOperationsHolder =
         HashtagsOperationsHolder(database.hashtagOperations, database.postsOperations)

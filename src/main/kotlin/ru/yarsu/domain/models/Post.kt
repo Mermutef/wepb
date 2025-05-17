@@ -9,9 +9,6 @@ data class Post(
     val preview: String,
     val content: String,
     val hashtagId: Int,
-//    val eventDate: ZonedDateTime?,
-//    val creationDate: ZonedDateTime,
-//    val lastModifiedDate: ZonedDateTime,
     val eventDate: ZonedDateTime?,
     val creationDate: ZonedDateTime,
     val lastModifiedDate: ZonedDateTime,
@@ -34,7 +31,6 @@ data class Post(
             return when {
                 title.isBlank() -> PostValidationResult.TITLE_IS_BLANK_OR_EMPTY
                 title.length > MAX_TITLE_LENGTH -> PostValidationResult.TITLE_IS_TOO_LONG
-                !titlePattern.matches(title) -> PostValidationResult.TITLE_PATTERN_MISMATCH
                 else -> null
             }
         }
@@ -43,7 +39,6 @@ data class Post(
             return when {
                 preview.isBlank() -> PostValidationResult.PREVIEW_IS_BLANK_OR_EMPTY
                 preview.length > MAX_PREVIEW_LENGTH -> PostValidationResult.PREVIEW_IS_TOO_LONG
-//                !previewPattern.matches(preview) -> PostValidationResult.PREVIEW_PATTERN_MISMATCH
                 else -> null
             }
         }
@@ -57,9 +52,6 @@ data class Post(
 
         const val MAX_TITLE_LENGTH = 100
         const val MAX_PREVIEW_LENGTH = 256
-
-        val titlePattern = Regex("^[\\w-.]+\$")
-//        val previewPattern = Regex("^[\\w-.]+$")
     }
 }
 

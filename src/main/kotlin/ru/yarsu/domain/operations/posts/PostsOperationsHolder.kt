@@ -4,12 +4,14 @@ import dev.forkhandles.result4k.Result4k
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
+import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.models.Post
 import java.time.ZonedDateTime
 
 class PostsOperationsHolder(
     private val postsDatabase: PostsDatabase,
     private val hashtagsDatabase: HashtagsDatabase,
+    private val userDatabase: UsersDatabase
 ) {
 
     val fetchAllPosts: () -> Result4k<List<Post>, PostFetchingError> = FetchAllPosts { postsDatabase.selectAllPosts() }
@@ -73,13 +75,14 @@ class PostsOperationsHolder(
                     status = status
                 )
             },
-            selectHashtagById = hashtagsDatabase::selectHashtagByID
+            selectHashtagById = hashtagsDatabase::selectHashtagByID,
+            selectUserById = userDatabase::selectUserByID
         )
 
     val changeTitle: (Post, String) -> Result4k<Post, FieldInPostChangingError> =
         ChangeStringFieldInPost(
             maxLength = Post.MAX_TITLE_LENGTH,
-            pattern = Post.titlePattern,
+            pattern = Regex(""),
             changeField = postsDatabase::updateTitle
         )
 
