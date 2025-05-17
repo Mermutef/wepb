@@ -1,4 +1,4 @@
-package ru.yarsu.web.profile.writer.models
+package ru.yarsu.web.profile.moderator.models
 
 import org.http4k.template.ViewModel
 import ru.yarsu.domain.models.Hashtag
@@ -6,7 +6,7 @@ import ru.yarsu.domain.models.MIDDLE_HASHTAG_LENGTH
 import ru.yarsu.domain.models.MIDDLE_TITLE_LENGTH
 import ru.yarsu.domain.models.Post
 
-class WriterRoomVM(
+class ModeratorRoomVM(
     val postsWithHashtag: Map<Post, Hashtag>,
 ) : ViewModel {
     fun postLink(post: Post) = "posts/${post.id}"

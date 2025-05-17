@@ -19,21 +19,31 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto d-flex align-items-center">
                     {% if user != null %}
+                        {% if user.isWriter() %}
                             <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Список постов</a>
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Новый пост</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/profile/{{ user.login }}">Мои посты</a>
+                            </li>
+                        {% elseif user.isAdmin() %}
+                            <li class="nav-item">
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Список пользователей</a>
+                            </li>
+                        {% elseif user.isModerator() %}
+                            <li class="nav-item">
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Новый пост</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/profile/{{ user.login }}">Модерация постов</a>
+                            </li>
+                        {% endif %}
+                            <li class="nav-item">
+                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/">Список постов</a>
                             </li>
                             <li class="nav-item">
                                 <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">О нас</a>
                             </li>
-                        {% if model.user.isWriter() %}
-                                <li class="nav-item">
-                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Новый пост</a>
-                                </li>
-                        {% elseif model.user.isAdmin() %}
-                                <li class="nav-item">
-                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Список пользователей</a>
-                                </li>
-                        {% endif %}
                             <li class="nav-item text-center">
                                 <a class="text-white nav-text-min mx-2;" href="/profile/{{ user.login }}"><u>{{ user.name }}</u></a>
                             </li>
