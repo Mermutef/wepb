@@ -19,8 +19,6 @@ class ChangeTitleInHashtag(
                     Failure(FieldInHashtagChangingError.FIELD_IS_BLANK_OR_EMPTY)
                 newTitle.length > Hashtag.MAX_TITLE_LENGTH ->
                     Failure(FieldInHashtagChangingError.FIELD_IS_TOO_LONG)
-                !Hashtag.titlePattern.matches(newTitle) ->
-                    Failure(FieldInHashtagChangingError.FIELD_PATTERN_MISMATCH)
                 else -> when (val hashtagWithNewTitle = changeTitle(hashtag.id, newTitle)) {
                     is Hashtag -> Success(hashtagWithNewTitle)
                     else -> Failure(FieldInHashtagChangingError.UNKNOWN_CHANGING_ERROR)
@@ -35,6 +33,5 @@ enum class FieldInHashtagChangingError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_CHANGING_ERROR,
     FIELD_IS_BLANK_OR_EMPTY,
-    FIELD_IS_TOO_LONG,
-    FIELD_PATTERN_MISMATCH,
+    FIELD_IS_TOO_LONG
 }
