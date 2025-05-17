@@ -42,6 +42,7 @@ class HashtagsOperationsHolder(
     val deleteHashtag: (Hashtag) -> Result4k<Int, HashtagDeleteError> =
         DeleteHashtags(
             deleteHashtags = hashtagsDatabase::deleteHashtagById,
-            selectPostsByHashtagId = postsDatabase::selectPostsByIdHashtag
+            selectPostsByHashtagId = postsDatabase::selectPostsByIdHashtag,
+            selectHashtagById = hashtagsDatabase::selectHashtagByID
         )
 }

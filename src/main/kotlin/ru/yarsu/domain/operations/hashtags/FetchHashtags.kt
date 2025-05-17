@@ -13,7 +13,7 @@ class FetchHashtagById (
         try {
             when (val hashtag = selectHashtagByID(hashtagId)) {
                 is Hashtag -> Success(hashtag)
-                else -> Failure(HashtagFetchingError.NO_SUCH_POST)
+                else -> Failure(HashtagFetchingError.NO_SUCH_HASHTAG)
             }
         } catch (_: DataAccessException) {
             Failure(HashtagFetchingError.UNKNOWN_DATABASE_ERROR)
@@ -27,7 +27,7 @@ class FetchHashtagByTitle (
         try {
             when (val hashtag = selectHashtagByTitle(title)) {
                 is Hashtag -> Success(hashtag)
-                else -> Failure(HashtagFetchingError.NO_SUCH_POST)
+                else -> Failure(HashtagFetchingError.NO_SUCH_HASHTAG)
             }
         } catch (_: DataAccessException) {
             Failure(HashtagFetchingError.UNKNOWN_DATABASE_ERROR)
@@ -48,5 +48,5 @@ class FetchAllHashtags(
 
 enum class HashtagFetchingError {
     UNKNOWN_DATABASE_ERROR,
-    NO_SUCH_POST,
+    NO_SUCH_HASHTAG,
 }
