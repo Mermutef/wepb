@@ -1,45 +1,90 @@
-package ru.yarsu.domain.operations.media
+package ru.yarsu.domain.operations.directions
 
-import dev.forkhandles.result4k.Result
-import ru.yarsu.domain.dependencies.MediaDatabase
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.MediaType
+import dev.forkhandles.result4k.Result4k
+import ru.yarsu.domain.dependencies.DirectionsDatabase
+import ru.yarsu.domain.models.Direction
 import ru.yarsu.domain.models.User
-import java.time.LocalDateTime
 
-class DirectionOperationsHolder(private val mediaDatabase: MediaDatabase) {
+class DirectionOperationsHolder (
+    private val directionsDatabase: DirectionsDatabase
+) {
     val createDirection: (
-        filename: String,
-        author: User,
-        mediaType: MediaType,
-        birthDate: LocalDateTime,
-        content: ByteArray,
-        isTemporary: Boolean,
-    ) -> Result<MediaFile, MediaCreationError> = CreateMedia(mediaDatabase::selectOnlyMedia, mediaDatabase::insertMedia)
+        name: String,
+        description: String,
+        logoPath: String,
+        bannerPath: String,
+        chairmanId: Int,
+        deputyChairmanId: Int,
+        ) -> Result4k<Direction, DirectionCreationError> =
+            CreateDirection(
+                insertDirection = { name,
+                                    description,
+                                    logoPath,
+                                    bannerPath,
+                                    chairmanId,
+                                    deputyChairmanId ->
+                directionsDatabase.insertDirection(
+                    name = name,
+                    description = description,
+                    logoPath = logoPath,
+                    bannerPath = bannerPath,
+                    chairmanId = chairmanId,
+                    deputyChairmanId = deputyChairmanId
+                )
+            })
 
-    val makeMediaTemporary: (media: MediaFile) -> Result<MediaFile, MakeMediaTemporaryOrRegularError> =
-        MakeMediaTemporary(mediaDatabase::makeTemporary)
+    val removeDirection: RemoveDirection =
+        RemoveDirection(directionsDatabase::deleteDirection)
 
-    val makeMediaRegular: (media: MediaFile) -> Result<MediaFile, MakeMediaTemporaryOrRegularError> =
-        MakeMediaRegular(mediaDatabase::makeRegular)
+    val updateDirection: (
+        Direction,
+        String,
+        String,
+        String,
+        String,
+        Int,
+        Int,
+        ) -> Result4k<Direction, DirectionUpdateError> =
+        UpdateDirection(
+            updateDirection = directionsDatabase::updateDirection
+        )
 
-    val removeMedia: (media: MediaFile) -> Result<Boolean, MediaRemovingError> = RemoveMedia(mediaDatabase::deleteMedia)
+    val changeChairman: (Direction,Int) -> Result4k<Direction, ChairmanChangingError> =
+        ChangeChairman(
+            changeChairman = directionsDatabase::updateChairman
+        )
 
-    val fetchMediaWithMeta: (filename: String) -> Result<MediaFile, MediaFetchingError> =
-        FetchMediaWithMeta(mediaDatabase::selectMediaWithMeta)
+    val changeDeputyChairman: (Direction, Int) -> Result4k<Direction, DeputyChairmanChangingError> =
+        ChangeDeputyChairman(
+            changeDeputyChairman = directionsDatabase::updateDeputyChairman
+        )
 
-    val fetchOnlyMedia: (filename: String) -> Result<ByteArray, MediaFetchingError> =
-        FetchOnlyMedia(mediaDatabase::selectOnlyMedia)
+    val fetchDirectionByID: (Int) -> Result4k<Direction, DirectionFetchingError> =
+        FetchDirectionByID { directionId: Int ->
+            directionsDatabase.selectDirectionByID(directionId)
+        }
 
-    /**
-     * Field `content` of returns value always empty byte array
-     */
-    val fetchOnlyMeta: (filename: String) -> Result<MediaFile, MediaFetchingError> =
-        FetchOnlyMeta(mediaDatabase::selectOnlyMeta)
+    val fetchChairmanDirectionID: (Int) -> Result4k<User, DirectionFetchingError> =
+        FetchChairmanDirectionID { directionId: Int ->
+            directionsDatabase.selectChairmanByDirectionID(directionId)
+        }
+    val fetchDeputyChairmanByDirectionID: (Int) ->Result4k<User, DirectionFetchingError> =
+        FetchDeputyChairmanByDirectionID { directionId: Int ->
+            directionsDatabase.selectDeputyChairmanByDirectionID(directionId)
+        }
 
-    val fetchMediaByUserAndMediaType: (
-        user: User,
-        mediaType: MediaType,
-    ) -> Result<List<MediaFile>, MediaFetchingError> =
-        FetchMediaByUserAndMediaType(mediaDatabase::selectMediaByUserIDAndMediaType)
+    val fetchDirectionNameAndLogoByID: (Int) -> Result4k<Direction, DirectionFetchingError> =
+        FetchDirectionNameAndLogoByID { directionId: Int ->
+            directionsDatabase.selectDirectionNameAndLogoByID(directionId)
+        }
+
+    val fetchAllDirections: () -> Result4k<List<Direction>, DirectionFetchingError> =
+        FetchAllDirections {
+            directionsDatabase.selectAllDirections()
+        }
+
+    val fetchAllDirectionsNameAndLogo: () -> Result4k<List<Direction>, DirectionFetchingError> =
+        FetchAllDirections {
+            directionsDatabase.selectAllDirectionsNameAndLogo()
+        }
 }

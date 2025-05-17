@@ -6,8 +6,8 @@ data class Direction (
     val description: String,
     val logoPath: String,
     val bannerPath: String,
-    val chairman_id: Int,
-    val deputy_сhairman_id: Int
+    val chairmanId: Int,
+    val deputyChairmanId: Int,
 ) {
     companion object {
         @Suppress("LongParameterList", "CyclomaticComplexMethod")
@@ -16,13 +16,15 @@ data class Direction (
             description: String,
             logoPath: String,
             bannerPath: String,
-            chairman_id: Int,
-            deputy_сhairman_id: Int
+            chairmanId: Int,
+            deputyChairmanId: Int,
         ): DirectionValidationResult =
             validateName(name)
                 ?: validateDescription(description)
                 ?: validatePath(logoPath)
                 ?: validatePath(bannerPath)
+                ?: validateID(chairmanId)
+                ?: validateID(deputyChairmanId)
                 ?: DirectionValidationResult.ALL_OK
 
         fun validateName(name: String): DirectionValidationResult? {
@@ -49,9 +51,16 @@ data class Direction (
             }
         }
 
+        fun validateID(id: Int): DirectionValidationResult? {
+            return when {
+                id < 0 -> DirectionValidationResult.INCORRECT_ID
+                else -> null
+            }
+        }
+
         const val MAX_NAME_LENGTH = 255
 
-        val namePattern = Regex("^[а-яА-Я -]+\$")
+        val namePattern = Regex("^[а-яА-Я  ]+\$")
         val descriptionPattern = Regex("^[\\w-.]+\$")
     }
 }
@@ -63,5 +72,6 @@ enum class DirectionValidationResult {
     DESCRIPTION_IS_BLANK_OR_EMPTY,
     DESCRIPTION_PATTERN_MISMATCH,
     PATH_IS_BLANK_OR_EMPTY,
-    ALL_OK
+    INCORRECT_ID,
+    ALL_OK,
 }
