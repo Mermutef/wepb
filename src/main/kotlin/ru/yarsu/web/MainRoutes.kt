@@ -17,7 +17,11 @@ import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
 import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
+import ru.yarsu.web.profile.moderator.moderatorRoutes
 import ru.yarsu.web.profile.profileRoutes
+import ru.yarsu.web.profile.writer.WRITER_SEGMENT
+import ru.yarsu.web.profile.writer.writerRoutes
 import java.io.InputStream
 
 @Suppress("LongParameterList")
@@ -37,6 +41,14 @@ private fun createMainRouter(
     ),
     PROFILE_SEGMENT bind profileRoutes(
         contextTools = contextTools,
+    ),
+    WRITER_SEGMENT bind writerRoutes(
+        contextTools = contextTools,
+        operations = operations
+    ),
+    MODERATOR_SEGMENT bind moderatorRoutes(
+        contextTools = contextTools,
+        operations = operations
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )

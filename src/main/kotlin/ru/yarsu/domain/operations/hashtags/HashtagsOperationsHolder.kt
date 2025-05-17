@@ -27,7 +27,7 @@ class HashtagsOperationsHolder(
                     title = title
                 )
             },
-            selectHashtagByTitle = {title ->
+            selectHashtagByTitle = { title ->
                 hashtagsDatabase.selectHashtagByTitle(
                     title = title
                 )

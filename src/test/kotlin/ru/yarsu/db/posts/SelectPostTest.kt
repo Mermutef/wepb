@@ -1,6 +1,5 @@
 package ru.yarsu.db.posts
 
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
@@ -29,7 +28,7 @@ import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 
-class SelectPostTest: TestcontainerSpec({ context ->
+class SelectPostTest : TestcontainerSpec({ context ->
     val hashtagOperations = HashtagsOperations(context)
     val postOperations = PostsOperations(context)
     val userOperations = UserOperations(context)
@@ -214,8 +213,8 @@ class SelectPostTest: TestcontainerSpec({ context ->
 
         val fetchedPosts =
             postOperations
-            .selectPostsByIdHashtag(insertedHashtag.id)
-            .shouldNotBeNull()
+                .selectPostsByIdHashtag(insertedHashtag.id)
+                .shouldNotBeNull()
 
         fetchedPosts.size.shouldBe(2)
 
@@ -238,5 +237,4 @@ class SelectPostTest: TestcontainerSpec({ context ->
         fetchedPost.moderatorId.shouldBe(insertedModerator.id)
         fetchedPost.status.shouldBe(Status.DRAFT)
     }
-
 })

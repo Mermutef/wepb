@@ -2,6 +2,11 @@ package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
+const val MIDDLE_CONTENT_LENGTH = 80
+const val MIDDLE_TITLE_LENGTH = 80
+const val MIDDLE_HASHTAG_LENGTH = 30
 
 data class Post(
     val id: Int,
@@ -24,11 +29,12 @@ data class Post(
             title: String,
             preview: String,
             content: String,
-        ): PostValidationResult =
-            validateTitle(title)
+        ): PostValidationResult {
+            return validateTitle(title)
                 ?: validatePreview(preview)
                 ?: validateContent(content)
                 ?: PostValidationResult.ALL_OK
+        }
 
         fun validateTitle(title: String): PostValidationResult? {
             return when {
@@ -60,6 +66,20 @@ data class Post(
 
         val titlePattern = Regex("^[\\w-.]+\$")
 //        val previewPattern = Regex("^[\\w-.]+$")
+    }
+
+    val dateTimeWithPattern = lastModifiedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+
+    val middleContent = when {
+        content.length < MIDDLE_CONTENT_LENGTH -> content
+
+        else -> "${content.slice(0..MIDDLE_CONTENT_LENGTH)}..."
+    }
+
+    val middleTitleName = when {
+        title.length < MIDDLE_TITLE_LENGTH -> title
+
+        else -> "${title.slice(0..MIDDLE_TITLE_LENGTH)}..."
     }
 }
 

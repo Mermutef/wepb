@@ -7,7 +7,7 @@ import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.validHashtagTitle
 import ru.yarsu.domain.models.Hashtag
 
-class UpdateHashtagTest: TestcontainerSpec({ context ->
+class UpdateHashtagTest : TestcontainerSpec({ context ->
     val hashtagOperations = HashtagsOperations(context)
     lateinit var insertedHashtag: Hashtag
     beforeEach {

@@ -21,6 +21,8 @@ class Hashtag(
         const val MAX_TITLE_LENGTH = 50
 
         val titlePattern = Regex("^[\\w-.]+\$")
+
+        val nullTag = Hashtag(-1, "")
     }
 }
 
