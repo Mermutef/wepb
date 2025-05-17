@@ -10,6 +10,11 @@ import ru.yarsu.web.notFound
 import ru.yarsu.web.ok
 import ru.yarsu.web.profile.user.USER
 import ru.yarsu.web.redirect
+import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
+import ru.yarsu.web.profile.moderator.POST_MODERATION
+import ru.yarsu.web.profile.writer.MY_POSTS
+import ru.yarsu.web.profile.writer.WRITER_SEGMENT
+import ru.yarsu.web.redirect
 
 class RedirectToHandlers(
     private val userLens: RequestContextLens<User?>,
@@ -26,8 +31,8 @@ class RedirectToHandlers(
                 // todo переход на страницы профилей в зависимости от роли
                 when {
                     user.value.isAdmin() -> ok("pong")
-                    user.value.isModerator() -> ok("pong")
-                    user.value.isWriter() -> ok("pong")
+                    user.value.isModerator() -> redirect("${MODERATOR_SEGMENT}${POST_MODERATION}/${user.value.login}")
+                    user.value.isWriter() -> redirect("${WRITER_SEGMENT}${MY_POSTS}/${user.value.login}")
                     user.value.isReader() -> redirect("$USER/${user.value.login}")
                     else -> notFound
                 }

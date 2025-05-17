@@ -1,0 +1,89 @@
+{# @pebvariable name="model" type="ru.yarsu.web.profile.moderator.models.ModeratorRoomVM" #}
+
+    {% extends "../../../meta/BaseLayout.peb" %}
+    {% block title %}
+        Writer Room
+    {% endblock %}
+{% block page %}
+    {% include "../../../meta/Navbar.peb" %}
+    {% include "../../../meta/imports/ImportBootstrapTable.peb" %}
+<div class="container">
+    <div class="card  mx-auto border-radius_card mt-5 mb-5">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Модерация постов</h2>
+                </div>
+                <div class="card-body">
+                    <div id="posts-body">
+                        <table
+                                data-toggle="table"
+                                data-pagination="true"
+                                data-sortable="true"
+                                data-sort-order="desc"
+                                data-filter-control="true"
+                                data-sort-name="error"
+                                data-search="true"
+                        >
+                            <thead>
+                            <tr>
+                                <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-width="50">#</th>
+                                <th data-field="preview" data-sortable="true" data-width="50">Превью</th>
+                                <th data-field="title" data-sortable="true" data-width="50">Заголовок</th>
+                                <th data-field="content" data-sortable="true" data-width="50">Информация</th>
+                                <th data-field="hashtag" data-sortable="true" data-width="50">Хэш-тег</th>
+                                <th data-field="status" data-sortable="true" data-width="50">Статус</th>
+                                <th data-field="lastModifiedDate" data-sortable="true" data-width="50">Дата последнего изменения</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                    {% for postAndHashtag in model.postsWithHashtag%}
+                                <tr>
+                                    <td id="number-{{ loop.index }}" class="text-center">
+                                            {{ loop.index + 1 }}
+                                    </td>
+                                    <td id="post-{{ loop.index }}-preview" class="text-center">
+                                        <img src="/media/{{ postAndHashtag.key.preview }}" style="max-width: 70%; height: auto;">
+                                    </td>
+                                    <td id="post-{{ loop.index }}-title" class="text-center">
+                                        <a class="link" href="{{ model.postLink(postAndHashtag.key) }}">{{ postAndHashtag.key.middleTitleName }}</a>
+                                    </td>
+                                    <td id="post-{{ loop.index }}-content">
+                                            {{ postAndHashtag.key.middleContent }}
+                                    </td>
+                                    <td id="post-{{ loop.index }}-hashtag" class="text-center">
+                                        #{{ model.middleHashtag(postAndHashtag.value)}}
+                                    </td>
+                                    <td id="post-{{ loop.index }}-status" class="text-center">
+                                            {{ postAndHashtag.key.status }}
+                                    </td>
+                                    <td id="post-{{ loop.index }}-lastModifiedDate" class="text-center">
+                                            {{ postAndHashtag.key.dateTimeWithPattern }}
+                                    </td>
+                                </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    $(document).ready(function() {
+      // Инициализация таблицы
+      $('#table').bootstrapTable();
+
+      // Установка значений фильтра после инициализации
+      setTimeout(function() {
+        const statusFilter = $('.filter-control[data-field="status"]');
+          acceptedPostStatus = ["MODERATION"];
+          // Применяем фильтр
+          $('table').bootstrapTable('filterBy', {
+            'status': acceptedPostStatus
+          });
+      }, 100); // Небольшая задержка для гарантированной инициализации
+    });
+</script>
+{% endblock %}

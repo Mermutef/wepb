@@ -27,6 +27,11 @@
                             Вход
                         </a>
                     </li>
+                    <li class="list-group-item">
+                        <a class="dropdown-item" href="/profile/{{ user.login }}">
+                            Личный кабинет писателя
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

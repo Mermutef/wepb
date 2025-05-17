@@ -45,6 +45,14 @@ private fun createMainRouter(
         operations = operations,
         config = config,
     ),
+    WRITER_SEGMENT bind writerRoutes(
+        contextTools = contextTools,
+        operations = operations
+    ),
+    MODERATOR_SEGMENT bind moderatorRoutes(
+        contextTools = contextTools,
+        operations = operations
+    ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 
