@@ -92,14 +92,17 @@ object UserWebLenses {
         ).required("login", UserLensErrors.LOGIN_NOT_CORRECT.errorText)
 
     val phoneNumberField = FormField
-        .nonEmptyString()
+        .map(
+            { it.replace("+", "") },
+            { it }
+        ).nonEmptyString()
         .nonBlankString()
         .map(
             BiDiMapping(
                 asOut = { phone: String ->
                     phone.filter { it.isDigit() }.takeIf {
                         phone.length in 1..MAX_PHONE_NUMBER_LENGTH && phonePattern.matches(phone)
-                    }?.replaceFirstChar { "7" } ?: throw IllegalArgumentException("")
+                    }?.replaceFirstChar { if (it == '8') '7' else it } ?: throw IllegalArgumentException("")
                 },
                 asIn = { it }
             )
