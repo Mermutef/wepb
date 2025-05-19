@@ -5,22 +5,11 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
-import ru.yarsu.db.appConfiguredPasswordHasher
 import ru.yarsu.db.hashtag.HashtagsOperations
-import ru.yarsu.db.validEmail
 import ru.yarsu.db.validHashtagTitle
-import ru.yarsu.db.validLogin
-import ru.yarsu.db.validName
-import ru.yarsu.db.validPass
-import ru.yarsu.db.validPhoneNumber
-import ru.yarsu.db.validSecondPhoneNumber
-import ru.yarsu.db.validUserSurname
-import ru.yarsu.db.validVKLink
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.User
 
-class SelectHashtagTest: TestcontainerSpec({ context ->
+class SelectHashtagTest : TestcontainerSpec({ context ->
     val hashtagOperations = HashtagsOperations(context)
     lateinit var insertedHashtag: Hashtag
     beforeEach {

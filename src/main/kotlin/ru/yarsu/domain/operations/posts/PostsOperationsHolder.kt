@@ -3,6 +3,7 @@ package ru.yarsu.domain.operations.posts
 import dev.forkhandles.result4k.Result4k
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.HashtagsDatabase
+import ru.yarsu.domain.dependencies.MediaDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.models.Post
@@ -11,7 +12,8 @@ import java.time.ZonedDateTime
 class PostsOperationsHolder(
     private val postsDatabase: PostsDatabase,
     private val hashtagsDatabase: HashtagsDatabase,
-    private val userDatabase: UsersDatabase
+    private val userDatabase: UsersDatabase,
+    private val mediaDatabase: MediaDatabase,
 ) {
 
     val fetchAllPosts: () -> Result4k<List<Post>, PostFetchingError> = FetchAllPosts { postsDatabase.selectAllPosts() }
@@ -76,27 +78,27 @@ class PostsOperationsHolder(
                 )
             },
             selectHashtagById = hashtagsDatabase::selectHashtagByID,
-            selectUserById = userDatabase::selectUserByID
+            selectUserById = userDatabase::selectUserByID,
+            selectMediaByName = mediaDatabase::selectOnlyMeta
         )
 
     val changeTitle: (Post, String) -> Result4k<Post, FieldInPostChangingError> =
         ChangeStringFieldInPost(
             maxLength = Post.MAX_TITLE_LENGTH,
-            pattern = Regex(""),
+            pattern = Regex(".*"),
             changeField = postsDatabase::updateTitle
         )
 
     val changePreview: (Post, String) -> Result4k<Post, FieldInPostChangingError> =
-        ChangeStringFieldInPost(
-            maxLength = Post.MAX_PREVIEW_LENGTH,
-            pattern = Regex(""),
-            changeField = postsDatabase::updatePreview
+        ChangePreviewInPost(
+            changePreview = postsDatabase::updatePreview,
+            selectMediaByName = mediaDatabase::selectOnlyMeta
         )
 
     val changeContent: (Post, String) -> Result4k<Post, FieldInPostChangingError> =
         ChangeStringFieldInPost(
             maxLength = 0,
-            pattern = Regex(""),
+            pattern = Regex(".*"),
             changeField = postsDatabase::updateContent
         )
 
@@ -112,13 +114,15 @@ class PostsOperationsHolder(
         )
 
     val changeAuthorId: (Post, Int) -> Result4k<Post, FieldInPostChangingError> =
-        ChangeIntFieldInPost(
-            changeField = postsDatabase::updateAuthorId
+        ChangeUserIdInPost(
+            changeUserId = postsDatabase::updateAuthorId,
+            selectUserById = userDatabase::selectUserByID
         )
 
     val changeModeratorId: (Post, Int) -> Result4k<Post, FieldInPostChangingError> =
-        ChangeIntFieldInPost(
-            changeField = postsDatabase::updateModeratorId
+        ChangeUserIdInPost(
+            changeUserId = postsDatabase::updateAuthorId,
+            selectUserById = userDatabase::selectUserByID
         )
 
     val makePublished: (Post) -> Result4k<Post, MakeStatusError> =

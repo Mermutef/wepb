@@ -100,7 +100,7 @@ class PostsOperations(
     override fun updateTitle(
         postID: Int,
         newTitle: String,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.TITLE, newTitle)
@@ -113,7 +113,7 @@ class PostsOperations(
     override fun updatePreview(
         postID: Int,
         newPreview: String,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.PREVIEW, newPreview)
@@ -126,7 +126,7 @@ class PostsOperations(
     override fun updateContent(
         postID: Int,
         newContent: String,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.CONTENT, newContent)
@@ -139,7 +139,7 @@ class PostsOperations(
     override fun updateHashtagId(
         postID: Int,
         newHashtagId: Int,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.HASHTAG, newHashtagId)
@@ -152,7 +152,7 @@ class PostsOperations(
     override fun updateEventDate(
         postID: Int,
         newEventBody: ZonedDateTime,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.EVENT_DATE, newEventBody.toOffsetDateTime())
@@ -165,7 +165,7 @@ class PostsOperations(
     override fun updateAuthorId(
         postID: Int,
         newAuthorId: Int,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.AUTHORID, newAuthorId)
@@ -178,7 +178,7 @@ class PostsOperations(
     override fun updateModeratorId(
         postID: Int,
         newModeratorId: Int,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? =
         jooqContext.update(POSTS)
             .set(POSTS.MODERATORID, newModeratorId)
@@ -191,7 +191,7 @@ class PostsOperations(
     override fun updateStatus(
         post: Post,
         newStatus: Status,
-        dateNow: ZonedDateTime
+        dateNow: ZonedDateTime,
     ): Post? {
         if (newStatus == Status.PUBLISHED) {
             return newStatus

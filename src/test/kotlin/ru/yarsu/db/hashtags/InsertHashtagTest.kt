@@ -4,12 +4,10 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
 import ru.yarsu.db.hashtag.HashtagsOperations
-import ru.yarsu.db.posts.PostsOperations
 import ru.yarsu.db.validHashtagTitle
 import ru.yarsu.domain.models.Hashtag
 
-
-class InsertHashtagTest: TestcontainerSpec({ context ->
+class InsertHashtagTest : TestcontainerSpec({ context ->
     val hashtagOperations = HashtagsOperations(context)
 
     test("Valid hashtag can be inserted") {
@@ -34,7 +32,8 @@ class InsertHashtagTest: TestcontainerSpec({ context ->
             hashtagOperations
                 .insertHashtag(
                     "a".repeat(
-                        Hashtag.MAX_TITLE_LENGTH),
+                        Hashtag.MAX_TITLE_LENGTH
+                    ),
                 ).shouldNotBeNull()
 
         insertedHashtag.title.shouldBe("a".repeat(Hashtag.MAX_TITLE_LENGTH))

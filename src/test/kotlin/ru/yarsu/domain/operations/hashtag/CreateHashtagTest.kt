@@ -3,33 +3,21 @@ package ru.yarsu.domain.operations.hashtag
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
-import ru.yarsu.db.validLogin
-import ru.yarsu.db.validUserSurname
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.config
 import ru.yarsu.domain.operations.hashtags.CreateHashtags
 import ru.yarsu.domain.operations.hashtags.HashtagCreationError
-import ru.yarsu.domain.operations.users.CreateUser
-import ru.yarsu.domain.operations.users.UserCreationError
-import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
-import ru.yarsu.domain.operations.validName
-import ru.yarsu.domain.operations.validPass
-import ru.yarsu.domain.operations.validPhoneNumber
-import ru.yarsu.domain.operations.validVKLink
 
-class CreateHashtagTest: FunSpec({
+class CreateHashtagTest : FunSpec({
     val hashtags = mutableListOf<Hashtag>()
 
-    beforeEach{
+    beforeEach {
         hashtags.clear()
     }
 
     val insertHashtagMock: (
-            title: String
-            ) ->
+        title: String,
+    ) ->
     Hashtag? = { title ->
         val hashtag =
             Hashtag(
@@ -45,7 +33,7 @@ class CreateHashtagTest: FunSpec({
     }
 
     val insertHashtagNullMock: (
-        title: String
+        title: String,
     ) -> Hashtag? = { _ -> null }
 
     val fetchHashtagByTitleNullMock: (String) -> Hashtag? = { _ -> null }

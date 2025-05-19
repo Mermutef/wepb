@@ -3,7 +3,6 @@ package ru.yarsu.db.posts
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.db.TestcontainerSpec
-import ru.yarsu.db.appConfiguredPasswordHasher
 import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.media.MediaOperations
 import ru.yarsu.db.users.UserOperations
@@ -29,7 +28,7 @@ import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 
-class InsertPostTest: TestcontainerSpec({ context ->
+class InsertPostTest : TestcontainerSpec({ context ->
     val hashtagOperations = HashtagsOperations(context)
     val postOperations = PostsOperations(context)
     val userOperations = UserOperations(context)
@@ -77,13 +76,13 @@ class InsertPostTest: TestcontainerSpec({ context ->
 
         insertedMedia =
             mediaOperations
-            .insertMedia(
-                filename = validPostPreview,
-                authorId = insertedWriter.id,
-                mediaType = MediaType.VIDEO,
-                content = "Valid content".toByteArray(),
-                birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
-            ).shouldNotBeNull()
+                .insertMedia(
+                    filename = validPostPreview,
+                    authorId = insertedWriter.id,
+                    mediaType = MediaType.VIDEO,
+                    content = "Valid content".toByteArray(),
+                    birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
+                ).shouldNotBeNull()
     }
 
     test("Valid post can be inserted") {
@@ -145,7 +144,7 @@ class InsertPostTest: TestcontainerSpec({ context ->
             postOperations
                 .insertPost(
                     "a".repeat(Post.MAX_TITLE_LENGTH),
-                    "a".repeat(Post.MAX_PREVIEW_LENGTH),
+                    insertedMediaWithLongName.filename,
                     validPostContent,
                     insertedHashtag.id,
                     validPostDate1,

@@ -27,22 +27,21 @@ class ModifyHashtagTest : FunSpec({
 
     test("Title can be changed to valid title") {
         changeTitle(validHashtag, "${validHashtagTitle}2").shouldBeSuccess().title shouldBe
-                "${validHashtagTitle}2"
+            "${validHashtagTitle}2"
     }
 
     test("Title cannot be changed to blank title") {
         changeTitle(validHashtag, "  \t\n") shouldBeFailure
-                FieldInHashtagChangingError.FIELD_IS_BLANK_OR_EMPTY
+            FieldInHashtagChangingError.FIELD_IS_BLANK_OR_EMPTY
     }
 
     test("Title cannot be changed too long title") {
         changeTitle(validHashtag, "a".repeat(Hashtag.MAX_TITLE_LENGTH + 1)) shouldBeFailure
-                FieldInHashtagChangingError.FIELD_IS_TOO_LONG
+            FieldInHashtagChangingError.FIELD_IS_TOO_LONG
     }
 
     test("Unknown db error test for changeTitle") {
         changeTitleNull(validHashtag, "${validHashtagTitle}2") shouldBeFailure
-                FieldInHashtagChangingError.UNKNOWN_CHANGING_ERROR
+            FieldInHashtagChangingError.UNKNOWN_CHANGING_ERROR
     }
-
 })
