@@ -3,7 +3,6 @@ package ru.yarsu.domain.operations.hashtag
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
@@ -11,10 +10,10 @@ import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.operations.hashtags.DeleteHashtags
 import ru.yarsu.domain.operations.hashtags.HashtagDeleteError
 import ru.yarsu.domain.operations.validHashtagTitle
-import ru.yarsu.domain.operations.validPostTitle
-import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostContent
 import ru.yarsu.domain.operations.validPostDate1
+import ru.yarsu.domain.operations.validPostPreview
+import ru.yarsu.domain.operations.validPostTitle
 
 class DeleteHashtagTest : FunSpec({
     val validHashtag = Hashtag(
@@ -60,7 +59,7 @@ class DeleteHashtagTest : FunSpec({
     val postsWithHashtag = listOf(validPostWithHashtag)
     val postsWithoutHashtag = listOf(validPostWithoutHashtag)
 
-    beforeEach{
+    beforeEach {
         hashtags.clear()
         hashtags.add(validHashtag)
     }
@@ -73,7 +72,7 @@ class DeleteHashtagTest : FunSpec({
         postsWithoutHashtag.filter { it.hashtagId == hashtagID }
     }
 
-    val fetchHashtagById: (Int) -> Hashtag? = {hashtagId ->
+    val fetchHashtagById: (Int) -> Hashtag? = { hashtagId ->
         hashtags.firstOrNull { it.id == hashtagId }
     }
 
@@ -83,7 +82,7 @@ class DeleteHashtagTest : FunSpec({
         initialSize - hashtags.size
     }
 
-    val deleteHashtagByIdNullMock: (Int) -> Int? = { _ -> null}
+    val deleteHashtagByIdNullMock: (Int) -> Int? = { _ -> null }
 
     val deleteHashtag = DeleteHashtags(deleteHashtagByIdMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
 
@@ -91,24 +90,20 @@ class DeleteHashtagTest : FunSpec({
 
     val deleteHashtagNull = DeleteHashtags(deleteHashtagByIdNullMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
 
-    test("Hashtag can be delete")
-    {
+    test("Hashtag can be delete") {
         deleteHashtag(validHashtag).shouldBeSuccess(1)
         hashtags.size.shouldBe(0)
     }
 
-    test("Hashtag can not be delete if hashtag used in post")
-    {
+    test("Hashtag can not be delete if hashtag used in post") {
         deleteHashtagInPost(validHashtag).shouldBeFailure(HashtagDeleteError.HASHTAG_USED_IN_POST)
     }
 
-    test("Hashtag can not be delete if hashtag id not exists")
-    {
+    test("Hashtag can not be delete if hashtag id not exists") {
         deleteHashtag(invalidHashtag).shouldBeFailure(HashtagDeleteError.HASHTAG_NOT_EXISTS)
     }
 
-    test("unknown delete error")
-    {
+    test("unknown delete error") {
         deleteHashtagNull(validHashtag).shouldBeFailure(HashtagDeleteError.UNKNOWN_DELETE_ERROR)
     }
 })

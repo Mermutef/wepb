@@ -6,11 +6,12 @@ import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
+import ru.yarsu.domain.models.MediaFile
+import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.posts.CreatePosts
 import ru.yarsu.domain.operations.posts.PostCreationError
-import ru.yarsu.domain.operations.users.UserCreationError
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validLogin
@@ -23,13 +24,15 @@ import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle
 import ru.yarsu.domain.operations.validUserSurname
 import ru.yarsu.domain.operations.validVKLink
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 class CreatePostTest : FunSpec({
     val posts = mutableListOf<Post>()
     val validHashtag = Hashtag(1, validHashtagTitle)
     val hashtags = listOf(validHashtag)
-    val validWriter = User(1,
+    val validWriter = User(
+        1,
         validName,
         validUserSurname,
         validLogin,
@@ -38,8 +41,9 @@ class CreatePostTest : FunSpec({
         validPass,
         validVKLink,
         Role.WRITER
-        )
-    val validModerator = User(2,
+    )
+    val validModerator = User(
+        2,
         validName,
         validUserSurname,
         "${validLogin}2",
@@ -50,7 +54,15 @@ class CreatePostTest : FunSpec({
         Role.MODERATOR
     )
     val users = listOf(validWriter, validModerator)
-
+    val validMedia = MediaFile(
+        filename = validPostPreview,
+        content = "Valid content".toByteArray(),
+        mediaType = MediaType.VIDEO,
+        birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
+        isTemporary = false,
+        authorId = validWriter.id,
+    )
+    val media = listOf(validMedia)
     beforeEach {
         posts.clear()
     }
@@ -67,16 +79,18 @@ class CreatePostTest : FunSpec({
         moderatorId: Int?,
         status: Status,
     ) ->
-    Post? = { title,
-              preview,
-              content,
-              hashtagId,
-              eventDate,
-              creationData,
-              lastModifiedDate,
-              authorId,
-              moderatorId,
-              status ->
+    Post? = {
+            title,
+            preview,
+            content,
+            hashtagId,
+            eventDate,
+            creationData,
+            lastModifiedDate,
+            authorId,
+            moderatorId,
+            status,
+        ->
         val post =
             Post(
                 id = posts.size + 1,
@@ -103,6 +117,10 @@ class CreatePostTest : FunSpec({
         users.firstOrNull { it.id == userId }
     }
 
+    val fetchMediaByNameMock: (String) -> MediaFile? = { name ->
+        media.firstOrNull { it.filename == name }
+    }
+
     val insertPostNullMock: (
         title: String,
         preview: String,
@@ -119,13 +137,15 @@ class CreatePostTest : FunSpec({
     val createPost = CreatePosts(
         insertPostMock,
         fetchHashtagByIdMock,
-        fetchUserByIdMock
+        fetchUserByIdMock,
+        fetchMediaByNameMock
     )
 
     val createPostNull = CreatePosts(
         insertPostNullMock,
         fetchHashtagByIdMock,
-        fetchUserByIdMock
+        fetchUserByIdMock,
+        fetchMediaByNameMock
     )
 
     test("Valid user can be inserted") {
@@ -212,7 +232,7 @@ class CreatePostTest : FunSpec({
         }
     }
 
-    test("Post with invalid author id should not be inserted") {
+    test("Post with not exists author id should not be inserted") {
         createPost(
             validPostTitle,
             validPostPreview,
@@ -226,7 +246,7 @@ class CreatePostTest : FunSpec({
             .shouldBeFailure(PostCreationError.AUTHOR_NOT_EXISTS)
     }
 
-    test("Post with invalid moderator id should not be inserted") {
+    test("Post with not exists moderator id should not be inserted") {
         createPost(
             validPostTitle,
             validPostPreview,
@@ -240,7 +260,7 @@ class CreatePostTest : FunSpec({
             .shouldBeFailure(PostCreationError.MODERATOR_NOT_EXISTS)
     }
 
-    test("Post with invalid hashtag id should not be inserted") {
+    test("Post with not exists hashtag id should not be inserted") {
         createPost(
             validPostTitle,
             validPostPreview,
@@ -252,6 +272,20 @@ class CreatePostTest : FunSpec({
             Status.DRAFT
         )
             .shouldBeFailure(PostCreationError.HASHTAG_NOT_EXISTS)
+    }
+
+    test("Post with not exists preview id should not be inserted") {
+        createPost(
+            validPostTitle,
+            "${validPostPreview}2",
+            validPostContent,
+            validHashtag.id,
+            validPostDate1,
+            validWriter.id,
+            validModerator.id,
+            Status.DRAFT
+        )
+            .shouldBeFailure(PostCreationError.MEDIA_NOT_EXISTS)
     }
 
     test("Unknown db error test for CreateUser") {

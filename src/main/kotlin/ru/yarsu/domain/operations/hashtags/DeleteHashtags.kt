@@ -11,7 +11,7 @@ import ru.yarsu.domain.models.Post
 class DeleteHashtags(
     private val deleteHashtags: (hashtagID: Int) -> Int?,
     private val selectPostsByHashtagId: (hashtagId: Int) -> List<Post>,
-    private val selectHashtagById: (hashtagId: Int) -> Hashtag?
+    private val selectHashtagById: (hashtagId: Int) -> Hashtag?,
 ) : (Hashtag) -> Result4k<Int, HashtagDeleteError> {
     override operator fun invoke(hashtag: Hashtag): Result4k<Int, HashtagDeleteError> {
         try {
@@ -41,5 +41,5 @@ enum class HashtagDeleteError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_DELETE_ERROR,
     HASHTAG_USED_IN_POST,
-    HASHTAG_NOT_EXISTS
+    HASHTAG_NOT_EXISTS,
 }

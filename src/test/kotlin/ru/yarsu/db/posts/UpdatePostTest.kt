@@ -30,8 +30,8 @@ import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
-class UpdatePostTest: TestcontainerSpec({ context ->
-val hashtagOperations = HashtagsOperations(context)
+class UpdatePostTest : TestcontainerSpec({ context ->
+    val hashtagOperations = HashtagsOperations(context)
     val postOperations = PostsOperations(context)
     val userOperations = UserOperations(context)
     val mediaOperations = MediaOperations(context)

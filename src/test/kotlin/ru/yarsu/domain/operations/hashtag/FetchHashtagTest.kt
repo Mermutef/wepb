@@ -17,17 +17,6 @@ class FetchHashtagTest : FunSpec({
         validHashtagTitle
     )
 
-    val validHashtags = listOf(
-        Hashtag(
-            1,
-            "${validHashtagTitle}1"
-        ),
-        Hashtag(
-            2,
-            "${validHashtagTitle}2"
-        )
-    )
-
     val hashtags = listOf(validHashtag)
 
     val fetchHashtagByIdMock: (Int) -> Hashtag? = { hashtagID ->
@@ -85,5 +74,4 @@ class FetchHashtagTest : FunSpec({
                 .shouldBeFailure(HashtagFetchingError.NO_SUCH_HASHTAG)
         }
     }
-
 })

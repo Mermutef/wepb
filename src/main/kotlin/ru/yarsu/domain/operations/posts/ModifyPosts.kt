@@ -6,7 +6,9 @@ import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
 import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
+import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.User
 import java.time.ZonedDateTime
 
 class ChangeStringFieldInPost(
@@ -24,29 +26,12 @@ class ChangeStringFieldInPost(
                     Failure(FieldInPostChangingError.FIELD_IS_BLANK_OR_EMPTY)
                 maxLength != 0 && newField.length > maxLength ->
                     Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
-                pattern != Regex("") && !pattern.matches(newField) ->
+                !pattern.matches(newField) ->
                     Failure(FieldInPostChangingError.FIELD_PATTERN_MISMATCH)
                 else -> when (val postWithNewStringField = changeField(post.id, newField, ZonedDateTime.now())) {
                     is Post -> Success(postWithNewStringField)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
-            }
-        } catch (_: DataAccessException) {
-            Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
-        }
-}
-
-class ChangeIntFieldInPost(
-    private val changeField: (postID: Int, newField: Int, dateNow: ZonedDateTime) -> Post?,
-) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
-    override operator fun invoke(
-        post: Post,
-        newField: Int,
-    ): Result4k<Post, FieldInPostChangingError> =
-        try {
-            when (val postWithNewIntField = changeField(post.id, newField, ZonedDateTime.now())) {
-                is Post -> Success(postWithNewIntField)
-                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
             }
         } catch (_: DataAccessException) {
             Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
@@ -93,6 +78,55 @@ class ChangeHashtagIdInPost(
     }
 }
 
+@Suppress("detekt:ReturnCount")
+class ChangeUserIdInPost(
+    private val changeUserId: (postId: Int, newUserId: Int, dateNow: ZonedDateTime) -> Post?,
+    private val selectUserById: (id: Int) -> User?,
+) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
+    override operator fun invoke(
+        post: Post,
+        newUserId: Int,
+    ): Result4k<Post, FieldInPostChangingError> {
+        try {
+            if (selectUserById(newUserId) == null) {
+                return Failure(FieldInPostChangingError.USER_NOT_EXISTS)
+            }
+            return when (val postWithNewUserId = changeUserId(post.id, newUserId, ZonedDateTime.now())) {
+                is Post -> Success(postWithNewUserId)
+                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+            }
+        } catch (_: DataAccessException) {
+            return Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
+        }
+    }
+}
+
+@Suppress("detekt:ReturnCount")
+class ChangePreviewInPost(
+    private val changePreview: (postId: Int, newPreview: String, dateNow: ZonedDateTime) -> Post?,
+    private val selectMediaByName: (name: String) -> MediaFile?,
+) : (Post, String) -> Result4k<Post, FieldInPostChangingError> {
+    override operator fun invoke(
+        post: Post,
+        newPreview: String,
+    ): Result4k<Post, FieldInPostChangingError> {
+        try {
+            if (selectMediaByName(newPreview) == null) {
+                return Failure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
+            }
+            if (newPreview.length > Post.MAX_PREVIEW_LENGTH) {
+                return Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
+            }
+            return when (val postWithNewPreview = changePreview(post.id, newPreview, ZonedDateTime.now())) {
+                is Post -> Success(postWithNewPreview)
+                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+            }
+        } catch (_: DataAccessException) {
+            return Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
+        }
+    }
+}
+
 enum class FieldInPostChangingError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_CHANGING_ERROR,
@@ -100,6 +134,8 @@ enum class FieldInPostChangingError {
     FIELD_IS_TOO_LONG,
     FIELD_PATTERN_MISMATCH,
     HASHTAG_NOT_EXISTS,
+    USER_NOT_EXISTS,
+    MEDIA_NOT_EXISTS,
 }
 
 class StatusChanger<R : Status, E : Enum<E>>(

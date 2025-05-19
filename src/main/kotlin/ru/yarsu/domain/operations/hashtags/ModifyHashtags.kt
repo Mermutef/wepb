@@ -33,5 +33,5 @@ enum class FieldInHashtagChangingError {
     UNKNOWN_DATABASE_ERROR,
     UNKNOWN_CHANGING_ERROR,
     FIELD_IS_BLANK_OR_EMPTY,
-    FIELD_IS_TOO_LONG
+    FIELD_IS_TOO_LONG,
 }
