@@ -8,6 +8,8 @@ import ru.yarsu.domain.models.User
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.notFound
 import ru.yarsu.web.ok
+import ru.yarsu.web.profile.user.USER
+import ru.yarsu.web.redirect
 
 class RedirectToHandlers(
     private val userLens: RequestContextLens<User?>,
@@ -26,7 +28,7 @@ class RedirectToHandlers(
                     user.value.isAdmin() -> ok("pong")
                     user.value.isModerator() -> ok("pong")
                     user.value.isWriter() -> ok("pong")
-                    user.value.isReader() -> ok("pong")
+                    user.value.isReader() -> redirect("$USER/${user.value.login}")
                     else -> notFound
                 }
             }

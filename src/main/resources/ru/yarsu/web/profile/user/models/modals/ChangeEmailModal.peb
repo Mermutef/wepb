@@ -1,0 +1,49 @@
+<div class="modal fade"
+     id="changeEmailModal"
+     tabindex="-1"
+     aria-labelledby="changeEmailModalLabel"
+     aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-radius_card">
+            <form method="post" action="{{ model.changeEmailLink }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeEmailModalLabel"><b>Смена почты</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "no-specific" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="email"
+                            class="form-label">
+                        Почта
+                    </label>
+                    <input
+                            type="email"
+                            class="form-control thin-input"
+                            id="email"
+                            name="email"
+                            placeholder="example@mail.com"
+                            value="{{ model.form.fields["email"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "email" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mx-auto">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

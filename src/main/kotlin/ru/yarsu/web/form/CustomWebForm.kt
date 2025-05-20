@@ -27,4 +27,46 @@ fun CustomWebForm.addFailure(
     return this.copy(errors = mutableErrors.toMap())
 }
 
+fun CustomWebForm.replaceOrAddFailuresFromForm(form: CustomWebForm): CustomWebForm {
+    var newForm = this
+    form.errors.values.forEach { failure ->
+        newForm = newForm.addFailure(
+            name = failure.name,
+            description = failure.description,
+        )
+    }
+    return newForm
+}
+
+fun CustomWebForm.replaceOrAddFieldsFromForm(form: CustomWebForm): CustomWebForm {
+    var newForm = this
+    form.fields.forEach { field ->
+        newForm = newForm.replaceOrAddFieldValues(
+            fieldName = field.key,
+            values = field.value,
+        )
+    }
+    return newForm
+}
+
+infix fun CustomWebForm.replaceOrAddFrom(form: CustomWebForm): CustomWebForm =
+    replaceOrAddFieldsFromForm(form)
+        .replaceOrAddFailuresFromForm(form)
+
+fun CustomWebForm.replaceOrAddFieldValue(
+    fieldName: String,
+    value: String,
+): CustomWebForm {
+    return this.replaceOrAddFieldValues(fieldName, listOf(value))
+}
+
+fun CustomWebForm.replaceOrAddFieldValues(
+    fieldName: String,
+    values: List<String>,
+): CustomWebForm {
+    val mutableFields = this.fields.toMutableMap()
+    mutableFields[fieldName] = values
+    return this.copy(fields = mutableFields.toMap())
+}
+
 fun emptyCustomForm(): CustomWebForm = WebForm(emptyMap(), emptyList()).toCustomForm()

@@ -18,6 +18,8 @@ import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
 import ru.yarsu.web.profile.PROFILE_SEGMENT
 import ru.yarsu.web.profile.profileRoutes
+import ru.yarsu.web.profile.user.USER
+import ru.yarsu.web.profile.user.userRoutes
 import java.io.InputStream
 
 @Suppress("LongParameterList")
@@ -37,6 +39,11 @@ private fun createMainRouter(
     ),
     PROFILE_SEGMENT bind profileRoutes(
         contextTools = contextTools,
+    ),
+    USER bind userRoutes(
+        contextTools = contextTools,
+        operations = operations,
+        config = config,
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
@@ -74,6 +81,6 @@ fun redirect(to: String = "/"): Response = Response(Status.FOUND).header("Locati
 
 val notFound: Response = Response(Status.NOT_FOUND)
 
-fun ok(body: String): Response = Response(Status.OK).body(body)
+fun ok(body: String = "pong"): Response = Response(Status.OK).body(body)
 
 fun ok(body: InputStream): Response = Response(Status.OK).body(body)

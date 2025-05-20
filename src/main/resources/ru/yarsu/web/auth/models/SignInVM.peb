@@ -1,74 +1,90 @@
 {# @pebvariable name="model" type="ru.yarsu.web.auth.models.SignInVM" #}
 
-{% extends "../../meta/BaseLayout.peb" %}
-{% block title %}
-    Sign In
-{% endblock %}
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Вход
+    {% endblock %}
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
-    <div class="container">
-        <div class="card max-width-700 mx-auto border-radius_card mt-5 mb-5">
-            <div class="row px-2">
-                <div class="col px-0">
-                    <div class="card-header text-center mb-2">
-                        <h2 class="bold-heavy">Вход в систему</h2>
-                    </div>
-                    <form method="post" class="px-3">
-                        <div class="mb-3">
+<div class="container">
+    <div class="card max-width-700 mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Вход в систему</h2>
+                </div>
+                <form method="post" class="px-3">
+                    <div class="mb-3">
                             {% for error in model.form.errors.values() %}
-                            <p class="text-danger">
-                                {{ error.description }}
-                            </p>
+                            {% if error.name == "no-specific" %}
+                                <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                        {{ error.description }}
+                                </div>
+                            {% endif %}
                             {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <label
+                    </div>
+                    <div class="mb-3">
+                        <label
                                 for="login_or_phone_or_email"
                                 class="form-label">
-                                Логин, email или телефон
-                            </label>
-                            <input
+                            Логин, email или телефон
+                        </label>
+                        <input
                                 type="text"
                                 class="form-control thin-input"
                                 id="login_or_phone_or_email"
                                 name="login_or_phone_or_email"
                                 placeholder="Введите логин, email или телефон"
                                 value="{{ model.form.fields["login_or_phone_or_email"] | first }}"
-                            >
-                        </div>
+                        >
+                        {% for error in model.form.errors.values() %}
+                            {% if error.name == "login_or_phone_or_email" %}
+                                <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                        {{ error.description }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
-                        <div class="mb-3">
-                            <label
+                    <div class="mb-3">
+                        <label
                                 for="password"
                                 class="form-label">
-                                Пароль
-                            </label>
-                            <input
+                            Пароль
+                        </label>
+                        <input
                                 type="password"
                                 class="form-control thin-input"
                                 id="password"
                                 name="password"
                                 placeholder="Введите пароль"
                                 value="{{ model.form.fields["password"] | first }}"
-                            >
-                        </div>
+                        >
+                        {% for error in model.form.errors.values() %}
+                            {% if error.name == "password" %}
+                                <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                        {{ error.description }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
 
-                        <div class="row">
-                            <div class="col-6 m-auto pe-0">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    Войти
-                                </button>
-                            </div>
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-10 col-lg-6">
+                            <button type="submit" class="btn btn-primary w-100">
+                                Войти
+                            </button>
                         </div>
+                    </div>
 
-                        <p class="mt-3 mb-1 text-center">
-                            <a href="{{ model.signUpLink }}" class="text-black">
-                                Нет аккаунта? Зарегистрироваться
-                            </a>
-                        </p>
-                    </form>
-                </div>
+                    <p class="mt-2 mb-3 text-center">
+                        <a href="{{ model.signUpLink }}" class="text-black">
+                            Нет аккаунта? Зарегистрироваться
+                        </a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

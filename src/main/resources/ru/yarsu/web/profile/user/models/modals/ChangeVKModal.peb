@@ -1,0 +1,49 @@
+<div class="modal fade"
+     id="changeVKModal"
+     tabindex="-1"
+     aria-labelledby="changeVKModalLabel"
+     aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-radius_card">
+            <form method="post" action="{{ model.changeVKLink }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeVKModalLabel"><b>Смена VK</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "no-specific" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <label
+                            for="vk_link"
+                            class="form-label">
+                        Cсылка на профиль ВК
+                    </label>
+                    <input
+                            type="url"
+                            class="form-control thin-input"
+                            id="vk_link"
+                            name="vk_link"
+                            placeholder="https://vk.com/id000"
+                            value="{{ model.form.fields["vk_link"] | first }}"
+                    >
+                    {% for error in model.form.errors.values() %}
+                        {% if error.name == "vk_link" %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    {{ error.description }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mx-auto">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

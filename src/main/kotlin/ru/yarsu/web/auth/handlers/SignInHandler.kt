@@ -31,7 +31,7 @@ class SignInHandler(
     }
 
     override fun invoke(request: Request): Response {
-        val form = UserWebLenses.sigInLens(request)
+        val form = UserWebLenses.sigInForm(request)
         return if (form.errors.isNotEmpty()) {
             render(request) extract SignInVM(form.toCustomForm())
         } else {
@@ -39,7 +39,7 @@ class SignInHandler(
                 is Failure -> {
                     render(request) extract SignInVM(
                         form = form.toCustomForm().addFailure(
-                            name = signInResult.reason.toString(),
+                            name = "no-specific",
                             description = signInResult.reason.errorText
                         )
                     )
@@ -50,7 +50,7 @@ class SignInHandler(
                         is Failure -> {
                             render(request) extract SignInVM(
                                 form = form.toCustomForm().addFailure(
-                                    name = SignInError.TOKEN_CREATION_ERROR.toString(),
+                                    name = "no-specific",
                                     description = SignInError.TOKEN_CREATION_ERROR.errorText,
                                 )
                             )
@@ -69,13 +69,17 @@ class SignInHandler(
         userOperations: UserOperationsHolder,
         config: AuthConfig,
     ): Result<User, SignInError> {
-        val login = UserWebLenses.specialSignInField(form)
+        val authData = UserWebLenses.specialSignInField(form)
         val password = UserWebLenses.passwordSignInField(form)
 
         val result = when {
-            isEmail(login) -> userOperations.fetchUserByEmail(login)
-            isPhone(login) -> userOperations.fetchUserByPhone(login)
-            else -> userOperations.fetchUserByLogin(login)
+            isEmail(authData) -> userOperations.fetchUserByEmail(authData)
+            isPhone(
+                authData.filter { it.isDigit() }
+                    .replaceFirstChar { if (it == '8') '7' else it }
+            ) -> userOperations.fetchUserByPhone(authData)
+
+            else -> userOperations.fetchUserByLogin(authData)
         }
         return when (result) {
             is Failure -> when (result.reason) {
