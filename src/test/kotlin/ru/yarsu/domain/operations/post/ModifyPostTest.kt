@@ -255,9 +255,8 @@ class ModifyPostTest : FunSpec({
             .preview shouldBe validSecondMedia.filename
     }
     test("Preview can not be changed to long preview") {
-//        changePreview(validPost, "a".repeat(Post.MAX_PREVIEW_LENGTH + 100))
-//            .shouldBeFailure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
-        ("a".repeat(Post.MAX_PREVIEW_LENGTH + 100).length > Post.MAX_PREVIEW_LENGTH).shouldBe(true)
+        changePreview(validPost, "a".repeat(Post.MAX_PREVIEW_LENGTH + 100))
+            .shouldBeFailure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
     }
     test("Preview can not be change to invalid preview") {
         changePreview(validPost, "Vasy").shouldBeFailure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
