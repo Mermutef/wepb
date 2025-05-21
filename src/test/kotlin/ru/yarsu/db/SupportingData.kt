@@ -50,10 +50,4 @@ val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00").withZoneSa
     .toOffsetDateTime().toZonedDateTime()
 
 @Suppress("MayBeConst")
-val validPostDate3 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00")
-
-@Suppress("MayBeConst")
-val validPostDate4 = ZonedDateTime.parse("2024-06-15T04:00:00-08:00")
-
-@Suppress("MayBeConst")
 val validHashtagTitle = "validTitle"

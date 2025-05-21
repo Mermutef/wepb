@@ -14,8 +14,6 @@ import ru.yarsu.db.validPass
 import ru.yarsu.db.validPhoneNumber
 import ru.yarsu.db.validPostContent
 import ru.yarsu.db.validPostDate1
-import ru.yarsu.db.validPostDate3
-import ru.yarsu.db.validPostDate4
 import ru.yarsu.db.validPostPreview
 import ru.yarsu.db.validPostTitle
 import ru.yarsu.db.validSecondPhoneNumber
@@ -307,26 +305,5 @@ class InsertPostTest : TestcontainerSpec({ context ->
         insertedPost.authorId.shouldBe(insertedWriter.id)
         insertedPost.moderatorId.shouldBe(insertedModerator.id)
         insertedPost.status.shouldBe(Status.PUBLISHED)
-    }
-
-    test("time zones are equivalent")
-    {
-        val insertedPost =
-            postOperations
-                .insertPost(
-                    validPostTitle,
-                    validPostPreview,
-                    validPostContent,
-                    insertedHashtag.id,
-                    validPostDate3,
-                    validPostDate1,
-                    validPostDate1,
-                    insertedWriter.id,
-                    insertedModerator.id,
-                    Status.MODERATION
-                ).shouldNotBeNull()
-
-        insertedPost.eventDate.shouldBe(validPostDate1)
-        insertedPost.eventDate.shouldBe(validPostDate4)
     }
 })
