@@ -20,7 +20,7 @@ fun main() {
     val jooqContext = createJooqContext(config.databaseConfig)
     val database = DatabaseOperationsHolder(jooqContext)
     val operations = OperationsHolder(database, config)
-    operations.initApplication(config)
+    operations.initApplication(jooqContext, config)
 
     val app = createApp(operations, config)
 

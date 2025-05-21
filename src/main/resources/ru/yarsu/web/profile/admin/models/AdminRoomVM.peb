@@ -1,0 +1,136 @@
+{# @pebvariable name="model" type="ru.yarsu.web.profile.admin.models.AdminRoomVM" #}
+
+    {% extends "../../../meta/BaseLayout.peb" %}
+    {% block title %}
+Панель администратора
+{% endblock %}
+
+{% block page %}
+    {% include "../../../meta/Navbar.peb" %}
+    {% include "../../../meta/imports/ImportBootstrapTable.peb" %}
+    {% include "../../../meta/imports/ImportSweetAlert.peb" %}
+
+<div class="container">
+    <div class="card mx-auto border-radius_card mt-5 mb-5">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Управление пользователями</h2>
+                </div>
+                <div class="card-body">
+                    <div id="users-body">
+                        <table
+                                data-toggle="table"
+                                data-pagination="true"
+                                data-sortable="true"
+                                data-sort-order="desc"
+                                data-filter-control="true"
+                                data-search="true"
+                                data-locale="ru-RU"
+                        >
+                            <thead>
+                            <tr>
+                                <th data-field="id" data-sortable="true" data-width="70">ID</th>
+                                <th data-field="name" data-sortable="true" data-width="100">Имя</th>
+                                <th data-field="surname" data-sortable="true" data-width="100">Фамилия</th>
+                                <th data-field="login" data-sortable="true" data-width="120">Логин</th>
+                                <th data-field="email" data-sortable="true" data-width="180">Email</th>
+                                <th data-field="role" data-sortable="true" data-filter-control="select" data-width="120">Роль</th>
+                                <th data-field="status" data-sortable="true" data-filter-control="select" data-width="120">Статус</th>
+                                <th data-field="createdAt" data-sortable="true" data-width="150">Дата регистрации</th>
+                                <th data-field="actions" data-width="200">Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in model.users.values()%}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.surname }}</td>
+                                    <td>{{ user.login }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td class="text-center">
+                                        <span class="badge
+                                            {% if user.role == "ADMIN" %}bg-danger
+                                            {% elif user.role == "MODERATOR" %}bg-warning text-dark
+                                            {% elif user.role == "WRITER" %}bg-info
+                                            {% else %}bg-primary{% endif %}">
+                                            {{ user.role }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge
+                                            {% if user.status == "ACTIVE" %}bg-success
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ user.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.createdAt|date("dd.MM.yyyy") }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            {% if user.role != "ADMIN" %}
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                                        type="button"
+                                                        data-bs-toggle="dropdown">
+                                                    <i class="bi bi-gear"></i> Управление
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item change-role"
+                                                           data-user="{{ user.login }}"
+                                                           data-current-role="{{ user.role }}"
+                                                           data-role="MODERATOR">
+                                                            <i class="bi bi-shield-check"></i> Модератор
+                                                            {% if user.role == "MODERATOR" %} (текущая){% endif %}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item change-role"
+                                                           data-user="{{ user.login }}"
+                                                           data-current-role="{{ user.role }}"
+                                                           data-role="WRITER">
+                                                            <i class="bi bi-pencil"></i> Писатель
+                                                            {% if user.role == "WRITER" %} (текущая){% endif %}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item change-role"
+                                                           data-user="{{ user.login }}"
+                                                           data-current-role="{{ user.role }}"
+                                                           data-role="READER">
+                                                            <i class="bi bi-person"></i> Читатель
+                                                            {% if user.role == "READER" %} (текущая){% endif %}
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item toggle-status"
+                                                           data-user="{{ user.login }}"
+                                                           data-current-status="{{ user.status }}">
+                                                            {% if user.status == "ACTIVE" %}
+                                                            <i class="bi bi-lock"></i> Заблокировать
+                                                            {% else %}
+                                                            <i class="bi bi-unlock"></i> Разблокировать
+                                                            {% endif %}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</script>
+{% endblock %}
