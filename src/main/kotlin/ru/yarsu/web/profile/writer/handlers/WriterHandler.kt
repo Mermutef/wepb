@@ -11,7 +11,6 @@ import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.hashtags.HashtagsOperationsHolder
-import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.domain.operations.posts.PostFetchingError
 import ru.yarsu.domain.operations.posts.PostsOperationsHolder
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath

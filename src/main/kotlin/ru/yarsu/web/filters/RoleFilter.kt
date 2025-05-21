@@ -7,15 +7,14 @@ import ru.yarsu.domain.models.User
 
 fun roleFilter(
     userKey: RequestContextLens<User?>,
-    role: Role
-) =
-    Filter { next: HttpHandler ->
-        { request ->
-            val user = userKey(request)
-            if (user?.role == role) {
-                next(request)
-            } else {
-                Response(Status.NOT_FOUND)
-            }
+    role: Role,
+) = Filter { next: HttpHandler ->
+    { request ->
+        val user = userKey(request)
+        if (user?.role == role) {
+            next(request)
+        } else {
+            Response(Status.NOT_FOUND)
         }
     }
+}

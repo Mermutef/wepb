@@ -14,7 +14,6 @@ fun writerRoutes(
         contextTools.render,
         operations.postOperations,
         operations.hashtagOperations,
-        operations.mediaOperations,
         contextTools.userLens
     ),
 )
