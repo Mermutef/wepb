@@ -185,19 +185,17 @@ private fun Record.toUser(): User? =
         this[USERS.PASSWORD],
         this[USERS.ROLE],
     ) { id, name, surname, login, email, phoneNumber, password, role ->
-        role.asAppRole()?.let {
-            User(
-                id = id,
-                name = name.trim(),
-                surname = surname.trim(),
-                login = login.trim(),
-                phoneNumber = phoneNumber,
-                email = email,
-                password = password,
-                vkLink = this[USERS.VKLINK],
-                role = it,
-            )
-        }
+        User(
+            id = id,
+            name = name.trim(),
+            surname = surname.trim(),
+            login = login.trim(),
+            phoneNumber = phoneNumber,
+            email = email,
+            password = password,
+            vkLink = this[USERS.VKLINK],
+            role = role.asAppRole(),
+        )
     }
 
 private fun Role.asDbRole(): UserRole? =
