@@ -41,10 +41,10 @@ val validPostPreview = "validPreview"
 val validPostContent = "validContent"
 
 @Suppress("MayBeConst")
-val validPostDate1 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00")
+val validPostDate1 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00").toOffsetDateTime().toZonedDateTime()
 
 @Suppress("MayBeConst")
-val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00")
+val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00").toOffsetDateTime().toZonedDateTime()
 
 @Suppress("MayBeConst")
 val validHashtagTitle = "validTitle"
