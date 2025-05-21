@@ -77,6 +77,7 @@ private fun createMainRouter(
         ),
     POST_SEGMENT bind postsRoutes(
         contextTools = contextTools,
+        operations = operations
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
