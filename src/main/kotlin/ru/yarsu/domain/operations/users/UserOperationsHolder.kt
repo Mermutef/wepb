@@ -64,28 +64,28 @@ class UserOperationsHolder (
         ChangeStringFieldInUser(
             maxLength = User.MAX_NAME_LENGTH,
             pattern = User.namePattern,
-            changeField = usersDatabase::updateName
+            changeName = usersDatabase::updateName
         )
 
     val changeSurname: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_SURNAME_LENGTH,
             pattern = User.namePattern,
-            changeField = usersDatabase::updateSurname
+            changeName = usersDatabase::updateSurname
         )
 
     val changeEmail: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_EMAIL_LENGTH,
             pattern = User.emailPattern,
-            changeField = usersDatabase::updateEmail
+            changeName = usersDatabase::updateEmail
         )
 
     val changePhoneNumber: (User, String) -> Result4k<User, FieldInUserChangingError> =
         ChangeStringFieldInUser(
             maxLength = User.MAX_PHONE_NUMBER_LENGTH,
             pattern = User.phonePattern,
-            changeField = usersDatabase::updatePhoneNumber
+            changeName = usersDatabase::updatePhoneNumber
         )
 
     val changePassword: (User, String) -> Result4k<User, PasswordChangingError> =
@@ -99,7 +99,7 @@ class UserOperationsHolder (
         ChangeStringFieldInUser(
             maxLength = User.MAX_VK_LINK_LENGTH,
             pattern = User.vkLinkPattern,
-            changeField = usersDatabase::updateVKLink
+            changeName = usersDatabase::updateVKLink
         )
 
     val makeReader: (User) -> Result4k<User, MakeRoleError> = RoleChanger(
