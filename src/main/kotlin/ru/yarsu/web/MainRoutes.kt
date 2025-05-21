@@ -18,6 +18,8 @@ import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
+import ru.yarsu.web.posts.POST_SEGMENT
+import ru.yarsu.web.posts.postsRoutes
 import ru.yarsu.web.profile.PROFILE_SEGMENT
 import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
 import ru.yarsu.web.profile.moderator.moderatorRoutes
@@ -67,6 +69,10 @@ private fun createMainRouter(
                 operations = operations
             )
         ),
+    POST_SEGMENT bind postsRoutes(
+        contextTools = contextTools,
+        operations = operations
+    ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 
