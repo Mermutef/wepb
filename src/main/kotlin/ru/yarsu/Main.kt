@@ -25,12 +25,6 @@ fun main() {
     val app = createApp(operations, config)
 
     val server = app.asServer(Netty(config.webConfig.port)).start()
-//    operations.mediaOperations.createMedia(
-//
-//    )
-//    operations.postOperations.createPost(
-//
-//    )
     println("Running on port http://localhost:${server.port()}/")
     server.block()
 }

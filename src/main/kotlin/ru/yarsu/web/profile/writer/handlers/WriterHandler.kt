@@ -20,12 +20,10 @@ import ru.yarsu.web.extract
 import ru.yarsu.web.notFound
 import ru.yarsu.web.profile.writer.models.WriterRoomVM
 
-@Suppress("detekt:UnusedPrivateProperty")
 class WriterHandler(
     private val render: ContextAwareViewRender,
     private val postsOperations: PostsOperationsHolder,
     private val hashtagsOperations: HashtagsOperationsHolder,
-    private val mediaOperations: MediaOperationsHolder,
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
@@ -40,12 +38,6 @@ class WriterHandler(
                     notFound
                 } else {
                     val writer = user.value
-                    // todo ДЛЯ ФЕЙКОВЫХ ПОСТОВ
-                    // путь к картинке для поста
-                    // val file = File("/home/jayfeather/Рабочий стол/wepb/wepb/" +
-                    // "src/main/resources/ru/yarsu/public/images/shlepa.jpg")
-                    // val mediaName = createMedia(mediaOperations, writer, file)
-                    // val post = createPost(postsOperations, writer, "Shlepa")
                     when (val writerPosts = fetchWriterPosts(writer)) {
                         is Failure -> notFound
                         is Success -> render(request) extract WriterRoomVM(
