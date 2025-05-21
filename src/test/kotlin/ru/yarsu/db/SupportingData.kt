@@ -2,6 +2,7 @@ package ru.yarsu.db
 
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.PasswordHasher
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Suppress("MayBeConst")
@@ -41,10 +42,10 @@ val validPostPreview = "validPreview"
 val validPostContent = "validContent"
 
 @Suppress("MayBeConst")
-val validPostDate1 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00").toOffsetDateTime().toZonedDateTime()
-
+val validPostDate1 = ZonedDateTime.parse("2024-06-15T15:00:00+03:00").withZoneSameInstant(ZoneId.systemDefault())
+    .toOffsetDateTime().toZonedDateTime()
 @Suppress("MayBeConst")
-val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00").toOffsetDateTime().toZonedDateTime()
-
+val validPostDate2 = ZonedDateTime.parse("2025-06-15T15:00:00+03:00").withZoneSameInstant(ZoneId.systemDefault())
+    .toOffsetDateTime().toZonedDateTime()
 @Suppress("MayBeConst")
 val validHashtagTitle = "validTitle"
