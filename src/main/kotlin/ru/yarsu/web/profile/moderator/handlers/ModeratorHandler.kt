@@ -6,7 +6,6 @@ import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.valueOrNull
 import org.http4k.core.*
 import org.http4k.lens.RequestContextLens
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
@@ -28,7 +27,7 @@ class ModeratorHandler(
 ) : HttpHandler {
     override fun invoke(request: Request): Response {
         return when (
-            val user = request.authorizeUserFromPath(
+            request.authorizeUserFromPath(
                 userLens = userLens
             )
         ) {

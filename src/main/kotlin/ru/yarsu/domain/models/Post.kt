@@ -1,7 +1,6 @@
 package ru.yarsu.domain.models
 
 import ru.yarsu.domain.accounts.Status
-import java.time.LocalDateTime
 import ru.yarsu.web.profile.crop
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

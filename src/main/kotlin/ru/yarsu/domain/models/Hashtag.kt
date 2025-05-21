@@ -18,6 +18,8 @@ data class Hashtag(
         }
 
         const val MAX_TITLE_LENGTH = 50
+
+        val nullTag = Hashtag(-1, "")
     }
 }
 
