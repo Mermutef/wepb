@@ -21,11 +21,11 @@ import ru.yarsu.db.validSecondPhoneNumber
 import ru.yarsu.db.validUserSurname
 import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 
@@ -196,13 +196,13 @@ class SelectPostTest : TestcontainerSpec({ context ->
 
         val fetchedPosts =
             postOperations
-                .selectPostsByIdHashtag(insertedHashtag.id)
+                .selectPostsByHashtagId(insertedHashtag.id)
                 .shouldNotBeNull()
 
         fetchedPosts.size.shouldBe(2)
 
         postOperations
-            .selectPostsByIdHashtag(secondHashtag.id)
+            .selectPostsByHashtagId(secondHashtag.id)
             .shouldNotBeNull()
             .size
             .shouldBe(1)
@@ -237,7 +237,7 @@ class SelectPostTest : TestcontainerSpec({ context ->
                     Status.DRAFT
                 ).shouldNotBeNull()
         val fetchedPosts = postOperations
-            .selectNNewPosts(3)
+            .selectNNewestPosts(3)
             .shouldNotBeNull()
 
         fetchedPosts.size.shouldBe(3)
@@ -245,13 +245,13 @@ class SelectPostTest : TestcontainerSpec({ context ->
             fetchedPosts[i].creationDate.shouldBe(validPostDate2)
 
         postOperations
-            .selectNNewPosts(4)
+            .selectNNewestPosts(4)
             .shouldNotBeNull()
             .size
             .shouldBe(4)
 
         postOperations
-            .selectNNewPosts(4000)
+            .selectNNewestPosts(4000)
             .shouldNotBeNull()
             .size
             .shouldBe(4)

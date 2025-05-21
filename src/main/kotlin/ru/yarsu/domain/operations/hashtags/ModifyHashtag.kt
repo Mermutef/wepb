@@ -6,7 +6,7 @@ import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
 import ru.yarsu.domain.models.Hashtag
 
-class ChangeTitleInHashtag(
+class ChangeHashtagTitle(
     private val changeTitle: (hashtagID: Int, newTitle: String) -> Hashtag?,
 ) : (Hashtag, String) -> Result4k<Hashtag, FieldInHashtagChangingError> {
     override operator fun invoke(

@@ -5,7 +5,7 @@ import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.operations.hashtags.ChangeTitleInHashtag
+import ru.yarsu.domain.operations.hashtags.ChangeHashtagTitle
 import ru.yarsu.domain.operations.hashtags.FieldInHashtagChangingError
 import ru.yarsu.domain.operations.validHashtagTitle
 
@@ -18,12 +18,12 @@ class ModifyHashtagTest : FunSpec({
     val changeTitleMock: (hashtagID: Int, newTitle: String) -> Hashtag? =
         { _, newTitle -> validHashtag.copy(title = newTitle) }
 
-    val changeTitle = ChangeTitleInHashtag(changeTitleMock)
+    val changeTitle = ChangeHashtagTitle(changeTitleMock)
 
     val changeTitleNullMock: (hashtagID: Int, newTitle: String) -> Hashtag? =
         { _, _ -> null }
 
-    val changeTitleNull = ChangeTitleInHashtag(changeTitleNullMock)
+    val changeTitleNull = ChangeHashtagTitle(changeTitleNullMock)
 
     test("Title can be changed to valid title") {
         changeTitle(validHashtag, "${validHashtagTitle}2").shouldBeSuccess().title shouldBe

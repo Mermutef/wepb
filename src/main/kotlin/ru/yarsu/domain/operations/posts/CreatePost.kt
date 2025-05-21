@@ -3,15 +3,15 @@ package ru.yarsu.domain.operations.posts
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.PostValidationResult
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import java.time.ZonedDateTime
 
-class CreatePosts(
+class CreatePost(
     private val insertPost: (
         title: String,
         preview: String,

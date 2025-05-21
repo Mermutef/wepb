@@ -21,11 +21,11 @@ import ru.yarsu.db.validSecondPhoneNumber
 import ru.yarsu.db.validUserSurname
 import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -37,9 +37,11 @@ class UpdatePostTest : TestcontainerSpec({ context ->
     val mediaOperations = MediaOperations(context)
 
     lateinit var insertedHashtag: Hashtag
+    lateinit var insertedSecondHashtag: Hashtag
     lateinit var insertedWriter: User
     lateinit var insertedModerator: User
     lateinit var insertedMedia: MediaFile
+    lateinit var insertedSecondMedia: MediaFile
     lateinit var insertedPost: Post
 
     beforeEach {
@@ -47,6 +49,12 @@ class UpdatePostTest : TestcontainerSpec({ context ->
             hashtagOperations
                 .insertHashtag(
                     validHashtagTitle,
+                ).shouldNotBeNull()
+
+        insertedSecondHashtag =
+            hashtagOperations
+                .insertHashtag(
+                    "${validHashtagTitle}2",
                 ).shouldNotBeNull()
 
         insertedWriter =
@@ -85,13 +93,25 @@ class UpdatePostTest : TestcontainerSpec({ context ->
                     mediaType = MediaType.VIDEO,
                     content = "Valid content".toByteArray(),
                     birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
+                    isTemporary = false
+                ).shouldNotBeNull()
+
+        insertedSecondMedia =
+            mediaOperations
+                .insertMedia(
+                    filename = "${validPostPreview}2",
+                    authorId = insertedWriter.id,
+                    mediaType = MediaType.VIDEO,
+                    content = "Valid content".toByteArray(),
+                    birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
+                    isTemporary = false
                 ).shouldNotBeNull()
 
         insertedPost =
             postOperations
                 .insertPost(
                     validPostTitle,
-                    validPostPreview,
+                    insertedMedia.filename,
                     validPostContent,
                     insertedHashtag.id,
                     validPostDate1,
@@ -137,7 +157,7 @@ class UpdatePostTest : TestcontainerSpec({ context ->
     test("Post hashtag can be changed") {
         val newInsertedHashtag = hashtagOperations
             .insertHashtag(
-                "${validHashtagTitle}2",
+                "${validHashtagTitle}3",
             ).shouldNotBeNull()
 
         val newHashtagId = newInsertedHashtag.id
@@ -180,5 +200,53 @@ class UpdatePostTest : TestcontainerSpec({ context ->
         postOperations
             .updateStatus(insertedPost, Status.DRAFT, ZonedDateTime.now())
             .shouldNotBeNull().status shouldBe Status.DRAFT
+    }
+
+    test("Post can be changed as a set") {
+        val updatedPost = postOperations
+            .updatePost(
+                insertedPost.id,
+                "${validPostTitle}2",
+                "${validPostPreview}2",
+                "${validPostContent}2",
+                insertedSecondHashtag.id,
+                validPostDate2,
+                insertedModerator.id,
+                insertedWriter.id,
+                validPostDate2
+            ).shouldNotBeNull()
+
+        updatedPost.title shouldBe "${validPostTitle}2"
+        updatedPost.preview shouldBe "${validPostPreview}2"
+        updatedPost.content shouldBe "${validPostContent}2"
+        updatedPost.hashtagId shouldBe insertedSecondHashtag.id
+        updatedPost.eventDate shouldBe validPostDate2
+        updatedPost.authorId shouldBe insertedModerator.id
+        updatedPost.moderatorId shouldBe insertedWriter.id
+        updatedPost.lastModifiedDate shouldBe validPostDate2
+    }
+
+    test("Post can be changed as a set with null field") {
+        val updatedPost = postOperations
+            .updatePost(
+                insertedPost.id,
+                "${validPostTitle}2",
+                "${validPostPreview}2",
+                "${validPostContent}2",
+                insertedSecondHashtag.id,
+                null,
+                insertedModerator.id,
+                null,
+                validPostDate2
+            ).shouldNotBeNull()
+
+        updatedPost.title shouldBe "${validPostTitle}2"
+        updatedPost.preview shouldBe "${validPostPreview}2"
+        updatedPost.content shouldBe "${validPostContent}2"
+        updatedPost.hashtagId shouldBe insertedSecondHashtag.id
+        updatedPost.eventDate shouldBe null
+        updatedPost.authorId shouldBe insertedModerator.id
+        updatedPost.moderatorId shouldBe null
+        updatedPost.lastModifiedDate shouldBe validPostDate2
     }
 })

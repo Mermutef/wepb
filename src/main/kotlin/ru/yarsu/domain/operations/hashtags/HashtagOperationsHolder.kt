@@ -5,7 +5,7 @@ import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.models.Hashtag
 
-class HashtagsOperationsHolder(
+class HashtagOperationsHolder(
     private val hashtagsDatabase: HashtagsDatabase,
     private val postsDatabase: PostsDatabase,
 ) {
@@ -21,7 +21,7 @@ class HashtagsOperationsHolder(
     val createHashtag: (
         title: String,
     ) -> Result4k<Hashtag, HashtagCreationError> =
-        CreateHashtags(
+        CreateHashtag(
             insertHashtag = { title ->
                 hashtagsDatabase.insertHashtag(
                     title = title
@@ -35,14 +35,14 @@ class HashtagsOperationsHolder(
         )
 
     val changeTitle: (Hashtag, String) -> Result4k<Hashtag, FieldInHashtagChangingError> =
-        ChangeTitleInHashtag(
+        ChangeHashtagTitle(
             changeTitle = hashtagsDatabase::updateTitle
         )
 
     val deleteHashtag: (Hashtag) -> Result4k<Int, HashtagDeleteError> =
-        DeleteHashtags(
+        DeleteHashtag(
             deleteHashtags = hashtagsDatabase::deleteHashtagById,
-            selectPostsByHashtagId = postsDatabase::selectPostsByIdHashtag,
+            selectPostsByHashtagId = postsDatabase::selectPostsByHashtagId,
             selectHashtagById = hashtagsDatabase::selectHashtagByID
         )
 }

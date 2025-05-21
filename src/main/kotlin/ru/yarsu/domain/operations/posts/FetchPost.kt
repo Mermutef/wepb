@@ -4,8 +4,8 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import java.time.ZonedDateTime
 
 class FetchPostById (
@@ -23,7 +23,7 @@ class FetchPostById (
         }
 }
 
-class FetchPostByIdHashtag (
+class FetchPostsByIdHashtag (
     private val selectPostByIdHashtag: (Int) -> List<Post>,
 ) : (Int) -> Result4k<List<Post>, PostFetchingError> {
 
@@ -35,7 +35,7 @@ class FetchPostByIdHashtag (
         }
 }
 
-class FetchNNewPosts(
+class FetchNNewestPosts(
     private val selectNNewPosts: (Int) -> List<Post>,
 ) : (Int) -> Result4k<List<Post>, PostFetchingError> {
 

@@ -1,6 +1,5 @@
 package ru.yarsu.domain.models
 
-import ru.yarsu.domain.accounts.Status
 import java.time.ZonedDateTime
 
 data class Post(
@@ -58,11 +57,15 @@ data class Post(
 enum class PostValidationResult {
     TITLE_IS_BLANK_OR_EMPTY,
     TITLE_IS_TOO_LONG,
-    TITLE_PATTERN_MISMATCH,
     PREVIEW_IS_BLANK_OR_EMPTY,
     PREVIEW_IS_TOO_LONG,
-
-//    PREVIEW_PATTERN_MISMATCH,
     CONTENT_IS_BLANK_OR_EMPTY,
     ALL_OK,
+}
+
+enum class Status {
+    PUBLISHED,
+    HIDDEN,
+    MODERATION,
+    DRAFT,
 }

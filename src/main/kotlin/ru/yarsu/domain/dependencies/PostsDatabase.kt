@@ -1,16 +1,16 @@
 package ru.yarsu.domain.dependencies
 
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import java.time.ZonedDateTime
 
 @Suppress("detekt:TooManyFunctions")
 interface PostsDatabase {
     fun selectPostByID(postID: Int): Post?
 
-    fun selectPostsByIdHashtag(idHashtag: Int): List<Post>
+    fun selectPostsByHashtagId(idHashtag: Int): List<Post>
 
-    fun selectNNewPosts(countN: Int): List<Post>
+    fun selectNNewestPosts(countN: Int): List<Post>
 
     fun selectPostsByAuthorId(authorId: Int): List<Post>
 
@@ -84,6 +84,19 @@ interface PostsDatabase {
     fun updateStatus(
         post: Post,
         newStatus: Status,
+        dateNow: ZonedDateTime,
+    ): Post?
+
+    @Suppress("detekt:LongParameterList")
+    fun updatePost(
+        postID: Int,
+        newTitle: String,
+        newPreview: String,
+        newContent: String,
+        newHashtagId: Int,
+        newEventDate: ZonedDateTime?,
+        newAuthorId: Int,
+        newModeratorId: Int?,
         dateNow: ZonedDateTime,
     ): Post?
 }

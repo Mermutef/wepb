@@ -6,7 +6,7 @@ import dev.forkhandles.result4k.Success
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.HashtagValidationResult
 
-class CreateHashtags(
+class CreateHashtag(
     private val insertHashtag: (title: String) -> Hashtag?,
     private val selectHashtagByTitle: (title: String) -> Hashtag?,
 ) : (String) -> Result4k<Hashtag, HashtagCreationError> {

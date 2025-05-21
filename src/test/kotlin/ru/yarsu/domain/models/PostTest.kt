@@ -2,7 +2,6 @@ package ru.yarsu.domain.models
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.operations.validPostContent
 import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle

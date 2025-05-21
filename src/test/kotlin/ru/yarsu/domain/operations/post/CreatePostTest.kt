@@ -4,13 +4,13 @@ import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.posts.CreatePosts
+import ru.yarsu.domain.operations.posts.CreatePost
 import ru.yarsu.domain.operations.posts.PostCreationError
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
@@ -134,14 +134,14 @@ class CreatePostTest : FunSpec({
         status: Status,
     ) -> Post? = { _, _, _, _, _, _, _, _, _, _ -> null }
 
-    val createPost = CreatePosts(
+    val createPost = CreatePost(
         insertPostMock,
         fetchHashtagByIdMock,
         fetchUserByIdMock,
         fetchMediaByNameMock
     )
 
-    val createPostNull = CreatePosts(
+    val createPostNull = CreatePost(
         insertPostNullMock,
         fetchHashtagByIdMock,
         fetchUserByIdMock,

@@ -4,10 +4,10 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import java.time.ZonedDateTime
 
@@ -55,7 +55,6 @@ class ChangeDateFieldInPost(
         }
 }
 
-@Suppress("detekt:ReturnCount")
 class ChangeHashtagIdInPost(
     private val changeHashtagId: (postID: Int, newHashtagId: Int, dateNow: ZonedDateTime) -> Post?,
     private val selectHashtagById: (id: Int) -> Hashtag?,
@@ -64,21 +63,22 @@ class ChangeHashtagIdInPost(
         post: Post,
         newHashtagId: Int,
     ): Result4k<Post, FieldInPostChangingError> {
-        try {
-            if (selectHashtagById(newHashtagId) == null) {
-                return Failure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
-            }
-            return when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId, ZonedDateTime.now())) {
-                is Post -> Success(postWithNewHashtag)
-                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+        return try {
+            when {
+                selectHashtagById(newHashtagId) == null
+                -> Failure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
+
+                else -> when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId, ZonedDateTime.now())) {
+                    is Post -> Success(postWithNewHashtag)
+                    else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+                }
             }
         } catch (_: DataAccessException) {
-            return Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
+            Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
         }
     }
 }
 
-@Suppress("detekt:ReturnCount")
 class ChangeUserIdInPost(
     private val changeUserId: (postId: Int, newUserId: Int, dateNow: ZonedDateTime) -> Post?,
     private val selectUserById: (id: Int) -> User?,
@@ -87,21 +87,22 @@ class ChangeUserIdInPost(
         post: Post,
         newUserId: Int,
     ): Result4k<Post, FieldInPostChangingError> {
-        try {
-            if (selectUserById(newUserId) == null) {
-                return Failure(FieldInPostChangingError.USER_NOT_EXISTS)
-            }
-            return when (val postWithNewUserId = changeUserId(post.id, newUserId, ZonedDateTime.now())) {
-                is Post -> Success(postWithNewUserId)
-                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+        return try {
+            when {
+                selectUserById(newUserId) == null
+                -> Failure(FieldInPostChangingError.USER_NOT_EXISTS)
+
+                else -> when (val postWithNewUserId = changeUserId(post.id, newUserId, ZonedDateTime.now())) {
+                    is Post -> Success(postWithNewUserId)
+                    else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+                }
             }
         } catch (_: DataAccessException) {
-            return Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
+            Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
         }
     }
 }
 
-@Suppress("detekt:ReturnCount")
 class ChangePreviewInPost(
     private val changePreview: (postId: Int, newPreview: String, dateNow: ZonedDateTime) -> Post?,
     private val selectMediaByName: (name: String) -> MediaFile?,
@@ -110,16 +111,89 @@ class ChangePreviewInPost(
         post: Post,
         newPreview: String,
     ): Result4k<Post, FieldInPostChangingError> {
+        return try {
+            when {
+                newPreview.length > Post.MAX_PREVIEW_LENGTH
+                -> Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
+
+                selectMediaByName(newPreview) == null
+                -> Failure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
+
+                else -> when (val postWithNewPreview = changePreview(post.id, newPreview, ZonedDateTime.now())) {
+                    is Post -> Success(postWithNewPreview)
+                    else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+                }
+            }
+        } catch (_: DataAccessException) {
+            Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
+        }
+    }
+}
+
+@Suppress("detekt:CyclomaticComplexMethod")
+class ChangePost(
+    private val changePost: (
+        postID: Int,
+        newTitle: String,
+        newPreview: String,
+        newContent: String,
+        newHashtagId: Int,
+        newEventDate: ZonedDateTime?,
+        newAuthorId: Int,
+        newModeratorId: Int?,
+        dateNow: ZonedDateTime,
+    ) -> Post?,
+    private val selectHashtagById: (id: Int) -> Hashtag?,
+    private val selectUserById: (id: Int) -> User?,
+    private val selectMediaByName: (name: String) -> MediaFile?,
+) : (Post, String, String, String, Int, ZonedDateTime?, Int, Int?)
+    -> Result4k<Post, FieldInPostChangingError> {
+    override operator fun invoke(
+        post: Post,
+        newTitle: String,
+        newPreview: String,
+        newContent: String,
+        newHashtagId: Int,
+        newEventDate: ZonedDateTime?,
+        newAuthorId: Int,
+        newModeratorId: Int?,
+    ): Result4k<Post, FieldInPostChangingError> {
         try {
-            if (selectMediaByName(newPreview) == null) {
-                return Failure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
-            }
-            if (newPreview.length > Post.MAX_PREVIEW_LENGTH) {
-                return Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
-            }
-            return when (val postWithNewPreview = changePreview(post.id, newPreview, ZonedDateTime.now())) {
-                is Post -> Success(postWithNewPreview)
-                else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+            return when {
+                newTitle.isBlank() ->
+                    Failure(FieldInPostChangingError.TITLE_IS_BLANK_OR_EMPTY)
+                newTitle.length > Post.MAX_TITLE_LENGTH ->
+                    Failure(FieldInPostChangingError.TITLE_IS_TOO_LONG)
+                newPreview.isBlank() ->
+                    Failure(FieldInPostChangingError.PREVIEW_IS_BLANK_OR_EMPTY)
+                newPreview.length > Post.MAX_PREVIEW_LENGTH ->
+                    Failure(FieldInPostChangingError.PREVIEW_IS_TOO_LONG)
+                newContent.isBlank() ->
+                    Failure(FieldInPostChangingError.CONTENT_IS_BLANK_OR_EMPTY)
+                selectHashtagById(newHashtagId) == null ->
+                    Failure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
+                selectUserById(newAuthorId) == null ->
+                    Failure(FieldInPostChangingError.USER_NOT_EXISTS)
+                newModeratorId != null && selectUserById(newModeratorId) == null ->
+                    Failure(FieldInPostChangingError.USER_NOT_EXISTS)
+                selectMediaByName(newPreview) == null ->
+                    Failure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
+                else -> when (
+                    val newPost = changePost(
+                        post.id,
+                        newTitle,
+                        newPreview,
+                        newContent,
+                        newHashtagId,
+                        newEventDate,
+                        newAuthorId,
+                        newModeratorId,
+                        ZonedDateTime.now()
+                    )
+                ) {
+                    is Post -> Success(newPost)
+                    else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
+                }
             }
         } catch (_: DataAccessException) {
             return Failure(FieldInPostChangingError.UNKNOWN_DATABASE_ERROR)
@@ -136,6 +210,11 @@ enum class FieldInPostChangingError {
     HASHTAG_NOT_EXISTS,
     USER_NOT_EXISTS,
     MEDIA_NOT_EXISTS,
+    TITLE_IS_BLANK_OR_EMPTY,
+    TITLE_IS_TOO_LONG,
+    PREVIEW_IS_BLANK_OR_EMPTY,
+    PREVIEW_IS_TOO_LONG,
+    CONTENT_IS_BLANK_OR_EMPTY,
 }
 
 class StatusChanger<R : Status, E : Enum<E>>(

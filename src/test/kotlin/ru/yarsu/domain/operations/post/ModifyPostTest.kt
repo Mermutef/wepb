@@ -5,14 +5,15 @@ import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.posts.ChangeDateFieldInPost
 import ru.yarsu.domain.operations.posts.ChangeHashtagIdInPost
+import ru.yarsu.domain.operations.posts.ChangePost
 import ru.yarsu.domain.operations.posts.ChangePreviewInPost
 import ru.yarsu.domain.operations.posts.ChangeStringFieldInPost
 import ru.yarsu.domain.operations.posts.ChangeUserIdInPost
@@ -26,6 +27,7 @@ import ru.yarsu.domain.operations.validPass
 import ru.yarsu.domain.operations.validPhoneNumber
 import ru.yarsu.domain.operations.validPostContent
 import ru.yarsu.domain.operations.validPostDate1
+import ru.yarsu.domain.operations.validPostDate2
 import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle
 import ru.yarsu.domain.operations.validVKLink
@@ -139,6 +141,29 @@ class ModifyPostTest : FunSpec({
     val changeStatusMock: (Post, Status, ZonedDateTime) -> Post? = { _, newStatus, newDate ->
         validPost.copy(status = newStatus, lastModifiedDate = newDate)
     }
+    val changePostMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?, ZonedDateTime)
+    -> Post? = {
+            _,
+            newTitle,
+            newPreview,
+            newContent,
+            newHashtagId,
+            newEventDate,
+            newAuthorId,
+            newModeratorId,
+            newDate,
+        ->
+        validPost.copy(
+            title = newTitle,
+            preview = newPreview,
+            content = newContent,
+            hashtagId = newHashtagId,
+            eventDate = newEventDate,
+            authorId = newAuthorId,
+            moderatorId = newModeratorId,
+            lastModifiedDate = newDate
+        )
+    }
 
     val maxLength = 100
     val zeroLength = 0
@@ -181,6 +206,12 @@ class ModifyPostTest : FunSpec({
         updateStatus = changeStatusMock,
         unknownError = MakeStatusError.UNKNOWN_DATABASE_ERROR
     )
+    val changePost = ChangePost(
+        changePostMock,
+        selectHashtagById = fetchHashtagByIdMock,
+        selectMediaByName = fetchMediaByNameMock,
+        selectUserById = fetchUserByIdMock
+    )
 
     val changeStringFieldNullMock: (Int, String, ZonedDateTime) -> Post? = { _, _, _ -> null }
     val changeDateFieldNullMock: (Int, ZonedDateTime, ZonedDateTime) -> Post? = { _, _, _ -> null }
@@ -188,6 +219,8 @@ class ModifyPostTest : FunSpec({
     val changeUserIdNullMock: (Int, Int, ZonedDateTime) -> Post? = { _, _, _ -> null }
     val changePreviewNullMock: (Int, String, ZonedDateTime) -> Post? = { _, _, _ -> null }
     val changeStatusNullMock: (Post, Status, ZonedDateTime) -> Post? = { _, _, _ -> null }
+    val changePostNullMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?, ZonedDateTime) -> Post? =
+        { _, _, _, _, _, _, _, _, _ -> null }
 
     val changeStringFieldNull = ChangeStringFieldInPost(
         maxLength = maxLength,
@@ -214,6 +247,12 @@ class ModifyPostTest : FunSpec({
         alreadyHasStatusError = MakeStatusError.IS_ALREADY_DRAFT,
         updateStatus = changeStatusNullMock,
         unknownError = MakeStatusError.UNKNOWN_DATABASE_ERROR
+    )
+    val changePostNull = ChangePost(
+        changePostNullMock,
+        fetchHashtagByIdMock,
+        fetchUserByIdMock,
+        fetchMediaByNameMock
     )
 
     test("String field can be changed to valid string field") {
@@ -290,5 +329,163 @@ class ModifyPostTest : FunSpec({
     test("Unknown db error test for changeStatus") {
         changeStatusNull(validPost)
             .shouldBeFailure(MakeStatusError.UNKNOWN_DATABASE_ERROR)
+    }
+    test("Post can be changed as a set") {
+        val updatedPost = changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeSuccess()
+        updatedPost.title shouldBe "${validPostTitle}2"
+        updatedPost.preview shouldBe "${validPostPreview}2"
+        updatedPost.content shouldBe "${validPostContent}2"
+        updatedPost.hashtagId shouldBe validSecondHashtag.id
+        updatedPost.eventDate shouldBe validPostDate2
+        updatedPost.authorId shouldBe validModerator.id
+        updatedPost.moderatorId shouldBe validWriter.id
+    }
+    test("Post can be changed as a set with null field") {
+        val updatedPost = changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            null,
+            validModerator.id,
+            null
+        ).shouldBeSuccess()
+        updatedPost.title shouldBe "${validPostTitle}2"
+        updatedPost.preview shouldBe "${validPostPreview}2"
+        updatedPost.content shouldBe "${validPostContent}2"
+        updatedPost.hashtagId shouldBe validSecondHashtag.id
+        updatedPost.eventDate shouldBe null
+        updatedPost.authorId shouldBe validModerator.id
+        updatedPost.moderatorId shouldBe null
+    }
+    test("Post can not be changed as a set with blank title") {
+        changePost(
+            validPost,
+            "",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.TITLE_IS_BLANK_OR_EMPTY)
+    }
+    test("Post can not be changed as a set with too long title") {
+        changePost(
+            validPost,
+            "a".repeat(Post.MAX_TITLE_LENGTH + 1),
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.TITLE_IS_TOO_LONG)
+    }
+    test("Post can not be changed as a set with blank preview") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.PREVIEW_IS_BLANK_OR_EMPTY)
+    }
+    test("Post can not be changed as a set with too long preview") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "a".repeat(Post.MAX_PREVIEW_LENGTH + 100),
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.PREVIEW_IS_TOO_LONG)
+    }
+    test("Post can not be changed as a set with blank content") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.CONTENT_IS_BLANK_OR_EMPTY)
+    }
+    test("Post can not be changed as a set with invalid hashtag id") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            Int.MIN_VALUE,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
+    }
+    test("Post can not be changed as a set with invalid author id") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            Int.MIN_VALUE,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.USER_NOT_EXISTS)
+    }
+    test("Post can not be changed as a set with invalid moderator id") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            Int.MIN_VALUE
+        ).shouldBeFailure(FieldInPostChangingError.USER_NOT_EXISTS)
+    }
+    test("Post can not be changed as a set with invalid media") {
+        changePost(
+            validPost,
+            "${validPostTitle}2",
+            "invalidTitle",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
+    }
+    test("Unknown db error test for changePost") {
+        changePostNull(
+            validPost,
+            "${validPostTitle}2",
+            "${validPostPreview}2",
+            "${validPostContent}2",
+            validSecondHashtag.id,
+            validPostDate2,
+            validModerator.id,
+            validWriter.id
+        ).shouldBeFailure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
     }
 })

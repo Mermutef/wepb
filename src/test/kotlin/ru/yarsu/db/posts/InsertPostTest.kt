@@ -20,11 +20,11 @@ import ru.yarsu.db.validSecondPhoneNumber
 import ru.yarsu.db.validUserSurname
 import ru.yarsu.db.validVKLink
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.MediaFile
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import java.time.LocalDateTime
 

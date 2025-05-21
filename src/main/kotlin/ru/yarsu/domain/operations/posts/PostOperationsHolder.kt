@@ -1,15 +1,15 @@
 package ru.yarsu.domain.operations.posts
 
 import dev.forkhandles.result4k.Result4k
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.dependencies.MediaDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import java.time.ZonedDateTime
 
-class PostsOperationsHolder(
+class PostOperationsHolder(
     private val postsDatabase: PostsDatabase,
     private val hashtagsDatabase: HashtagsDatabase,
     private val userDatabase: UsersDatabase,
@@ -22,10 +22,10 @@ class PostsOperationsHolder(
         FetchPostById { postID: Int -> postsDatabase.selectPostByID(postID) }
 
     val fetchPostsByHashtagId: (Int) -> Result4k<List<Post>, PostFetchingError> =
-        FetchPostByIdHashtag { hashtagId: Int -> postsDatabase.selectPostsByIdHashtag(hashtagId) }
+        FetchPostsByIdHashtag { hashtagId: Int -> postsDatabase.selectPostsByHashtagId(hashtagId) }
 
-    val fetchNNewPosts: (Int) -> Result4k<List<Post>, PostFetchingError> =
-        FetchNNewPosts { countN: Int -> postsDatabase.selectNNewPosts(countN) }
+    val fetchNNewestPosts: (Int) -> Result4k<List<Post>, PostFetchingError> =
+        FetchNNewestPosts { countN: Int -> postsDatabase.selectNNewestPosts(countN) }
 
     val fetchPostsByAuthorId: (Int) -> Result4k<List<Post>, PostFetchingError> =
         FetchPostsByAuthorId { authorId: Int -> postsDatabase.selectPostsByAuthorId(authorId) }
@@ -51,7 +51,7 @@ class PostsOperationsHolder(
         moderatorId: Int?,
         status: Status,
     ) -> Result4k<Post, PostCreationError> =
-        CreatePosts(
+        CreatePost(
             insertPost = {
                     title,
                     preview,
@@ -155,5 +155,14 @@ class PostsOperationsHolder(
             alreadyHasStatusError = MakeStatusError.IS_ALREADY_DRAFT,
             updateStatus = postsDatabase::updateStatus,
             unknownError = MakeStatusError.UNKNOWN_DATABASE_ERROR
+        )
+
+    val changePost: (Post, String, String, String, Int, ZonedDateTime?, Int, Int?)
+    -> Result4k<Post, FieldInPostChangingError> =
+        ChangePost(
+            changePost = postsDatabase::updatePost,
+            selectHashtagById = hashtagsDatabase::selectHashtagByID,
+            selectMediaByName = mediaDatabase::selectOnlyMeta,
+            selectUserById = userDatabase::selectUserByID
         )
 }

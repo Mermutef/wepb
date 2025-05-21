@@ -4,16 +4,16 @@ import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.posts.FetchAllPosts
-import ru.yarsu.domain.operations.posts.FetchNNewPosts
+import ru.yarsu.domain.operations.posts.FetchNNewestPosts
 import ru.yarsu.domain.operations.posts.FetchPostById
-import ru.yarsu.domain.operations.posts.FetchPostByIdHashtag
 import ru.yarsu.domain.operations.posts.FetchPostByStatus
 import ru.yarsu.domain.operations.posts.FetchPostsByAuthorId
+import ru.yarsu.domain.operations.posts.FetchPostsByIdHashtag
 import ru.yarsu.domain.operations.posts.FetchPostsByModeratorId
 import ru.yarsu.domain.operations.posts.FetchPostsByTimeInterval
 import ru.yarsu.domain.operations.posts.PostFetchingError
@@ -93,8 +93,8 @@ class FetchPostTest : FunSpec({
     val fetchPostByIdNullMock: (Int) -> Post? = { _ -> null }
 
     val fetchPostById = FetchPostById(fetchPostByIdMock)
-    val fetchPostsByHashtagId = FetchPostByIdHashtag(fetchPostsByHashtagIdMock)
-    val fetchNNewPosts = FetchNNewPosts(fetchNNewPostsMock)
+    val fetchPostsByHashtagId = FetchPostsByIdHashtag(fetchPostsByHashtagIdMock)
+    val fetchNNewPosts = FetchNNewestPosts(fetchNNewPostsMock)
     val fetchPostsByAuthorId = FetchPostsByAuthorId(fetchPostsByAuthorIdMock)
     val fetchPostsByModerator = FetchPostsByModeratorId(fetchPostsByModeratorIdMock)
     val fetchPostsByStatus = FetchPostByStatus(fetchPostsByStatusMock)

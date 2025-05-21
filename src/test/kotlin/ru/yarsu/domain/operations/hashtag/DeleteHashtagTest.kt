@@ -4,10 +4,10 @@ import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
-import ru.yarsu.domain.operations.hashtags.DeleteHashtags
+import ru.yarsu.domain.models.Status
+import ru.yarsu.domain.operations.hashtags.DeleteHashtag
 import ru.yarsu.domain.operations.hashtags.HashtagDeleteError
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validPostContent
@@ -84,11 +84,11 @@ class DeleteHashtagTest : FunSpec({
 
     val deleteHashtagByIdNullMock: (Int) -> Int? = { _ -> null }
 
-    val deleteHashtag = DeleteHashtags(deleteHashtagByIdMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
+    val deleteHashtag = DeleteHashtag(deleteHashtagByIdMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
 
-    val deleteHashtagInPost = DeleteHashtags(deleteHashtagByIdMock, fetchPostWithHashtagByIdMock, fetchHashtagById)
+    val deleteHashtagInPost = DeleteHashtag(deleteHashtagByIdMock, fetchPostWithHashtagByIdMock, fetchHashtagById)
 
-    val deleteHashtagNull = DeleteHashtags(deleteHashtagByIdNullMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
+    val deleteHashtagNull = DeleteHashtag(deleteHashtagByIdNullMock, fetchPostWithoutHashtagByIdMock, fetchHashtagById)
 
     test("Hashtag can be delete") {
         deleteHashtag(validHashtag).shouldBeSuccess(1)

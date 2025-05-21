@@ -4,7 +4,7 @@ import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.operations.hashtags.CreateHashtags
+import ru.yarsu.domain.operations.hashtags.CreateHashtag
 import ru.yarsu.domain.operations.hashtags.HashtagCreationError
 import ru.yarsu.domain.operations.validHashtagTitle
 
@@ -38,12 +38,12 @@ class CreateHashtagTest : FunSpec({
 
     val fetchHashtagByTitleNullMock: (String) -> Hashtag? = { _ -> null }
 
-    val createHashtag = CreateHashtags(
+    val createHashtag = CreateHashtag(
         insertHashtagMock,
         fetchHashtagByTitleMock
     )
 
-    val createHashtagNullTitle = CreateHashtags(
+    val createHashtagNullTitle = CreateHashtag(
         insertHashtagNullMock,
         fetchHashtagByTitleNullMock
     )

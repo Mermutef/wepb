@@ -5,9 +5,9 @@ import org.jooq.Record
 import ru.yarsu.db.generated.enums.PostStatus
 import ru.yarsu.db.generated.tables.references.POSTS
 import ru.yarsu.db.utils.safeLet
-import ru.yarsu.domain.accounts.Status
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.models.Post
+import ru.yarsu.domain.models.Status
 import java.time.ZonedDateTime
 
 @Suppress("detekt:TooManyFunctions")
@@ -20,13 +20,13 @@ class PostsOperations(
             .fetchOne()
             ?.toPost()
 
-    override fun selectPostsByIdHashtag(idHashtag: Int): List<Post> =
+    override fun selectPostsByHashtagId(idHashtag: Int): List<Post> =
         selectFromPosts()
             .where(POSTS.HASHTAG.eq(idHashtag))
             .fetch()
             .mapNotNull { it.toPost() }
 
-    override fun selectNNewPosts(countN: Int): List<Post> =
+    override fun selectNNewestPosts(countN: Int): List<Post> =
         selectFromPosts()
             .orderBy(POSTS.CREATION_DATE.desc())
             .limit(countN)
@@ -220,6 +220,31 @@ class PostsOperations(
                 }
         }
     }
+
+    override fun updatePost(
+        postID: Int,
+        newTitle: String,
+        newPreview: String,
+        newContent: String,
+        newHashtagId: Int,
+        newEventDate: ZonedDateTime?,
+        newAuthorId: Int,
+        newModeratorId: Int?,
+        dateNow: ZonedDateTime,
+    ): Post? =
+        jooqContext.update(POSTS)
+            .set(POSTS.TITLE, newTitle)
+            .set(POSTS.PREVIEW, newPreview)
+            .set(POSTS.CONTENT, newContent)
+            .set(POSTS.HASHTAG, newHashtagId)
+            .set(POSTS.EVENT_DATE, newEventDate?.toOffsetDateTime())
+            .set(POSTS.AUTHORID, newAuthorId)
+            .set(POSTS.MODERATORID, newModeratorId)
+            .set(POSTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
+            .where(POSTS.ID.eq(postID))
+            .returningResult()
+            .fetchOne()
+            ?.toPost()
 
     private fun selectFromPosts() =
         jooqContext

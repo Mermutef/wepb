@@ -9,9 +9,9 @@ import ru.yarsu.domain.dependencies.DatabaseOperations
 import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.dependencies.UsersDatabase
-import ru.yarsu.domain.operations.hashtags.HashtagsOperationsHolder
+import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
-import ru.yarsu.domain.operations.posts.PostsOperationsHolder
+import ru.yarsu.domain.operations.posts.PostOperationsHolder
 import ru.yarsu.domain.operations.users.UserOperationsHolder
 
 class OperationsHolderTest : FunSpec({
@@ -30,7 +30,7 @@ class OperationsHolderTest : FunSpec({
         val operations = OperationsHolder(mockDBOperations, config)
         operations.userOperations::class shouldBe UserOperationsHolder::class
         operations.mediaOperations::class shouldBe MediaOperationsHolder::class
-        operations.postOperations::class shouldBe PostsOperationsHolder::class
-        operations.hashtagOperations::class shouldBe HashtagsOperationsHolder::class
+        operations.postOperations::class shouldBe PostOperationsHolder::class
+        operations.hashtagOperations::class shouldBe HashtagOperationsHolder::class
     }
 })
