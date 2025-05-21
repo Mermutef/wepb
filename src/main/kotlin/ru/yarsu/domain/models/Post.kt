@@ -1,6 +1,7 @@
 package ru.yarsu.domain.models
 
 import java.time.ZonedDateTime
+import ru.yarsu.web.profile.crop
 import java.time.format.DateTimeFormatter
 
 const val MIDDLE_CONTENT_LENGTH = 80
@@ -61,17 +62,9 @@ data class Post(
 
     val dateTimeWithPattern = lastModifiedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
 
-    val middleContent = when {
-        content.length < MIDDLE_CONTENT_LENGTH -> content
+    val middleContent = content.crop(MIDDLE_CONTENT_LENGTH)
 
-        else -> "${content.slice(0..MIDDLE_CONTENT_LENGTH)}..."
-    }
-
-    val middleTitleName = when {
-        title.length < MIDDLE_TITLE_LENGTH -> title
-
-        else -> "${title.slice(0..MIDDLE_TITLE_LENGTH)}..."
-    }
+    val middleTitleName = title.crop(MIDDLE_TITLE_LENGTH)
 }
 
 enum class PostValidationResult {

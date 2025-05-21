@@ -34,19 +34,15 @@ class ModeratorHandler(
         ) {
             is Failure -> notFound
             is Success -> {
-                if (user.value.role != Role.MODERATOR) {
-                    notFound
-                } else {
-                    when (val writerPosts = fetchAllPosts()) {
-                        is Failure -> notFound
-                        is Success -> render(request) extract ModeratorRoomVM(
-                            writerPosts.value.associateWith {
-                                hashtagsOperations.fetchHashtagById(
-                                    it.hashtagId
-                                ).valueOrNull() ?: Hashtag.nullTag
-                            }
-                        )
-                    }
+                when (val posts = fetchAllPosts()) {
+                    is Failure -> notFound
+                    is Success -> render(request) extract ModeratorRoomVM(
+                        posts.value.associateWith {
+                            hashtagsOperations.fetchHashtagById(
+                                it.hashtagId
+                            ).valueOrNull() ?: Hashtag.nullTag
+                        }
+                    )
                 }
             }
         }

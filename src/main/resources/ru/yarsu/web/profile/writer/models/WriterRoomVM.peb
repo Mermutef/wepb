@@ -2,7 +2,7 @@
 
     {% extends "../../../meta/BaseLayout.peb" %}
     {% block title %}
-        Writer Room
+        Посты писателя {{ user.name }}
     {% endblock %}
 {% block page %}
     {% include "../../../meta/Navbar.peb" %}
