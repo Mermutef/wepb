@@ -15,7 +15,7 @@ fun adminRoutes(
     contextTools: ContextTools,
     operations: UserOperationsHolder,
 ) = routes(
-    "$ADMIN_SEGMENT$LIST_ALL_USERS" bind Method.GET to AdminHandler(
+    "$LIST_ADMINISTRATION/{login}" bind Method.GET to AdminHandler(
         render = contextTools.render,
         userOperations = operations,
         userLens = contextTools.userLens,
@@ -24,4 +24,4 @@ fun adminRoutes(
 
 // Константы для путей
 const val ADMIN_SEGMENT = "/admin"
-const val LIST_ALL_USERS = "/users"
+const val LIST_ADMINISTRATION = "/list-administration"

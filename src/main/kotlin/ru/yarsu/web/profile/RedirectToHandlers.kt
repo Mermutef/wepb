@@ -9,6 +9,11 @@ import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.notFound
 import ru.yarsu.web.ok
 
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.LIST_ADMINISTRATION
+
+import ru.yarsu.web.redirect
+
 class RedirectToHandlers(
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
@@ -23,7 +28,7 @@ class RedirectToHandlers(
             is Success -> {
                 // todo переход на страницы профилей в зависимости от роли
                 when {
-                    user.value.isAdmin() -> ok("pong")
+                    user.value.isAdmin() -> redirect("${ADMIN_SEGMENT}${LIST_ADMINISTRATION}/${user.value.login}")
                     user.value.isModerator() -> ok("pong")
                     user.value.isWriter() -> ok("pong")
                     user.value.isReader() -> ok("pong")

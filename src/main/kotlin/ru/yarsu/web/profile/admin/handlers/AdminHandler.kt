@@ -34,7 +34,7 @@ class AdminHandler(
                     when (val usersList = fetchAllUsers()) {
                         is Failure -> notFound
                         is Success -> render(request) extract AdminRoomVM(
-                            users = usersList.value.associateBy { it.id }
+                            usersList.value.associateBy{it.id}
                         )
                     }
                 }
