@@ -171,7 +171,7 @@ object UserWebLenses {
         } ?: Failure(UserFetchingError.NO_SUCH_USER)
     }
 
-    fun Request.authorizeUserFromPath(userLens: RequestContextLens<User?>): Result<User, UserFetchingError> {
+fun Request.authorizeUserFromPath(userLens: RequestContextLens<User?>): Result<User, UserFetchingError> {
         return lensOrNull(loginFromPathLens, this)?.let { userLoginFromPath ->
             val authUser = userLens(this)
             when {
