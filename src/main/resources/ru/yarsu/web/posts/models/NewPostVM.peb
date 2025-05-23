@@ -20,8 +20,8 @@
                                 <h4 class="">
                                     <label for="title" class="text-center">Название:</label>
                                 </h4>
-                                <input class="form-control"  id="title" name="title"
-                                          >{{ model.form.fields["title"] | first }}
+                                <textarea class="form-control"  id="title" name="title" rows="1"
+                                >{{ model.form.fields["title"] | first }}</textarea>
                             </div>
                             <div class="col-4 error-field">
                                 {% for error in model.form.errors.values() %}
@@ -50,11 +50,15 @@
                                     {% endfor %}
                             </div>
                             <div class="form-group mb-4">
-                                <h4 class="">
-                                    <label for="hashtag" class="text-center">#</label>
-                                </h4>
-                                <input class="form-control" type="text" id="hashtag" name="hashtag"
-                                    >{{ model.form.fields["hashtag"] | first }}
+                                <div class="row">
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text" id="basic-addon1">
+                                          #
+                                        </span>
+                                        <label for="hashtag"></label>
+                                        <textarea class="form-control" rows="1" id="hashtag" name="hashtag">{{ model.form.fields["hashtag"] | first }}</textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-4 error-field">
                                     {% for error in model.form.errors.values() %}
@@ -69,8 +73,8 @@
                                 <h4 class="">
                                     <label for="eventDate" class="text-center">Дата мероприятия</label>
                                 </h4>
-                                <input class="form-control" type="datetime-local" id="eventDate" name="eventDate"
-                                >{{ model.form.fields["eventDate"] | first }}
+                                <input class="form-control" type="datetime-local" id="eventDate" name="eventDate" value="{{ model.form.fields["eventDate"] | first }}"
+                                >
                             </div>
                             <div class="col-4 error-field">
                                     {% for error in model.form.errors.values() %}

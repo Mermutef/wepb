@@ -1,0 +1,44 @@
+{# @pebvariable name="model" type="ru.yarsu.web.common.models.GeneralPageVM" #}
+
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Главная страница
+    {% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+<div class="container">
+    <div class="row row-cols-3">
+        {% for postAndHashtag in model.postsWithHashtag %}
+        <div class="col">
+            <div class="card border-radius_card my-3">
+                <img src="/media/{{ postAndHashtag.key.preview }}"
+                     class="card-img-top">
+                <div class="card-body">
+                    <div class="col text-end">
+                            {{ postAndHashtag.key.lastModifiedDate | date("dd.MM.yyyy") }}
+                    </div>
+                    <h4 class="card-title">
+                        <u>{{ postAndHashtag.key.middleTitleName }}</u>
+                    </h4>
+                    <div class="card-text mt-3">
+                            {{ postAndHashtag.key.middleContent }}
+                    </div>
+                    <div class="card-footer mt-3">
+                        <div class="row">
+                            <div class="col">
+                                <i> #{{ model.middleHashtag(postAndHashtag.value)}}</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-1 text-center">
+                        <a class="btn btn-sm btn-primary w-100" href="{{ model.postLink(postAndHashtag.key) }}">
+                                Читать
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

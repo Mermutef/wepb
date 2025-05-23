@@ -12,6 +12,7 @@ import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
+import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.AuthenticationFilter
@@ -39,7 +40,12 @@ private fun createMainRouter(
     writerRoleFilter: Filter,
     moderatorRoleFilter: Filter,
 ) = routes(
-    "/" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
+    "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
+    "/" bind Method.GET to GeneralPageHandler(
+        render = contextTools.render,
+        postsOperations = operations.postOperations,
+        hashtagsOperations = operations.hashtagOperations,
+        ),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
     AUTH_SEGMENT bind authRouter(
         contextTools = contextTools,
