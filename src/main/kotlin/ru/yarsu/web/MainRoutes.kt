@@ -7,7 +7,9 @@ import org.http4k.routing.*
 import org.http4k.template.ViewModel
 import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
+import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
+import ru.yarsu.domain.operations.users.UserOperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
@@ -17,18 +19,34 @@ import ru.yarsu.web.filters.AuthenticationFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
 import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.profileRoutes
 import java.io.InputStream
+import ru.yarsu.web.filters.roleFilter
 
 @Suppress("LongParameterList")
 private fun createMainRouter(
     contextTools: ContextTools,
     operations: OperationsHolder,
+    userOperations: UserOperationsHolder,
     config: AppConfig,
     jwtTools: JWTTools,
+    adminRoleFilter: Filter,
 ) = routes(
     "/" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
-    MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
+    MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools,
+        operations = operations
+    ),
+    ADMIN_SEGMENT bind adminRoleFilter
+        .then(
+            adminRoutes(
+                contextTools = contextTools,
+                operations = userOperations,
+                )
+
+        ),
+
     AUTH_SEGMENT bind authRouter(
         contextTools = contextTools,
         config = config,
@@ -47,11 +65,14 @@ fun createApp(
 ): RoutingHttpHandler {
     val contexts = ContextTools(config.webConfig)
     val jwtTools = JWTTools(config.authConfig.secret, JWT_ISSUER)
+    val adminRoleFilter = roleFilter(contexts.userLens,Role.ADMIN)
     val app = createMainRouter(
         contextTools = contexts,
         operations = operations,
+        userOperations = operations.userOperations,
         config = config,
-        jwtTools = jwtTools
+        jwtTools = jwtTools,
+        adminRoleFilter
     )
 
     return ServerFilters

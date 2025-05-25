@@ -19,7 +19,7 @@ import ru.yarsu.web.profile.admin.models.AdminRoomVM
 
 class AdminHandler(
     private val render: ContextAwareViewRender,
-    //private val us_operations : UserOperationsHolder,
+    //private val userOperations : UserOperationsHolder,
     private val userOperations: UserOperationsHolder,
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
@@ -33,9 +33,7 @@ class AdminHandler(
                 } else {
                     when (val usersList = fetchAllUsers()) {
                         is Failure -> notFound
-                        is Success -> render(request) extract AdminRoomVM(
-                            usersList.value.associateBy{it.id}
-                        )
+                        is Success -> render(request) extract AdminRoomVM(users = usersList.value)
                     }
                 }
             }
