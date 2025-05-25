@@ -8,6 +8,7 @@ import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.accounts.Role
+import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
@@ -15,6 +16,7 @@ import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.FiltersHolder
+import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.filters.editorRoleFilter
 import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
@@ -22,14 +24,19 @@ import ru.yarsu.web.media.mediaRouter
 import ru.yarsu.web.posts.POST_SEGMENT
 import ru.yarsu.web.posts.postsRoutes
 import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
 import ru.yarsu.web.profile.moderator.moderatorRoutes
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.profileRoutes
 import ru.yarsu.web.profile.user.USER
 import ru.yarsu.web.profile.user.userRoutes
 import ru.yarsu.web.profile.writer.WRITER_SEGMENT
 import ru.yarsu.web.profile.writer.writerRoutes
 import java.io.InputStream
+import ru.yarsu.web.filters.roleFilter
 
 @Suppress("LongParameterList")
 private fun createMainRouter(
@@ -39,6 +46,7 @@ private fun createMainRouter(
     jwtTools: JWTTools,
     writerRoleFilter: Filter,
     moderatorRoleFilter: Filter,
+    adminRoleFilter: Filter,
     editorRoleFilter: Filter,
 ) = routes(
     "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
@@ -54,6 +62,14 @@ private fun createMainRouter(
         operations = operations,
         jwtTools = jwtTools
     ),
+    ADMIN_SEGMENT bind adminRoleFilter
+        .then(
+            adminRoutes(
+                contextTools = contextTools,
+                operations = operations.userOperations,
+            )
+
+        ),
     PROFILE_SEGMENT bind profileRoutes(
         contextTools = contextTools,
     ),
@@ -93,6 +109,7 @@ fun createApp(
 
     val moderatorRoleFilter = roleFilter(contexts.userLens, Role.MODERATOR)
     val writerRoleFilter = roleFilter(contexts.userLens, Role.WRITER)
+    val adminRoleFilter = roleFilter(contexts.userLens, Role.ADMIN)
     val editorRoleFilter = editorRoleFilter(contexts.userLens)
 
     val filters = FiltersHolder(
@@ -109,7 +126,8 @@ fun createApp(
         jwtTools = jwtTools,
         writerRoleFilter = writerRoleFilter,
         moderatorRoleFilter = moderatorRoleFilter,
-        editorRoleFilter = editorRoleFilter
+        editorRoleFilter = editorRoleFilter,
+        adminRoleFilter = adminRoleFilter,
     )
 
     return filters.all.then(app)
