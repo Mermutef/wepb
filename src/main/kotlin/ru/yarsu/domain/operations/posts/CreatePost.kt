@@ -18,8 +18,6 @@ class CreatePost(
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int?,
         status: Status,
@@ -58,8 +56,6 @@ class CreatePost(
                         content,
                         hashtagId,
                         eventDate,
-                        ZonedDateTime.now(),
-                        ZonedDateTime.now(),
                         authorId,
                         moderatorId,
                         status

@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 class ChangeStringFieldInPost(
     private val maxLength: Int,
     private val pattern: Regex,
-    private val changeField: (postID: Int, newField: String, dateNow: ZonedDateTime) -> Post?,
+    private val changeField: (postID: Int, newField: String) -> Post?,
 ) : (Post, String) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
         post: Post,
@@ -28,7 +28,7 @@ class ChangeStringFieldInPost(
                     Failure(FieldInPostChangingError.FIELD_IS_TOO_LONG)
                 !pattern.matches(newField) ->
                     Failure(FieldInPostChangingError.FIELD_PATTERN_MISMATCH)
-                else -> when (val postWithNewStringField = changeField(post.id, newField, ZonedDateTime.now())) {
+                else -> when (val postWithNewStringField = changeField(post.id, newField)) {
                     is Post -> Success(postWithNewStringField)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
@@ -39,14 +39,14 @@ class ChangeStringFieldInPost(
 }
 
 class ChangeDateFieldInPost(
-    private val changeField: (postID: Int, newField: ZonedDateTime, dateNow: ZonedDateTime) -> Post?,
+    private val changeField: (postID: Int, newField: ZonedDateTime) -> Post?,
 ) : (Post, ZonedDateTime) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
         post: Post,
         newField: ZonedDateTime,
     ): Result4k<Post, FieldInPostChangingError> =
         try {
-            when (val postWithNewDateField = changeField(post.id, newField, ZonedDateTime.now())) {
+            when (val postWithNewDateField = changeField(post.id, newField)) {
                 is Post -> Success(postWithNewDateField)
                 else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
             }
@@ -56,7 +56,7 @@ class ChangeDateFieldInPost(
 }
 
 class ChangeHashtagIdInPost(
-    private val changeHashtagId: (postID: Int, newHashtagId: Int, dateNow: ZonedDateTime) -> Post?,
+    private val changeHashtagId: (postID: Int, newHashtagId: Int) -> Post?,
     private val selectHashtagById: (id: Int) -> Hashtag?,
 ) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
@@ -68,7 +68,7 @@ class ChangeHashtagIdInPost(
                 selectHashtagById(newHashtagId) == null
                 -> Failure(FieldInPostChangingError.HASHTAG_NOT_EXISTS)
 
-                else -> when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId, ZonedDateTime.now())) {
+                else -> when (val postWithNewHashtag = changeHashtagId(post.id, newHashtagId)) {
                     is Post -> Success(postWithNewHashtag)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
@@ -80,7 +80,7 @@ class ChangeHashtagIdInPost(
 }
 
 class ChangeUserIdInPost(
-    private val changeUserId: (postId: Int, newUserId: Int, dateNow: ZonedDateTime) -> Post?,
+    private val changeUserId: (postId: Int, newUserId: Int) -> Post?,
     private val selectUserById: (id: Int) -> User?,
 ) : (Post, Int) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
@@ -92,7 +92,7 @@ class ChangeUserIdInPost(
                 selectUserById(newUserId) == null
                 -> Failure(FieldInPostChangingError.USER_NOT_EXISTS)
 
-                else -> when (val postWithNewUserId = changeUserId(post.id, newUserId, ZonedDateTime.now())) {
+                else -> when (val postWithNewUserId = changeUserId(post.id, newUserId)) {
                     is Post -> Success(postWithNewUserId)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
@@ -104,7 +104,7 @@ class ChangeUserIdInPost(
 }
 
 class ChangePreviewInPost(
-    private val changePreview: (postId: Int, newPreview: String, dateNow: ZonedDateTime) -> Post?,
+    private val changePreview: (postId: Int, newPreview: String) -> Post?,
     private val selectMediaByName: (name: String) -> MediaFile?,
 ) : (Post, String) -> Result4k<Post, FieldInPostChangingError> {
     override operator fun invoke(
@@ -119,7 +119,7 @@ class ChangePreviewInPost(
                 selectMediaByName(newPreview) == null
                 -> Failure(FieldInPostChangingError.MEDIA_NOT_EXISTS)
 
-                else -> when (val postWithNewPreview = changePreview(post.id, newPreview, ZonedDateTime.now())) {
+                else -> when (val postWithNewPreview = changePreview(post.id, newPreview)) {
                     is Post -> Success(postWithNewPreview)
                     else -> Failure(FieldInPostChangingError.UNKNOWN_CHANGING_ERROR)
                 }
@@ -141,7 +141,6 @@ class ChangePost(
         newEventDate: ZonedDateTime?,
         newAuthorId: Int,
         newModeratorId: Int?,
-        dateNow: ZonedDateTime,
     ) -> Post?,
     private val selectHashtagById: (id: Int) -> Hashtag?,
     private val selectUserById: (id: Int) -> User?,
@@ -188,7 +187,6 @@ class ChangePost(
                         newEventDate,
                         newAuthorId,
                         newModeratorId,
-                        ZonedDateTime.now()
                     )
                 ) {
                     is Post -> Success(newPost)
@@ -220,7 +218,7 @@ enum class FieldInPostChangingError {
 class StatusChanger<R : Status, E : Enum<E>>(
     private val targetStatus: R,
     private val alreadyHasStatusError: E,
-    private val updateStatus: (post: Post, newStatus: Status, dateNow: ZonedDateTime) -> Post?,
+    private val updateStatus: (post: Post, newStatus: Status) -> Post?,
     private val unknownError: E,
 ) : (Post) -> Result4k<Post, E> {
     override operator fun invoke(post: Post): Result4k<Post, E> {
@@ -228,7 +226,7 @@ class StatusChanger<R : Status, E : Enum<E>>(
             return Failure(alreadyHasStatusError)
         }
 
-        return when (val newPost = updateStatus(post, targetStatus, ZonedDateTime.now())) {
+        return when (val newPost = updateStatus(post, targetStatus)) {
             is Post -> Success(newPost)
             else -> Failure(unknownError)
         }

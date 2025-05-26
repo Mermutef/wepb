@@ -32,8 +32,8 @@ interface PostsDatabase {
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
+        creationDate: ZonedDateTime = ZonedDateTime.now(),
+        lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
         authorId: Int,
         moderatorId: Int?,
         status: Status,
@@ -42,49 +42,49 @@ interface PostsDatabase {
     fun updateTitle(
         postID: Int,
         newTitle: String,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updatePreview(
         postID: Int,
         newPreview: String,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateContent(
         postID: Int,
         newContent: String,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateHashtagId(
         postID: Int,
         newHashtagId: Int,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateEventDate(
         postID: Int,
         newEventBody: ZonedDateTime,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateAuthorId(
         postID: Int,
         newAuthorId: Int,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateModeratorId(
         postID: Int,
         newModeratorId: Int,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     fun updateStatus(
         post: Post,
         newStatus: Status,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 
     @Suppress("detekt:LongParameterList")
@@ -97,6 +97,6 @@ interface PostsDatabase {
         newEventDate: ZonedDateTime?,
         newAuthorId: Int,
         newModeratorId: Int?,
-        dateNow: ZonedDateTime,
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
     ): Post?
 }

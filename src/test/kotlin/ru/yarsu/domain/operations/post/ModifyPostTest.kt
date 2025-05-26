@@ -114,34 +114,34 @@ class ModifyPostTest : FunSpec({
         Status.DRAFT
     )
 
-    val changeStringFieldMock: (Int, String, ZonedDateTime) -> Post? = { _, newStringField, newDate ->
-        validPost.copy(title = newStringField, lastModifiedDate = newDate)
+    val changeStringFieldMock: (Int, String) -> Post? = { _, newStringField ->
+        validPost.copy(title = newStringField, lastModifiedDate = ZonedDateTime.now())
     }
-    val changeDateFieldMock: (Int, ZonedDateTime, ZonedDateTime) -> Post? = { _, newDateField, newDate ->
-        validPost.copy(eventDate = newDateField, lastModifiedDate = newDate)
+    val changeDateFieldMock: (Int, ZonedDateTime) -> Post? = { _, newDateField ->
+        validPost.copy(eventDate = newDateField, lastModifiedDate = ZonedDateTime.now())
     }
-    val changeHashtagIdMock: (Int, Int, ZonedDateTime) -> Post? = { _, newHashtagID, newDate ->
-        validPost.copy(hashtagId = newHashtagID, lastModifiedDate = newDate)
+    val changeHashtagIdMock: (Int, Int) -> Post? = { _, newHashtagID ->
+        validPost.copy(hashtagId = newHashtagID, lastModifiedDate = ZonedDateTime.now())
     }
     val fetchHashtagByIdMock: (Int) -> Hashtag? = { hashtagId ->
         hashtags.firstOrNull { it.id == hashtagId }
     }
-    val changeUserIdMock: (Int, Int, ZonedDateTime) -> Post? = { _, newUserId, newDate ->
-        validPost.copy(authorId = newUserId, lastModifiedDate = newDate)
+    val changeUserIdMock: (Int, Int) -> Post? = { _, newUserId ->
+        validPost.copy(authorId = newUserId, lastModifiedDate = ZonedDateTime.now())
     }
     val fetchUserByIdMock: (Int) -> User? = { userId ->
         users.firstOrNull { it.id == userId }
     }
-    val changePreviewMock: (Int, String, ZonedDateTime) -> Post? = { _, newPreview, newDate ->
-        validPost.copy(preview = newPreview, lastModifiedDate = newDate)
+    val changePreviewMock: (Int, String) -> Post? = { _, newPreview ->
+        validPost.copy(preview = newPreview, lastModifiedDate = ZonedDateTime.now())
     }
     val fetchMediaByNameMock: (String) -> MediaFile? = { name ->
         media.firstOrNull { it.filename == name }
     }
-    val changeStatusMock: (Post, Status, ZonedDateTime) -> Post? = { _, newStatus, newDate ->
-        validPost.copy(status = newStatus, lastModifiedDate = newDate)
+    val changeStatusMock: (Post, Status) -> Post? = { _, newStatus ->
+        validPost.copy(status = newStatus, lastModifiedDate = ZonedDateTime.now())
     }
-    val changePostMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?, ZonedDateTime)
+    val changePostMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?)
     -> Post? = {
             _,
             newTitle,
@@ -151,7 +151,6 @@ class ModifyPostTest : FunSpec({
             newEventDate,
             newAuthorId,
             newModeratorId,
-            newDate,
         ->
         validPost.copy(
             title = newTitle,
@@ -161,7 +160,7 @@ class ModifyPostTest : FunSpec({
             eventDate = newEventDate,
             authorId = newAuthorId,
             moderatorId = newModeratorId,
-            lastModifiedDate = newDate
+            lastModifiedDate = ZonedDateTime.now()
         )
     }
 
@@ -213,14 +212,14 @@ class ModifyPostTest : FunSpec({
         selectUserById = fetchUserByIdMock
     )
 
-    val changeStringFieldNullMock: (Int, String, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changeDateFieldNullMock: (Int, ZonedDateTime, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changeHashtagIdNullMock: (Int, Int, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changeUserIdNullMock: (Int, Int, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changePreviewNullMock: (Int, String, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changeStatusNullMock: (Post, Status, ZonedDateTime) -> Post? = { _, _, _ -> null }
-    val changePostNullMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?, ZonedDateTime) -> Post? =
-        { _, _, _, _, _, _, _, _, _ -> null }
+    val changeStringFieldNullMock: (Int, String) -> Post? = { _, _ -> null }
+    val changeDateFieldNullMock: (Int, ZonedDateTime) -> Post? = { _, _ -> null }
+    val changeHashtagIdNullMock: (Int, Int) -> Post? = { _, _ -> null }
+    val changeUserIdNullMock: (Int, Int) -> Post? = { _, _ -> null }
+    val changePreviewNullMock: (Int, String) -> Post? = { _, _ -> null }
+    val changeStatusNullMock: (Post, Status) -> Post? = { _, _ -> null }
+    val changePostNullMock: (Int, String, String, String, Int, ZonedDateTime?, Int, Int?) -> Post? =
+        { _, _, _, _, _, _, _, _ -> null }
 
     val changeStringFieldNull = ChangeStringFieldInPost(
         maxLength = maxLength,

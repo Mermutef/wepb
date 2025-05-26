@@ -58,8 +58,6 @@ class PostOperationsHolder(
                     content,
                     hashtagId,
                     eventDate,
-                    _,
-                    _,
                     authorId,
                     moderatorId,
                     status,
@@ -70,8 +68,6 @@ class PostOperationsHolder(
                     content = content,
                     hashtagId = hashtagId,
                     eventDate = eventDate,
-                    creationDate = ZonedDateTime.now(),
-                    lastModifiedDate = ZonedDateTime.now(),
                     authorId = authorId,
                     moderatorId = moderatorId,
                     status = status

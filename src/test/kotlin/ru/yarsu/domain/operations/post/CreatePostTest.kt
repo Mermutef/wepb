@@ -73,8 +73,6 @@ class CreatePostTest : FunSpec({
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int?,
         status: Status,
@@ -85,8 +83,6 @@ class CreatePostTest : FunSpec({
             content,
             hashtagId,
             eventDate,
-            creationData,
-            lastModifiedDate,
             authorId,
             moderatorId,
             status,
@@ -99,8 +95,8 @@ class CreatePostTest : FunSpec({
                 content,
                 hashtagId,
                 eventDate,
-                creationData,
-                lastModifiedDate,
+                ZonedDateTime.now(),
+                ZonedDateTime.now(),
                 authorId,
                 moderatorId,
                 status
@@ -127,12 +123,10 @@ class CreatePostTest : FunSpec({
         content: String,
         hashtagId: Int,
         eventDate: ZonedDateTime?,
-        creationDate: ZonedDateTime,
-        lastModifiedDate: ZonedDateTime,
         authorId: Int,
         moderatorId: Int?,
         status: Status,
-    ) -> Post? = { _, _, _, _, _, _, _, _, _, _ -> null }
+    ) -> Post? = { _, _, _, _, _, _, _, _ -> null }
 
     val createPost = CreatePost(
         insertPostMock,
