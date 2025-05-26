@@ -33,20 +33,16 @@ class WriterHandler(
         ) {
             is Failure -> notFound
             is Success -> {
-                if (user.value.role != Role.WRITER) {
-                    notFound
-                } else {
-                    val writer = user.value
-                    when (val writerPosts = fetchWriterPosts(writer)) {
-                        is Failure -> notFound
-                        is Success -> render(request) extract WriterRoomVM(
-                            writerPosts.value.associateWith {
-                                hashtagsOperations.fetchHashtagById(
-                                    it.hashtagId
-                                ).valueOrNull() ?: Hashtag.nullTag
-                            }
-                        )
-                    }
+                val writer = user.value
+                when (val writerPosts = fetchWriterPosts(writer)) {
+                    is Failure -> notFound
+                    is Success -> render(request) extract WriterRoomVM(
+                        writerPosts.value.associateWith {
+                            hashtagsOperations.fetchHashtagById(
+                                it.hashtagId
+                            ).valueOrNull() ?: Hashtag.nullTag
+                        }
+                    )
                 }
             }
         }
