@@ -12,7 +12,7 @@ import ru.yarsu.config.AuthConfig
 import ru.yarsu.domain.accounts.PasswordHasher
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.OperationsHolder
-import ru.yarsu.domain.operations.users.FieldChangingError
+import ru.yarsu.domain.operations.users.FieldInUserChangingError
 import ru.yarsu.web.auth.lenses.UserWebLenses.emailField
 import ru.yarsu.web.auth.lenses.UserWebLenses.nameField
 import ru.yarsu.web.auth.lenses.UserWebLenses.oldPasswordField
@@ -132,7 +132,7 @@ fun changeStringField(
     user: User,
     form: WebForm,
     field: BiDiLens<WebForm, String>,
-    change: (User, String) -> Result<User, FieldChangingError>,
+    change: (User, String) -> Result<User, FieldInUserChangingError>,
 ): CustomWebForm? {
     if (form.errors.isNotEmpty()) {
         return form.toCustomForm()
