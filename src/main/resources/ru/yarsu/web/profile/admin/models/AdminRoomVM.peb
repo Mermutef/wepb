@@ -2,7 +2,7 @@
 
     {% extends "../../../meta/BaseLayout.peb" %}
     {% block title %}
-Панель администратора
+    Панель администратора
 {% endblock %}
 
 {% block page %}
@@ -20,6 +20,7 @@
                 <div class="card-body">
                     <div id="users-body">
                         <table
+                                id="users-table"
                                 data-toggle="table"
                                 data-pagination="true"
                                 data-sortable="true"
@@ -35,24 +36,44 @@
                                 <th data-field="surname" data-sortable="true">Фамилия</th>
                                 <th data-field="email" data-sortable="true">Email</th>
                                 <th data-field="role" data-sortable="true" data-filter-control="select">Роль</th>
+                                <th data-field="actions">Действия</th>
                             </tr>
                             </thead>
                             <tbody>
                                 {% for user in model.users %}
-                                <tr>
+                                <tr data-user-id="{{ user.id }}">
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.surname }}</td>
                                     <td>{{ user.email }}</td>
                                     <td class="text-center">
-                                        <span class="badge
-                                            {% if user.role == "ADMIN" %}bg-danger
-                                            {% elif user.role == "MODERATOR" %}bg-warning text-dark
-                                            {% elif user.role == "WRITER" %}bg-info
-                                            {% elif user.role == "USER" %}bg-light text-dark
-                                            {% else %}bg-primary{% endif %}">
-                                            {{ user.role }}
-                                        </span>
+                                        {% if user.role == "ADMIN" %}
+                                            <span class="badge bg-danger">{{ user.role }}</span>
+                                        {% elseif user.role == "MODERATOR" %}
+                                            <span class="badge bg-warning text-dark">{{ user.role }}</span>
+                                        {% elseif user.role == "WRITER" %}
+                                            <span class="badge bg-info">{{ user.role }}</span>
+                                        {% elseif user.role == "USER" %}
+                                            <span class="badge bg-light text-dark">{{ user.role }}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary">{{ user.role }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                    type="button"
+                                                    id="roleMenu-{{ user.id }}"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                Изменить роль
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="roleMenu-{{ user.id }}">
+                                                <li><a class="dropdown-item change-role" href="#" data-role="MODERATOR">Модератор</a></li>
+                                                <li><a class="dropdown-item change-role" href="#" data-role="WRITER">Автор</a></li>
+                                                <li><a class="dropdown-item change-role" href="#" data-role="USER">Пользователь</a></li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -64,5 +85,53 @@
         </div>
     </div>
 </div>
+
+{#<script>#}
+{#$(document).ready(function() {#}
+{#    // Обработчик для изменения роли#}
+{#    $('.change-role').click(function(e) {#}
+{#        e.preventDefault();#}
+{#        const userId = $(this).closest('tr').data('user-id');#}
+{#        const newRole = $(this).data('role');#}
+
+{#        Swal.fire({#}
+{#            title: 'Подтверждение',#}
+{#            text: `Вы уверены, что хотите изменить роль пользователя на ${newRole}?`,#}
+{#            icon: 'question',#}
+{#            showCancelButton: true,#}
+{#            confirmButtonText: 'Да, изменить',#}
+{#            cancelButtonText: 'Отмена'#}
+{#        }).then((result) => {#}
+{#            if (result.isConfirmed) {#}
+{#                $.ajax({#}
+{#                    url: '/admin/change-role',#}
+{#                    method: 'POST',#}
+{#                    contentType: 'application/json',#}
+{#                    data: JSON.stringify({#}
+{#                        userId: userId,#}
+{#                        newRole: newRole#}
+{#                    }),#}
+{#                    success: function(response) {#}
+{#                        Swal.fire({#}
+{#                            title: 'Успех!',#}
+{#                            text: 'Роль пользователя успешно изменена',#}
+{#                            icon: 'success'#}
+{#                        }).then(() => {#}
+{#                            location.reload();#}
+{#                        });#}
+{#                    },#}
+{#                    error: function(xhr) {#}
+{#                        Swal.fire({#}
+{#                            title: 'Ошибка!',#}
+{#                            text: xhr.responseJSON?.message || 'Произошла ошибка',#}
+{#                            icon: 'error'#}
+{#                        });#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{#        });#}
+{#    });#}
+{#});#}
+{#</script>#}
 
 {% endblock %}
