@@ -45,7 +45,7 @@ private fun createMainRouter(
         render = contextTools.render,
         postsOperations = operations.postOperations,
         hashtagsOperations = operations.hashtagOperations,
-        ),
+    ),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
     AUTH_SEGMENT bind authRouter(
         contextTools = contextTools,
@@ -77,7 +77,6 @@ private fun createMainRouter(
         ),
     POST_SEGMENT bind postsRoutes(
         contextTools = contextTools,
-        operations = operations
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
