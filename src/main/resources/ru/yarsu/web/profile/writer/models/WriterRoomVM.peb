@@ -24,7 +24,7 @@
                                 data-filter-control="true"
                                 data-sort-name="error"
                                 data-search="true"
-                        >c
+                        >
                             <thead>
                             <tr>
                                 <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-width="50px">#</th>
