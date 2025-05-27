@@ -1,0 +1,257 @@
+@startuml
+' Enums
+enum Role {
+    +ANONYMOUS
+    +READER
+    +WRITER
+    +MODERATOR
+    +ADMIN
+    --
+    -leaveComment: Boolean = false
+    -manageComment: Boolean = false
+    -writePosts: Boolean = false
+    -manageMediaFile: Boolean = false
+    -managePosts: Boolean = false
+    -manageUsers: Boolean = false
+}
+
+enum UserValidationResult {
+    +NAME_IS_BLANK_OR_EMPTY
+    +NAME_IS_TOO_LONG
+    +NAME_PATTERN_MISMATCH
+    +SURNAME_IS_BLANK_OR_EMPTY
+    +SURNAME_IS_TOO_LONG
+    +SURNAME_PATTERN_MISMATCH
+    +LOGIN_IS_BLANK_OR_EMPTY
+    +LOGIN_IS_TOO_LONG
+    +LOGIN_PATTERN_MISMATCH
+    +EMAIL_IS_BLANK_OR_EMPTY
+    +EMAIL_IS_TOO_LONG
+    +EMAIL_PATTERN_MISMATCH
+    +PHONE_NUMBER_IS_BLANK_OR_EMPTY
+    +PHONE_NUMBER_IS_TOO_LONG
+    +PHONE_NUMBER_PATTERN_MISMATCH
+    +PASSWORD_IS_BLANK_OR_EMPTY
+    +PASSWORD_IS_TOO_LONG
+    +VK_LINK_IS_BLANK_OR_EMPTY
+    +VK_LINK_IS_TOO_LONG
+    +VK_LINK_PATTERN_MISMATCH
+    +ALL_OK
+}
+
+enum UserCreationError {
+    +LOGIN_ALREADY_EXISTS
+    +EMAIL_ALREADY_EXISTS
+    +PHONE_ALREADY_EXISTS
+    +INVALID_USER_DATA
+    +UNKNOWN_DATABASE_ERROR
+}
+
+enum UserFetchingError {
+    +UNKNOWN_DATABASE_ERROR
+    +NO_SUCH_USER
+}
+
+enum PasswordChangingError {
+    +UNKNOWN_DATABASE_ERROR
+    +UNKNOWN_CHANGING_ERROR
+    +PASSWORD_IS_BLANK_OR_EMPTY
+    +PASSWORD_IS_TOO_LONG
+}
+
+enum FieldChangingError {
+    +UNKNOWN_DATABASE_ERROR
+    +UNKNOWN_CHANGING_ERROR
+    +FIELD_IS_BLANK_OR_EMPTY
+    +FIELD_IS_TOO_LONG
+    +FIELD_PATTERN_MISMATCH
+}
+
+enum MakeRoleError {
+    +UNKNOWN_DATABASE_ERROR
+    +IS_ALREADY_READER
+    +IS_ALREADY_WRITER
+    +IS_ALREADY_MODERATOR
+}
+
+' Classes
+class User {
+    +id: Int
+    +name: String
+    +surname: String
+    +login: String
+    +email: String
+    +phoneNumber: String
+    +password: String
+    +vkLink: String?
+    +role: Role
+    --
+    +{static} validateUserData(): UserValidationResult
+    +{static} validateName(): UserValidationResult?
+    +{static} validateSurname(): UserValidationResult?
+    +{static} validateLogin(): UserValidationResult?
+    +{static} validateEmail(): UserValidationResult?
+    +{static} validatePhoneNumber(): UserValidationResult?
+    +{static} validatePassword(): UserValidationResult?
+    +{static} validateVKLink(): UserValidationResult?
+    +{static} MAX_NAME_LENGTH: Int
+    +{static} MAX_SURNAME_LENGTH: Int
+    +{static} MAX_LOGIN_LENGTH: Int
+    +{static} MAX_EMAIL_LENGTH: Int
+    +{static} MAX_PHONE_NUMBER_LENGTH: Int
+    +{static} MAX_PASSWORD_LENGTH: Int
+    +{static} MAX_VK_LINK_LENGTH: Int
+    +{static} emailPattern: Regex
+    +{static} loginPattern: Regex
+    +{static} vkLinkPattern: Regex
+    +{static} namePattern: Regex
+    +{static} phonePattern: Regex
+}
+
+class CreateUser {
+    -insertUser: Function
+    -fetchUserByLogin: Function
+    -fetchUserByEmail: Function
+    -fetchUserByPhone: Function
+    -hasher: PasswordHasher
+    --
+    +invoke(): Result4k<User, UserCreationError>
+    -loginAlreadyExists(): Boolean
+    -emailAlreadyExists(): Boolean
+    -phoneAlreadyExists(): Boolean
+}
+
+class FetchUserByID {
+    -selectUserByID: Function
+    --
+    +invoke(): Result4k<User, UserFetchingError>
+}
+
+class FetchUserByLogin {
+    -selectUserByLogin: Function
+    --
+    +invoke(): Result4k<User, UserFetchingError>
+}
+
+class FetchUserByEmail {
+    -selectUserByEmail: Function
+    --
+    +invoke(): Result4k<User, UserFetchingError>
+}
+
+class FetchUserByPhone {
+    -selectUserByPhone: Function
+    --
+    +invoke(): Result4k<User, UserFetchingError>
+}
+
+class FetchUsersByRole {
+    -fetchUsersByRole: Function
+    --
+    +invoke(): Result4k<List<User>, UserFetchingError>
+}
+
+class FetchAllUsers {
+    -fetchAllUsers: Function
+    --
+    +invoke(): Result4k<List<User>, UserFetchingError>
+}
+
+class ChangePassword {
+    -changePassword: Function
+    -maxLength: Int
+    -hasher: PasswordHasher
+    --
+    +invoke(): Result4k<User, PasswordChangingError>
+}
+
+class ChangeStringField {
+    -maxLength: Int
+    -pattern: Regex
+    -changeName: Function
+    --
+    +invoke(): Result4k<User, FieldChangingError>
+}
+
+class RoleChanger<R, E> {
+    -targetRole: R
+    -alreadyHasRoleError: E
+    -updateRole: Function
+    -unknownError: E
+    --
+    +invoke(): Result4k<User, E>
+}
+
+class UserOperationsHolder {
+    -usersDatabase: UsersDatabase
+    -config: AppConfig
+    --
+    +fetchAllUsers: Function
+    +fetchUserByID: Function
+    +fetchUserByLogin: Function
+    +fetchUserByEmail: Function
+    +fetchUserByPhone: Function
+    +fetchUsersByRole: Function
+    +createUser: Function
+    +changeName: Function
+    +changeSurname: Function
+    +changeEmail: Function
+    +changePhoneNumber: Function
+    +changePassword: Function
+    +changeVKLink: Function
+    +makeReader: Function
+    +makeWriter: Function
+    +makeModerator: Function
+}
+
+' Relationships
+User "1" *-- "1" Role
+
+CreateUser ..> User
+CreateUser ..> UserCreationError
+CreateUser ..> PasswordHasher
+
+FetchUserByID ..> User
+FetchUserByID ..> UserFetchingError
+
+FetchUserByLogin ..> User
+FetchUserByLogin ..> UserFetchingError
+
+FetchUserByEmail ..> User
+FetchUserByEmail ..> UserFetchingError
+
+FetchUserByPhone ..> User
+FetchUserByPhone ..> UserFetchingError
+
+FetchUsersByRole ..> User
+FetchUsersByRole ..> UserFetchingError
+FetchUsersByRole ..> Role
+
+FetchAllUsers ..> User
+FetchAllUsers ..> UserFetchingError
+
+ChangePassword ..> User
+ChangePassword ..> PasswordChangingError
+ChangePassword ..> PasswordHasher
+
+ChangeStringField ..> User
+ChangeStringField ..> FieldChangingError
+
+RoleChanger ..> User
+RoleChanger ..> Role
+RoleChanger ..> MakeRoleError
+
+UserOperationsHolder ..> UsersDatabase
+UserOperationsHolder ..> AppConfig
+UserOperationsHolder ..> CreateUser
+UserOperationsHolder ..> FetchUserByID
+UserOperationsHolder ..> FetchUserByLogin
+UserOperationsHolder ..> FetchUserByEmail
+UserOperationsHolder ..> FetchUserByPhone
+UserOperationsHolder ..> FetchUsersByRole
+UserOperationsHolder ..> FetchAllUsers
+UserOperationsHolder ..> ChangePassword
+UserOperationsHolder ..> ChangeStringField
+UserOperationsHolder ..> RoleChanger
+UserOperationsHolder ..> PasswordHasher
+@enduml
