@@ -18,10 +18,7 @@ fun adminRoutes(
         userOperations = operations,
         userLens = contextTools.userLens,
     )
-//    "/change-role" bind Method.POST to ChangeUserRoleHandler(
-//        userOperations = operations,
-//        userLens = contextTools.userLens,
-//    )
+
 )
 
 // Константы для путей

@@ -37,34 +37,19 @@ class AdminHandler(
             }
         }
     }
+
+
+
     private fun fetchAllUsers(): Result<List<User>, FetchingUsersError> {
-        val testUsers = listOf(
-            User(
-                id = 1,
-                name = "Test",
-                surname = "User",
-                login = "user",
-                email = "test@test.com",
-                phoneNumber = "79621851367",
-                password = "aaa",
-                role = Role.READER,
-                vkLink = TODO()
-            )
-        )
-        return Success(testUsers)
+        return when (val users = userOperations.fetchAllUsers()) {
+            is Failure -> when (users.reason) {
+                UserFetchingError.NO_SUCH_USER -> Failure(FetchingUsersError.NO_USERS_FOUND)
+                UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(FetchingUsersError.UNKNOWN_DATABASE_ERROR)
+            }
+
+            is Success -> Success(users.value)
+        }
     }
-
-
-//    private fun fetchAllUsers(): Result<List<User>, FetchingUsersError> {
-//        return when (val users = userOperations.fetchAllUsers()) {
-//            is Failure -> when (users.reason) {
-//                UserFetchingError.NO_SUCH_USER -> Failure(FetchingUsersError.NO_USERS_FOUND)
-//                UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(FetchingUsersError.UNKNOWN_DATABASE_ERROR)
-//            }
-//
-//            is Success -> Success(users.value)
-//        }
-//    }
 }
 
 enum class FetchingUsersError(val errorText: String) {
