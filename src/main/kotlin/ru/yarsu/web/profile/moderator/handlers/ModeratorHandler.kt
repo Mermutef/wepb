@@ -9,9 +9,9 @@ import org.http4k.lens.RequestContextLens
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.hashtags.HashtagsOperationsHolder
+import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.posts.PostFetchingError
-import ru.yarsu.domain.operations.posts.PostsOperationsHolder
+import ru.yarsu.domain.operations.posts.PostOperationsHolder
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.extract
@@ -21,8 +21,8 @@ import ru.yarsu.web.profile.writer.handlers.FetchingPostError
 
 class ModeratorHandler(
     private val render: ContextAwareViewRender,
-    private val postsOperations: PostsOperationsHolder,
-    private val hashtagsOperations: HashtagsOperationsHolder,
+    private val postsOperations: PostOperationsHolder,
+    private val hashtagsOperations: HashtagOperationsHolder,
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
     override fun invoke(request: Request): Response {

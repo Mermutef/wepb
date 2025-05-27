@@ -1,7 +1,7 @@
 package ru.yarsu.domain.models
 
-import java.time.ZonedDateTime
 import ru.yarsu.web.profile.crop
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 const val MIDDLE_CONTENT_LENGTH = 80
