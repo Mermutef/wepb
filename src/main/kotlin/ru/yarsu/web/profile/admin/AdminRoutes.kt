@@ -18,8 +18,13 @@ fun adminRoutes(
         userOperations = operations,
         userLens = contextTools.userLens,
     )
+//    "/change-role" bind Method.POST to ChangeUserRoleHandler(
+//        userOperations = operations,
+//        userLens = contextTools.userLens,
+//    )
 )
 
 // Константы для путей
 const val ADMIN_SEGMENT = "/admin"
 const val LIST_ADMINISTRATION = "/list-administration"
+
