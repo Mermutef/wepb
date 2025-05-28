@@ -9,7 +9,9 @@
     --bs-soft-grey: #d5e4f0;
     --bs-blue: #0966B8;
     --bs-soft-blue: #60A8E8;
+    --bs-soft-blue-rgb: 96, 168, 232;
     --bs-orange: #FF9500;
+    --white: #ffffff;
     --bs-body-font-family: var(--bs-font-sans-serif);
     --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
             "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
@@ -57,7 +59,7 @@ body {
     min-height: 50px;
 }
 .text-white {
-    font-colour: ffffff
+    font-colour: #ffffff;
 }
 
 .thin {
@@ -108,4 +110,48 @@ body {
 
 .nav-button-size {
     width = 100px;
+}
+
+.CodeMirror {
+    background-color: var(--bs-soft-grey);
+    border-color: var(--bs-soft-grey);
+    font-size: 16px;
+    padding: 10px 15px;
+}
+
+.CodeMirror-focused {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    background-color: #fff;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.media-item {
+    background-color: var(--bs-soft-blue);
+    color: var(--white);
+}
+
+.media-item.active {
+    background-color: var(--bs-orange);
+    border-color: var(--bs-orange);
+    color: var(--white);
+}
+
+.media-item:hover:not(.active) {
+    background-color: var(--bs-orange);
+    border-color: var(--bs-orange);
+    color: var(--white);
+}
+
+.media-item:active {
+    background-color: var(--bs-orange);
+    border-color: var(--bs-orange);
+    color: var(--white);
 }
