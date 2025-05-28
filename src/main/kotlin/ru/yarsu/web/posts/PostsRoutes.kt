@@ -12,6 +12,7 @@ fun postsRoutes(
 ) = routes(
     CREATE_POST bind Method.GET to ShowNewPostFormHandler(
         contextTools.render,
+        operations.hashtagOperations
     ),
 )
 
