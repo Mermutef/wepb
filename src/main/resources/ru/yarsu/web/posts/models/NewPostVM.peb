@@ -1,0 +1,103 @@
+{# @pebvariable name="model" type="ru.yarsu.web.posts.models.NewPostVM" #}
+
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Новый пост
+    {% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+<div class="container">
+    <div class="card  mx-auto border-radius_card mt-5 mb-5">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">Новый пост</h2>
+                </div>
+                <div class="card-body">
+                    <div id="new-post-body">
+                        <form id="postForm" method="post">
+                            <div class="form-group mb-4">
+                                <h4 class="">
+                                    <label for="title" class="text-center">Название:</label>
+                                </h4>
+                                <textarea class="form-control"  id="title" name="title" rows="1"
+                                >{{ model.form.fields["title"] | first }}</textarea>
+                            </div>
+                            <div class="col-4 error-field">
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "title" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+{#                            todo необходимо сделать загрузку медиа#}
+                            <div class="form-group mb-4">
+                                <h4 class="">
+                                    <label for="content" class="text-center">Текст:</label>
+                                </h4>
+                                <textarea class="form-control" id="content" name="content"
+                                          rows="5">{{ model.form.fields["content"] | first }}</textarea>
+                            </div>
+                            <div class="col-4 error-field">
+                                    {% for error in model.form.errors.values() %}
+                                        {% if error.name == "content" %}
+                                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                    {{ error.description }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                            </div>
+                            <div class="form-group mb-4">
+                                <div class="row">
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text" id="basic-addon1">
+                                          #
+                                        </span>
+                                        <label for="hashtag"></label>
+                                        <textarea class="form-control" rows="1" id="hashtag" name="hashtag">{{ model.form.fields["hashtag"] | first }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 error-field">
+                                    {% for error in model.form.errors.values() %}
+                                        {% if error.name == "hashtag" %}
+                                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                    {{ error.description }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                            </div>
+                            <div class="form-group mb-4">
+                                <h4 class="">
+                                    <label for="eventDate" class="text-center">Дата мероприятия</label>
+                                </h4>
+                                <input class="form-control" type="datetime-local" id="eventDate" name="eventDate" value="{{ model.form.fields["eventDate"] | first }}"
+                                >
+                            </div>
+                            <div class="col-4 error-field">
+                                    {% for error in model.form.errors.values() %}
+                                    {% if error.name == "eventDate" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
+                            <div class="row justify-content-center mt-3 mt-4">
+                                <div class="col-3 col-lg-3">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        Добавить
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

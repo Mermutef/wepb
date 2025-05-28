@@ -7,19 +7,28 @@ import org.http4k.routing.*
 import org.http4k.template.ViewModel
 import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
+import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
+import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.AuthenticationFilter
+import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
+import ru.yarsu.web.posts.POST_SEGMENT
+import ru.yarsu.web.posts.postsRoutes
 import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
+import ru.yarsu.web.profile.moderator.moderatorRoutes
 import ru.yarsu.web.profile.profileRoutes
 import ru.yarsu.web.profile.user.USER
 import ru.yarsu.web.profile.user.userRoutes
+import ru.yarsu.web.profile.writer.WRITER_SEGMENT
+import ru.yarsu.web.profile.writer.writerRoutes
 import java.io.InputStream
 
 @Suppress("LongParameterList")
@@ -28,8 +37,15 @@ private fun createMainRouter(
     operations: OperationsHolder,
     config: AppConfig,
     jwtTools: JWTTools,
+    writerRoleFilter: Filter,
+    moderatorRoleFilter: Filter,
 ) = routes(
-    "/" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
+    "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
+    "/" bind Method.GET to GeneralPageHandler(
+        render = contextTools.render,
+        postsOperations = operations.postOperations,
+        hashtagsOperations = operations.hashtagOperations,
+    ),
     MEDIA_SEGMENT bind mediaRouter(contextTools = contextTools, operations = operations),
     AUTH_SEGMENT bind authRouter(
         contextTools = contextTools,
@@ -45,6 +61,23 @@ private fun createMainRouter(
         operations = operations,
         config = config,
     ),
+    WRITER_SEGMENT bind writerRoleFilter
+        .then(
+            writerRoutes(
+                contextTools = contextTools,
+                operations = operations
+            )
+        ),
+    MODERATOR_SEGMENT bind moderatorRoleFilter
+        .then(
+            moderatorRoutes(
+                contextTools = contextTools,
+                operations = operations
+            )
+        ),
+    POST_SEGMENT bind postsRoutes(
+        contextTools = contextTools,
+    ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 
@@ -54,11 +87,17 @@ fun createApp(
 ): RoutingHttpHandler {
     val contexts = ContextTools(config.webConfig)
     val jwtTools = JWTTools(config.authConfig.secret, JWT_ISSUER)
+
+    val moderatorRoleFilter = roleFilter(contexts.userLens, Role.MODERATOR)
+    val writerRoleFilter = roleFilter(contexts.userLens, Role.WRITER)
+
     val app = createMainRouter(
         contextTools = contexts,
         operations = operations,
         config = config,
-        jwtTools = jwtTools
+        jwtTools = jwtTools,
+        writerRoleFilter,
+        moderatorRoleFilter
     )
 
     return ServerFilters
