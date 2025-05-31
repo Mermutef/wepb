@@ -52,7 +52,7 @@
                                             <span class="badge bg-warning text-dark">{{ user.role }}</span>
                                         {% elseif user.role == "WRITER" %}
                                             <span class="badge bg-info">{{ user.role }}</span>
-                                        {% elseif user.role == "USER" %}
+                                        {% elseif user.role == "READER" %}
                                             <span class="badge bg-light text-dark">{{ user.role }}</span>
                                         {% else %}
                                             <span class="badge bg-primary">{{ user.role }}</span>
@@ -70,7 +70,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="roleMenu-{{ user.id }}">
                                                 <li><a class="dropdown-item change-role" href="#" data-role="MODERATOR">Модератор</a></li>
                                                 <li><a class="dropdown-item change-role" href="#" data-role="WRITER">Автор</a></li>
-                                                <li><a class="dropdown-item change-role" href="#" data-role="USER">Пользователь</a></li>
+                                                <li><a class="dropdown-item change-role" href="#" data-role="READER">Читатель</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -84,6 +84,40 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.change-role').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const userId = this.closest('tr').dataset.userId;
+            const newRole = this.dataset.role;
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'admin/change-role';
+
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'userId';
+            idInput.value = userId;
+            form.appendChild(idInput);
+
+            const roleInput = document.createElement('input');
+            roleInput.type = 'hidden';
+            roleInput.name = 'newRole';
+            roleInput.value = newRole;
+            form.appendChild(roleInput);
+
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+});
+</script>
+
 
 {#<script>#}
 {#$(document).ready(function() {#}
