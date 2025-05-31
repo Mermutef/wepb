@@ -21,7 +21,7 @@
                         <u>{{ postAndHashtag.key.middleTitleName }}</u>
                     </h4>
                     <div class="card-text mt-3">
-                            {{ postAndHashtag.key.middleContent }}
+                        {{ model.renderMD(postAndHashtag.key.middleContent) | raw }}
                     </div>
                     <div class="card-footer mt-3">
                         <div class="row">

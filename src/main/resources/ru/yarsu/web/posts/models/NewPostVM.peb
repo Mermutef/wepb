@@ -16,16 +16,41 @@
                 <div class="card-body">
                     <div id="new-post-body">
                         <form id="postForm" method="post">
+                            <div class="mb-3">
+                                    {% for error in model.form.errors.values() %}
+                                    {% if error.name == "no-specific" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
                             <div class="form-group mb-4">
                                 <h4 class="">
                                     <label for="title" class="text-center">Заголовок:</label>
                                 </h4>
-                                <input class="form-control" id="title" name="title"
-                                >{{ model.form.fields["title"] | first }}
+                                <input
+                                        class="form-control"
+                                        id="title"
+                                        name="title"
+                                        value="{{ model.form.fields["title"] | first }}"
+                                >
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "title" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
+
                             <div class="form-group mb-4">
                                 <h4 class="">
-                                    <label for="preview" class="text-center">Превью:</label>
+                                    <label
+                                            for="preview"
+                                            class="text-center">
+                                        Превью:
+                                    </label>
                                 </h4>
                                 <div class="row align-items-center">
                                     <div class="col-1 col-md-3"></div>
@@ -66,18 +91,15 @@
                                                 </a>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
-                                    {% if error.name == "title" %}
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "preview" %}
                                         <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                                 {{ error.description }}
                                         </div>
                                     {% endif %}
-                                    {% endfor %}
+                                {% endfor %}
                             </div>
                             <div class="form-group mb-4">
                                 <h4 class="">
@@ -103,23 +125,24 @@
                                 </button>
                                 <textarea class="form-control pretty-border" id="content" name="content"
                                 >{{ model.form.fields["content"] | first }}</textarea>
-                                <div class="col-4 error-field">
-                                        {% for error in model.form.errors.values() %}
-                                        {% if error.name == "content" %}
-                                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input"
-                                                 role="alert">
-                                                    {{ error.description }}
-                                            </div>
-                                        {% endif %}
-                                        {% endfor %}
-                                </div>
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "content" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
 
                             <div class="form-group mb-4">
                                 <div class="row">
                                     <div class="col-1 text-end">
                                         <h4 class="">
-                                            <label for="hashtag" class="text-center">#</label>
+                                            <label
+                                                    for="hashtag"
+                                                    class="text-center">
+                                                #
+                                            </label>
                                         </h4>
                                     </div>
                                     <div class="col">
@@ -137,32 +160,32 @@
                                     <div class="col-1">
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
+                                {% for error in model.form.errors.values() %}
                                     {% if error.name == "hashtag" %}
                                         <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                                 {{ error.description }}
                                         </div>
                                     {% endif %}
-                                    {% endfor %}
+                                {% endfor %}
                             </div>
                             <div class="form-group mb-4">
                                 <h4 class="">
                                     <label for="eventDate" class="text-center">Дата мероприятия</label>
                                 </h4>
-                                <input class="form-control" type="datetime-local" id="eventDate" name="eventDate"
-                                >{{ model.form.fields["eventDate"] | first }}
-                            </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
+                                <input
+                                        class="form-control"
+                                        type="datetime-local"
+                                        id="eventDate"
+                                        name="eventDate"
+                                        value="{{ model.form.fields["eventDate"] | first }}"
+                                >
+                                {% for error in model.form.errors.values() %}
                                     {% if error.name == "eventDate" %}
                                         <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                                 {{ error.description }}
                                         </div>
                                     {% endif %}
-                                    {% endfor %}
+                                {% endfor %}
                             </div>
                             <div class="row justify-content-center mt-3 mt-4">
                                 <div class="col-3 col-lg-3">
