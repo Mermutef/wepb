@@ -12,6 +12,7 @@ import org.jooq.Catalog
 import org.jooq.Table
 import org.jooq.impl.SchemaImpl
 
+import ru.yarsu.db.generated.tables.Comments
 import ru.yarsu.db.generated.tables.Hashtags
 import ru.yarsu.db.generated.tables.Media
 import ru.yarsu.db.generated.tables.Posts
@@ -41,6 +42,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     }
 
     /**
+     * The table <code>public.comments</code>.
+     */
+    val COMMENTS: Comments get() = Comments.COMMENTS
+
+    /**
      * The table <code>public.hashtags</code>.
      */
     val HASHTAGS: Hashtags get() = Hashtags.HASHTAGS
@@ -63,6 +69,7 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getTables(): List<Table<*>> = listOf(
+        Comments.COMMENTS,
         Hashtags.HASHTAGS,
         Media.MEDIA,
         Posts.POSTS,

@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.post
+package ru.yarsu.domain.operations.posts
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
@@ -11,15 +11,6 @@ import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.posts.ChangeDateFieldInPost
-import ru.yarsu.domain.operations.posts.ChangeHashtagIdInPost
-import ru.yarsu.domain.operations.posts.ChangePost
-import ru.yarsu.domain.operations.posts.ChangePreviewInPost
-import ru.yarsu.domain.operations.posts.ChangeStringFieldInPost
-import ru.yarsu.domain.operations.posts.ChangeUserIdInPost
-import ru.yarsu.domain.operations.posts.FieldInPostChangingError
-import ru.yarsu.domain.operations.posts.MakeStatusError
-import ru.yarsu.domain.operations.posts.StatusChanger
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validName

@@ -27,3 +27,13 @@ CREATE TABLE posts (
 	moderatorId INT REFERENCES users(id),
 	status post_status NOT NULL
 );
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    content VARCHAR(256) NOT NULL,
+    authorId INT NOT NULL REFERENCES users(id),
+    postId INT NOT NULL REFERENCES posts(id),
+    creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    last_modified_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    is_hidden BOOLEAN NOT NULL
+);
