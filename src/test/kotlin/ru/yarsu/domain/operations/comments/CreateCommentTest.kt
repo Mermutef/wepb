@@ -7,13 +7,9 @@ import ru.yarsu.db.validCommentContent
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Comment
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.hashtags.CreateHashtag
-import ru.yarsu.domain.operations.hashtags.HashtagCreationError
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validLogin
@@ -26,12 +22,9 @@ import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle
 import ru.yarsu.domain.operations.validUserSurname
 import ru.yarsu.domain.operations.validVKLink
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 class CreateCommentTest : FunSpec({
     val validHashtag = Hashtag(1, validHashtagTitle)
-    val hashtags = listOf(validHashtag)
     val validWriter = User(
         1,
         validName,
@@ -55,15 +48,6 @@ class CreateCommentTest : FunSpec({
         Role.MODERATOR
     )
     val users = listOf(validWriter, validModerator)
-    val validMedia = MediaFile(
-        filename = validPostPreview,
-        content = "Valid content".toByteArray(),
-        mediaType = MediaType.VIDEO,
-        birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
-        isTemporary = false,
-        authorId = validWriter.id,
-    )
-    val media = listOf(validMedia)
     val validPost = Post(
         1,
         validPostTitle,
@@ -76,7 +60,6 @@ class CreateCommentTest : FunSpec({
         validWriter.id,
         validModerator.id,
         Status.DRAFT
-
     )
     val posts = listOf(validPost)
     val comments = mutableListOf<Comment>()

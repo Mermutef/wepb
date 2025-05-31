@@ -3,7 +3,6 @@ package ru.yarsu.domain.models
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.operations.validCommentContent
-import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validPostDate2
 
 class CommentTest : FunSpec({

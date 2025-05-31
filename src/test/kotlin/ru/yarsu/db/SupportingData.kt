@@ -54,4 +54,4 @@ val validHashtagTitle = "validTitle"
 
 @Suppress("MayBeConst")
 val validCommentContent = "Лучший пост! Лучшее направление! Лучший университет! Кто писал бд - красавчик, " +
-        "и усы у него классные"
+    "и усы у него классные"

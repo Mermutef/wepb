@@ -1,14 +1,11 @@
 package ru.yarsu.domain.operations.comments
 
-import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.db.validCommentContent
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Comment
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
@@ -24,12 +21,9 @@ import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle
 import ru.yarsu.domain.operations.validUserSurname
 import ru.yarsu.domain.operations.validVKLink
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 class FetchCommentTest : FunSpec({
     val validHashtag = Hashtag(1, validHashtagTitle)
-    val hashtags = listOf(validHashtag)
     val validWriter = User(
         1,
         validName,
@@ -52,16 +46,6 @@ class FetchCommentTest : FunSpec({
         validVKLink,
         Role.MODERATOR
     )
-    val users = listOf(validWriter, validModerator)
-    val validMedia = MediaFile(
-        filename = validPostPreview,
-        content = "Valid content".toByteArray(),
-        mediaType = MediaType.VIDEO,
-        birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
-        isTemporary = false,
-        authorId = validWriter.id,
-    )
-    val media = listOf(validMedia)
     val validPost = Post(
         1,
         validPostTitle,
@@ -74,9 +58,7 @@ class FetchCommentTest : FunSpec({
         validWriter.id,
         validModerator.id,
         Status.DRAFT
-
     )
-    val posts = listOf(validPost)
     val validComment = Comment(
         1,
         validCommentContent,
@@ -93,7 +75,7 @@ class FetchCommentTest : FunSpec({
     val fetchHiddenCommentsInPostMock: (Int) -> List<Comment> = { postId ->
         comments.filter { it.postId == postId && it.isHidden }
     }
-    val fetchHiddenCommentsOfUserInPostMock: (Int, Int) -> List<Comment> = {postId, authorId ->
+    val fetchHiddenCommentsOfUserInPostMock: (Int, Int) -> List<Comment> = { postId, authorId ->
         comments.filter { it.postId == postId && it.authorId == authorId && it.isHidden }
     }
 

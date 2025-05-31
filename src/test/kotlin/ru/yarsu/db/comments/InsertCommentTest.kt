@@ -157,5 +157,4 @@ class InsertCommentTest : TestcontainerSpec({ context ->
         insertedComment.lastModifiedDate.shouldBe(validPostDate1)
         insertedComment.isHidden.shouldBe(false)
     }
-
 })

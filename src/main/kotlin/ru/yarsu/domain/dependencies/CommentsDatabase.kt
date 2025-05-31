@@ -8,15 +8,19 @@ interface CommentsDatabase {
 
     fun selectHiddenCommentsInPost(postId: Int): List<Comment>
 
-    fun selectHiddenCommentsOfUserInPost(postId: Int, authorId: Int): List<Comment>
+    fun selectHiddenCommentsOfUserInPost(
+        postId: Int,
+        authorId: Int,
+    ): List<Comment>
 
+    @Suppress("detekt:LongParameterList")
     fun insertComment(
         content: String,
         authorId: Int,
         postId: Int,
         creationDate: ZonedDateTime = ZonedDateTime.now(),
         lastModifiedDate: ZonedDateTime = ZonedDateTime.now(),
-        isHidden: Boolean = false
+        isHidden: Boolean = false,
     ): Comment?
 
     fun hideComment(commentId: Int): Comment?
@@ -26,5 +30,6 @@ interface CommentsDatabase {
     fun updateContent(
         commentId: Int,
         newContent: String,
-        dateNow: ZonedDateTime = ZonedDateTime.now()): Comment?
+        dateNow: ZonedDateTime = ZonedDateTime.now(),
+    ): Comment?
 }

@@ -17,14 +17,16 @@ class CommentOperations (
             .orderBy(COMMENTS.CREATION_DATE.desc())
             .mapNotNull { it.toComment() }
 
-
     override fun selectHiddenCommentsInPost(postId: Int): List<Comment> =
         selectFromComments()
             .where(COMMENTS.POSTID.eq(postId), COMMENTS.IS_HIDDEN.eq(true))
             .orderBy(COMMENTS.CREATION_DATE.desc())
             .mapNotNull { it.toComment() }
 
-    override fun selectHiddenCommentsOfUserInPost(postId: Int, authorId: Int): List<Comment> =
+    override fun selectHiddenCommentsOfUserInPost(
+        postId: Int,
+        authorId: Int,
+    ): List<Comment> =
         selectFromComments()
             .where(COMMENTS.POSTID.eq(postId), COMMENTS.AUTHORID.eq(authorId), COMMENTS.IS_HIDDEN.eq(true))
             .orderBy(COMMENTS.CREATION_DATE.desc())
@@ -36,7 +38,7 @@ class CommentOperations (
         postId: Int,
         creationDate: ZonedDateTime,
         lastModifiedDate: ZonedDateTime,
-        isHidden: Boolean
+        isHidden: Boolean,
     ): Comment? =
         jooqContext.insertInto(COMMENTS)
             .set(COMMENTS.CONTENT, content)
@@ -65,7 +67,11 @@ class CommentOperations (
             .fetchOne()
             ?.toComment()
 
-    override fun updateContent(commentId: Int, newContent: String, dateNow: ZonedDateTime): Comment? =
+    override fun updateContent(
+        commentId: Int,
+        newContent: String,
+        dateNow: ZonedDateTime,
+    ): Comment? =
         jooqContext.update(COMMENTS)
             .set(COMMENTS.CONTENT, newContent)
             .set(COMMENTS.LAST_MODIFIED_DATE, dateNow.toOffsetDateTime())
@@ -86,7 +92,6 @@ class CommentOperations (
                 COMMENTS.IS_HIDDEN
             )
             .from(COMMENTS)
-
 }
 
 private fun Record.toComment(): Comment? =

@@ -7,12 +7,9 @@ import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.models.Comment
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.models.MediaFile
-import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.hashtags.FieldInHashtagChangingError
 import ru.yarsu.domain.operations.validCommentContent
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
@@ -26,11 +23,9 @@ import ru.yarsu.domain.operations.validPostPreview
 import ru.yarsu.domain.operations.validPostTitle
 import ru.yarsu.domain.operations.validUserSurname
 import ru.yarsu.domain.operations.validVKLink
-import java.time.LocalDateTime
 
 class ModifyCommentTest : FunSpec({
     val validHashtag = Hashtag(1, validHashtagTitle)
-    val hashtags = listOf(validHashtag)
     val validWriter = User(
         1,
         validName,
@@ -53,16 +48,6 @@ class ModifyCommentTest : FunSpec({
         validVKLink,
         Role.MODERATOR
     )
-    val users = listOf(validWriter, validModerator)
-    val validMedia = MediaFile(
-        filename = validPostPreview,
-        content = "Valid content".toByteArray(),
-        mediaType = MediaType.VIDEO,
-        birthDate = LocalDateTime.of(2025, 1, 16, 17, 41, 28),
-        isTemporary = false,
-        authorId = validWriter.id,
-    )
-    val media = listOf(validMedia)
     val validPost = Post(
         1,
         validPostTitle,
@@ -75,9 +60,7 @@ class ModifyCommentTest : FunSpec({
         validWriter.id,
         validModerator.id,
         Status.DRAFT
-
     )
-    val posts = listOf(validPost)
     val validComment = Comment(
         1,
         validCommentContent,
@@ -95,29 +78,29 @@ class ModifyCommentTest : FunSpec({
         { _, _ -> null }
     val changeContentNull = ChangeContentInComment(changeContentNullMock)
 
-    val changeVisibilityMock: (commentId: Int) -> Comment? = { _ -> validComment.copy(isHidden = true)}
+    val changeVisibilityMock: (commentId: Int) -> Comment? = { _ -> validComment.copy(isHidden = true) }
     val changeVisibility = ChangeVisibilityComment(changeVisibilityMock)
-    val changeVisibilityNullMock: (commentId: Int) -> Comment? = { _ -> null}
+    val changeVisibilityNullMock: (commentId: Int) -> Comment? = { _ -> null }
     val changeVisibilityNull = ChangeVisibilityComment(changeVisibilityNullMock)
 
     test("Content can be changed to valid content") {
         changeContent(validComment, "${validCommentContent}2").shouldBeSuccess().content shouldBe
-                "${validCommentContent}2"
+            "${validCommentContent}2"
     }
 
     test("Content cannot be changed to blank content") {
         changeContent(validComment, "  \t\n") shouldBeFailure
-                FieldInCommentChangingError.CONTENT_IS_BLANK_OR_EMPTY
+            FieldInCommentChangingError.CONTENT_IS_BLANK_OR_EMPTY
     }
 
     test("Content cannot be changed too long content") {
         changeContent(validComment, "a".repeat(Comment.MAX_CONTENT_LENGTH + 1)) shouldBeFailure
-                FieldInCommentChangingError.CONTENT_IS_TOO_LONG
+            FieldInCommentChangingError.CONTENT_IS_TOO_LONG
     }
 
     test("Unknown db error test for changeContent") {
         changeContentNull(validComment, "${validCommentContent}2") shouldBeFailure
-                FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR
+            FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR
     }
 
     test("Visibility can be changed") {
@@ -126,6 +109,6 @@ class ModifyCommentTest : FunSpec({
 
     test("Unknown db error test for changeVisibility") {
         changeVisibilityNull(validComment) shouldBeFailure
-                FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR
+            FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR
     }
 })

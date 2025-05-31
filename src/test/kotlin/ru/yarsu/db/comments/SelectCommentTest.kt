@@ -54,7 +54,6 @@ class SelectCommentTest : TestcontainerSpec({ context ->
     lateinit var hiddenComment1Author2: Comment
     lateinit var hiddenComment2Author2: Comment
 
-
     beforeEach {
         insertedHashtag =
             hashtagOperations
