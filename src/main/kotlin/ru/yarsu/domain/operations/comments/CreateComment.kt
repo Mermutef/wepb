@@ -5,18 +5,19 @@ import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import ru.yarsu.domain.models.Comment
 import ru.yarsu.domain.models.CommentValidationResult
-
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.User
 
 class CreateComment(
     private val insertComment: (content: String, authorId: Int, postId: Int) -> Comment?,
     private val selectUserById: (userId: Int) -> User?,
-    private val selectPostById: (postId: Int) -> Post?
+    private val selectPostById: (postId: Int) -> Post?,
 ) : (String, Int, Int) -> Result4k<Comment, CommentCreationError> {
-    override operator fun invoke(content: String,
-                                 authorId: Int,
-                                 postId: Int): Result4k<Comment, CommentCreationError> =
+    override operator fun invoke(
+        content: String,
+        authorId: Int,
+        postId: Int,
+    ): Result4k<Comment, CommentCreationError> =
         when {
             Comment.validateCommentData(content) != CommentValidationResult.ALL_OK ->
                 Failure(CommentCreationError.INVALID_COMMENT_DATA)

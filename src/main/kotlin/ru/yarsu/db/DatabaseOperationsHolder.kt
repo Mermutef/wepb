@@ -9,7 +9,6 @@ import ru.yarsu.db.users.UserOperations
 import ru.yarsu.domain.dependencies.DatabaseOperations
 import ru.yarsu.domain.dependencies.MediaDatabase
 import ru.yarsu.domain.dependencies.UsersDatabase
-import ru.yarsu.domain.operations.comments.CommentOperationsHolder
 
 class DatabaseOperationsHolder (
     jooqContext: DSLContext,

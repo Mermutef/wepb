@@ -5,20 +5,16 @@ import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import org.jooq.exception.DataAccessException
 import ru.yarsu.domain.models.Comment
-import ru.yarsu.domain.models.Post
-import ru.yarsu.domain.operations.posts.FieldInPostChangingError
 
 class ChangeVisibilityComment(
     private val changeVisibility: (commentId: Int) -> Comment?,
 ) : (Comment) -> Result4k<Comment, FieldInCommentChangingError> {
-    override operator fun invoke(
-        comment: Comment
-    ): Result4k<Comment, FieldInCommentChangingError> =
+    override operator fun invoke(comment: Comment): Result4k<Comment, FieldInCommentChangingError> =
         try {
             when (val commentWithNewVisibility = changeVisibility(comment.id)) {
-                    is Comment -> Success(commentWithNewVisibility)
-                    else -> Failure(FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR)
-                }
+                is Comment -> Success(commentWithNewVisibility)
+                else -> Failure(FieldInCommentChangingError.UNKNOWN_CHANGING_ERROR)
+            }
         } catch (_: DataAccessException) {
             Failure(FieldInCommentChangingError.UNKNOWN_DATABASE_ERROR)
         }

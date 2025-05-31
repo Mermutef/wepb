@@ -9,7 +9,7 @@ data class Comment(
     val postId: Int,
     val creationDate: ZonedDateTime,
     val lastModifiedDate: ZonedDateTime,
-    val isHidden: Boolean
+    val isHidden: Boolean,
 ) {
     companion object {
         fun validateCommentData(content: String): CommentValidationResult =

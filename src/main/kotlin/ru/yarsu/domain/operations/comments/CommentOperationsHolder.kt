@@ -9,25 +9,30 @@ import ru.yarsu.domain.models.Comment
 class CommentOperationsHolder(
     private val commentsDatabase: CommentsDatabase,
     private val postsDatabase: PostsDatabase,
-    private val usersDatabase: UsersDatabase
+    private val usersDatabase: UsersDatabase,
 ) {
     val fetchPublishedCommentsInPost: (Int) -> Result4k<List<Comment>, CommentFetchingError> =
         FetchPublishedCommentsInPost(
-            selectPublishedCommentsInPost = commentsDatabase::selectPublishedCommentsInPost)
+            selectPublishedCommentsInPost = commentsDatabase::selectPublishedCommentsInPost
+        )
 
     val fetchHiddenCommentsInPost: (Int) -> Result4k<List<Comment>, CommentFetchingError> =
-        FetchHiddenCommentsInPost(selectHiddenCommentsInPost =
-            commentsDatabase::selectHiddenCommentsInPost)
+        FetchHiddenCommentsInPost(
+            selectHiddenCommentsInPost =
+                commentsDatabase::selectHiddenCommentsInPost
+        )
 
     val fetchHiddenCommentOfUserInPost: (Int, Int) -> Result4k<List<Comment>, CommentFetchingError> =
-        FetchHiddenCommentsOfUserInPost(selectHiddenCommentsOfUserInPost =
-            commentsDatabase::selectHiddenCommentsOfUserInPost)
+        FetchHiddenCommentsOfUserInPost(
+            selectHiddenCommentsOfUserInPost =
+                commentsDatabase::selectHiddenCommentsOfUserInPost
+        )
 
     val createComment: (
         content: String,
         authorId: Int,
-        postId: Int
-            ) -> Result4k<Comment, CommentCreationError> =
+        postId: Int,
+    ) -> Result4k<Comment, CommentCreationError> =
         CreateComment(
             insertComment = {
                     content,

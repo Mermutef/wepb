@@ -35,7 +35,10 @@ class FetchHiddenCommentsInPost (
 class FetchHiddenCommentsOfUserInPost (
     private val selectHiddenCommentsOfUserInPost: (Int, Int) -> List<Comment>,
 ) : (Int, Int) -> Result4k<List<Comment>, CommentFetchingError> {
-    override operator fun invoke(postId: Int, authorId: Int): Result4k<List<Comment>, CommentFetchingError> =
+    override operator fun invoke(
+        postId: Int,
+        authorId: Int,
+    ): Result4k<List<Comment>, CommentFetchingError> =
         try {
             when (val comments = selectHiddenCommentsOfUserInPost(postId, authorId)) {
                 else -> Success(comments)
