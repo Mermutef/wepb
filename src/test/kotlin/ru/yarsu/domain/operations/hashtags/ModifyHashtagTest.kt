@@ -1,12 +1,10 @@
-package ru.yarsu.domain.operations.hashtag
+package ru.yarsu.domain.operations.hashtags
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.operations.hashtags.ChangeHashtagTitle
-import ru.yarsu.domain.operations.hashtags.FieldInHashtagChangingError
 import ru.yarsu.domain.operations.validHashtagTitle
 
 class ModifyHashtagTest : FunSpec({

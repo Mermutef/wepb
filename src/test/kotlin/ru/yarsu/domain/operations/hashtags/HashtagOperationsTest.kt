@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.hashtag
+package ru.yarsu.domain.operations.hashtags
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -6,13 +6,6 @@ import org.jooq.DSLContext
 import org.mockito.Mockito.mock
 import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.posts.PostsOperations
-import ru.yarsu.domain.operations.hashtags.ChangeHashtagTitle
-import ru.yarsu.domain.operations.hashtags.CreateHashtag
-import ru.yarsu.domain.operations.hashtags.DeleteHashtag
-import ru.yarsu.domain.operations.hashtags.FetchAllHashtags
-import ru.yarsu.domain.operations.hashtags.FetchHashtagById
-import ru.yarsu.domain.operations.hashtags.FetchHashtagByTitle
-import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 
 class HashtagOperationsTest : FunSpec({
     val context: DSLContext = mock()

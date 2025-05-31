@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.post
+package ru.yarsu.domain.operations.posts
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
@@ -10,8 +10,6 @@ import ru.yarsu.domain.models.MediaType
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.posts.CreatePost
-import ru.yarsu.domain.operations.posts.PostCreationError
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validLogin

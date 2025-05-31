@@ -1,14 +1,10 @@
-package ru.yarsu.domain.operations.hashtag
+package ru.yarsu.domain.operations.hashtags
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.operations.hashtags.FetchAllHashtags
-import ru.yarsu.domain.operations.hashtags.FetchHashtagById
-import ru.yarsu.domain.operations.hashtags.FetchHashtagByTitle
-import ru.yarsu.domain.operations.hashtags.HashtagFetchingError
 import ru.yarsu.domain.operations.validHashtagTitle
 
 class FetchHashtagTest : FunSpec({

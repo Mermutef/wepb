@@ -36,11 +36,13 @@ import org.jooq.impl.TableImpl
 
 import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.enums.PostStatus
+import ru.yarsu.db.generated.keys.COMMENTS__COMMENTS_POSTID_FKEY
 import ru.yarsu.db.generated.keys.POSTS_PKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_HASHTAG_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_MODERATORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_PREVIEW_FKEY
+import ru.yarsu.db.generated.tables.Comments.CommentsPath
 import ru.yarsu.db.generated.tables.Hashtags.HashtagsPath
 import ru.yarsu.db.generated.tables.Media.MediaPath
 import ru.yarsu.db.generated.tables.Users.UsersPath
@@ -245,6 +247,22 @@ open class Posts(
 
     val postsModeratoridFkey: UsersPath
         get(): UsersPath = postsModeratoridFkey()
+
+    private lateinit var _comments: CommentsPath
+
+    /**
+     * Get the implicit to-many join path to the <code>public.comments</code>
+     * table
+     */
+    fun comments(): CommentsPath {
+        if (!this::_comments.isInitialized)
+            _comments = CommentsPath(this, null, COMMENTS__COMMENTS_POSTID_FKEY.inverseKey)
+
+        return _comments;
+    }
+
+    val comments: CommentsPath
+        get(): CommentsPath = comments()
     override fun `as`(alias: String): Posts = Posts(DSL.name(alias), this)
     override fun `as`(alias: Name): Posts = Posts(alias, this)
     override fun `as`(alias: Table<*>): Posts = Posts(alias.qualifiedName, this)
