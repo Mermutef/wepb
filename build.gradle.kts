@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.bundles.logging)
     implementation(libs.jwtJava)
     implementation(libs.bundles.jackson)
+    implementation(libs.flexmark)
     implementation(libs.slf4j)
     implementation(libs.flywayPostgresql)
     testImplementation(libs.bundles.kotest)
