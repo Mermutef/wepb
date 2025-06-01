@@ -27,7 +27,7 @@
                         >
                             <thead>
                             <tr>
-                                <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-width="50px">#</th>
+                                <th data-field="id" data-sortable="true" data-width="50px">#</th>
                                 <th data-field="preview" data-sortable="true" data-width="50px">Превью</th>
                                 <th data-field="title" data-sortable="true" data-width="50px">Заголовок</th>
                                 <th data-field="content" data-sortable="true" data-width="20px">Информация</th>
@@ -49,7 +49,7 @@
                                         <a class="link" href="{{ model.postLink(postAndHashtag.key) }}">{{ postAndHashtag.key.middleTitleName }}</a>
                                     </td>
                                     <td id="post-{{ loop.index }}-content">
-                                            {{ postAndHashtag.key.middleContent }}
+                                            {{ model.renderMD(postAndHashtag.key.middleContent) | raw }}
                                     </td>
                                     <td id="post-{{ loop.index }}-hashtag" class="text-center">
                                             #{{ model.middleHashtag(postAndHashtag.value)}}

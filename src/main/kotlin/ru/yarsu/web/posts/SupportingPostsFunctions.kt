@@ -53,8 +53,8 @@ fun WebForm.validateForm(
             return Failure("hashtag" to PostLensErrors.HASHTAG_INPUT_NOT_CORRECT.errorText)
         } else {
             when (
-                val fetchingHashtag = fetchHashtagByTitle(
-                    title = hashtag,
+                val fetchingHashtag = fetchHashtagById(
+                    id = hashtag.toInt(),
                     hashtagOperations = hashtagOperations
                 )
             ) {
@@ -115,6 +115,22 @@ fun fetchHashtagByTitle(
 ): Result<Hashtag, FetchingHashtagError> {
     return when (
         val hashtag = hashtagOperations.fetchHashtagByTitle(title)
+    ) {
+        is Failure -> when (hashtag.reason) {
+            HashtagFetchingError.NO_SUCH_HASHTAG -> Failure(FetchingHashtagError.NO_SUCH_HASHTAG)
+            HashtagFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(FetchingHashtagError.UNKNOWN_DATABASE_ERROR)
+        }
+
+        is Success -> Success(hashtag.value)
+    }
+}
+
+fun fetchHashtagById(
+    id: Int,
+    hashtagOperations: HashtagOperationsHolder,
+): Result<Hashtag, FetchingHashtagError> {
+    return when (
+        val hashtag = hashtagOperations.fetchHashtagById(id)
     ) {
         is Failure -> when (hashtag.reason) {
             HashtagFetchingError.NO_SUCH_HASHTAG -> Failure(FetchingHashtagError.NO_SUCH_HASHTAG)

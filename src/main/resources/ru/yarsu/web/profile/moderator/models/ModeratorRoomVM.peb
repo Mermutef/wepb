@@ -49,7 +49,7 @@
                                         <a class="link" href="{{ model.postLink(postAndHashtag.key) }}">{{ postAndHashtag.key.middleTitleName }}</a>
                                     </td>
                                     <td id="post-{{ loop.index }}-content">
-                                            {{ postAndHashtag.key.middleContent }}
+                                            {{ model.renderMD(postAndHashtag.key.middleContent) | raw }}
                                     </td>
                                     <td id="post-{{ loop.index }}-hashtag" class="text-center">
                                         #{{ model.middleHashtag(postAndHashtag.value)}}

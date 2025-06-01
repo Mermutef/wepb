@@ -148,14 +148,27 @@
                                     <div class="col">
                                         <select id="hashtag" class="form-control" name="hashtag">
                                             {% for tag in model.hashTags %}
-                                                <option value="{{ tag.id }}">{{ tag.title }}</option>
+                                                <option value="{{ tag.id }}"
+                                                        {% if model.form.fields["hashtag"] | first == tag.id.toString() %}selected{% endif %}>
+                                                        {{ tag.title }}
+                                                </option>
                                             {% endfor %}
-                                            <option value="-1">Новый хэштег</option>
+                                            <option value="-1"
+                                                {% if model.form.fields["hashtag"] | first == "-1" %}
+                                                    selected
+                                                {% endif %}>
+                                                Новый хэштег
+                                            </option>
                                         </select>
                                     </div>
                                     <div class="col" id="hashtag-input">
-                                        <textarea class="form-control" rows="1" name="hashtag-input"
-                                        >{{ model.form.fields["hashtag"] | first }}</textarea>
+                                        <input
+                                                class="form-control"
+                                                name="hashtag-input"
+                                                value={% if model.form.fields["hashtag"] | first == "-1" %}
+                                                {{ model.form.fields["hashtag-input"] | first }}
+                                                {% endif %}
+                                        >
                                     </div>
                                     <div class="col-1">
                                     </div>
@@ -194,7 +207,6 @@
                                     </button>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
