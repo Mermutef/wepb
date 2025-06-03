@@ -1,4 +1,4 @@
-package ru.yarsu.web.posts
+package ru.yarsu.web.posts.utils
 
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result
@@ -22,6 +22,7 @@ import ru.yarsu.web.extract
 import ru.yarsu.web.form.addFailure
 import ru.yarsu.web.form.toCustomForm
 import ru.yarsu.web.lenses.GeneralWebLenses.from
+import ru.yarsu.web.posts.POST_SEGMENT
 import ru.yarsu.web.posts.lenses.PostLensErrors
 import ru.yarsu.web.posts.lenses.PostWebLenses.contentField
 import ru.yarsu.web.posts.lenses.PostWebLenses.eventDateField
@@ -48,31 +49,29 @@ fun WebForm.validateForm(
     val creationDate = ZonedDateTime.now()
     var hashtagId = -1
     val hashtagTitle: String
-    if (newHashtag == null) {
-        if (hashtag == "-1") {
-            return Failure("hashtag" to PostLensErrors.HASHTAG_INPUT_NOT_CORRECT.errorText)
-        } else {
-            when (
-                val fetchingHashtag = fetchHashtagById(
-                    id = hashtag.toInt(),
-                    hashtagOperations = hashtagOperations
-                )
-            ) {
-                is Failure -> return Failure("hashtag" to fetchingHashtag.reason.errorText)
-                is Success -> {
-                    hashtagId = fetchingHashtag.value.id
-                    hashtagTitle = fetchingHashtag.value.title
-                }
+    when (hashtag) {
+        -1 -> newHashtag?.let {
+            when (fetchHashtagByTitle(newHashtag, hashtagOperations)) {
+                is Failure -> hashtagTitle = newHashtag
+
+                is Success -> return Failure("hashtag" to CreationHashtagError.HASHTAG_ALREADY_EXISTS.errorText)
             }
-        }
-    } else {
-        when (fetchHashtagByTitle(newHashtag, hashtagOperations)) {
-            is Failure -> {
-                hashtagTitle = newHashtag
+        } ?: return Failure("hashtag" to PostLensErrors.HASHTAG_INPUT_NOT_CORRECT.errorText)
+
+        else -> when (
+            val fetchedHashtag = fetchHashtagById(
+                id = hashtag,
+                hashtagOperations = hashtagOperations
+            )
+        ) {
+            is Failure -> return Failure("hashtag" to fetchedHashtag.reason.errorText)
+            is Success -> {
+                hashtagId = fetchedHashtag.value.id
+                hashtagTitle = fetchedHashtag.value.title
             }
-            is Success -> return Failure("hashtag" to CreationHashtagError.HASHTAG_ALREADY_EXISTS.errorText)
         }
     }
+
     return Success(
         Pair(
             Post(

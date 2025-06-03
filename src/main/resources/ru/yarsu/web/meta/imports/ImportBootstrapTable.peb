@@ -2,3 +2,4 @@
 <script src="/static/js/jquery-3.7.1.min.js"></script>
 <script src="/static/js/bootstrap-table.min.js"></script>
 <script src="/static/js/natural-sorting.js"></script>
+<script src="/static/js/bootstrap-table-filter-control.min.js"></script>~

@@ -1,63 +1,64 @@
-<nav class="navbar sticky-top navbar-expand-md navbar-dark bg-primary">
+<nav class="navbar sticky-top navbar-expand navbar-dark bg-primary">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="/">
                         <img src="/static/images/Novaya-Sova.svg" alt="logo" width="100" height="45">
                     </a>
                 </div>
             </div>
-                <div class="d-flex justify-content-end">
-                    <button class="navbar-toggler btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-
-                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <div class="justify-content-end" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto d-flex align-items-center">
                     {% if user != null %}
-                        {% if user.isWriter() %}
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/posts/new-post">Новый пост</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/profile/{{ user.login }}">Мои посты</a>
-                            </li>
-                        {% elseif user.isAdmin() %}
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Список пользователей</a>
-                            </li>
-                        {% elseif user.isModerator() %}
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">Новый пост</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/profile/{{ user.login }}">Модерация постов</a>
-                            </li>
-                        {% endif %}
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/">Список постов</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="#">О нас</a>
-                            </li>
-                            <li class="nav-item text-center">
-                                <a class="text-white nav-text-min mx-2;" href="/profile/{{ user.login }}"><u>{{ user.name }}</u></a>
-                            </li>
-                            <li class="nav-item text-center">
-                                <a class="nav-link" href="/auth/sign-out">
-                                    <i class="bi bi-door-open text-white" style="font-size: 1.7rem"></i>
-                                </a>
-                            </li>
+                        <a class="border-radius_card text-white nav-text-min mx-2;" href="/profile/{{ user.login }}"><u>{{ user.name }}</u></a>
+                        <div class="d-flex dropdown ms-2 align-items-center">
+                            <a class="btn btn-primary m-0 px-0 float-end text-dark"
+                               type="button"
+                               id="dropdownMenuButton1"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="bi bi-list text-light px-1" style="font-size: 1.2rem; font-weight: bold;"></i>
+                            </a>
+                        <div class="btn-group dropstart mt-5">
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {% if user.isWriter() %}
+                                <li class="dropdown-item text-center">
+                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/posts/new-post">Новый пост</a>
+                                </li>
+                                <li class="dropdown-item text-center">
+                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/writer/my-posts/{{ user.login }}">Мои посты</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            {% elseif user.isModerator() %}
+                                <li class="dropdown-item text-center">
+                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/posts/new-post">Новый пост</a>
+                                </li>
+                                <li class="dropdown-item text-center">
+                                    <a class="text-white btn btn-primary btn-sm mx-2 my-1" href="/moderator/post-moderation/{{ user.login }}">Модерация постов</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            {% endif %}
+                                <li>
+                                    <a href="/auth/sign-out"
+                                       class="dropdown-item text-center d-flex align-items-center justify-content-center py-0">
+                                            <u>Выйти</u><span class="m-0 p-0 mx-1"></span><i class="bi bi-door-open" style="font-size: 1.5rem"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     {% else %}
-                        <li class="nav-item ">
-                            <a class="nav-link" href="/auth/sign-in">
-                                <i class="bi bi-door-closed text-white" style="font-size: 2rem"></i>
+                        <li class="nav-item">
+                            <a class="text-white btn btn-primary btn-sm mx-2 d-flex align-items-center justify-content-center" href="/auth/sign-in">
+                                <u>Войти</u><span class="m-0 p-0 mx-1"></span><i class="bi bi-door-closed text-white" style="font-size: 1.5rem"></i>
                             </a>
                         </li>
                     {% endif %}
+
                     </ul>
                 </div>
             </div>

@@ -3,6 +3,7 @@ package ru.yarsu.web.posts.lenses
 import org.http4k.core.*
 import org.http4k.lens.BiDiMapping
 import org.http4k.lens.FormField
+import org.http4k.lens.int
 import org.http4k.lens.map
 import org.http4k.lens.nonBlankString
 import org.http4k.lens.nonEmptyString
@@ -50,7 +51,7 @@ object PostWebLenses {
         .required("content", PostLensErrors.DESCRIPTION_NOT_CORRECT.errorText)
 
     val hashtagField = FormField
-        .nonEmptyString().nonBlankString()
+        .int()
         .required("hashtag", PostLensErrors.HASHTAG_NOT_CORRECT.errorText)
 
     val hashtagInputField = FormField.optional("hashtag-input")
@@ -86,7 +87,7 @@ enum class PostLensErrors(val errorText: String) {
         "Заголовок должен быть не пустым и иметь длину не более 100 симоволов"
     ),
     PREVIEW_NOT_CORRECT(
-        "Превью должно быть не пустым, а название картинки превью должно иметь длину не более 256 символов"
+        "Превью должно быть выбрано из загруженных ранее изображений"
     ),
     DESCRIPTION_NOT_CORRECT(
         "Текст поста должен быть не пустым"

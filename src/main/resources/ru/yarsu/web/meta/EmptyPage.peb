@@ -1,0 +1,17 @@
+<div class="card mx-auto border-radius_card my-3">
+    <div class="row px-2">
+        <div class="col px-0">
+            <div class="card-header text-center mb-2">
+                <h2 class="bold-heavy">Добро пожаловать!</h2>
+            </div>
+            <div class="row px-3 pb-2 row-cols-1">
+                <div class="col">
+                    <img src="/static/images/header.jpg" class="img-thumbnail">
+                </div>
+                <div class="col">
+                    Это информационный портал профсоюзного бюро факультета информатики и вычислительной техники. Тут пока пусто, но это пока ;) Совсем скоро тут будет много всего интересного!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

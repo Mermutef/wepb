@@ -8,7 +8,7 @@
     {% include "../../../meta/Navbar.peb" %}
     {% include "../../../meta/imports/ImportBootstrapTable.peb" %}
 <div class="container">
-    <div class="card  mx-auto border-radius_card mt-5 mb-5">
+    <div class="card mx-auto border-radius_card my-3">
         <div class="row px-2">
             <div class="col px-0">
                 <div class="card-header text-center mb-2">
@@ -17,6 +17,7 @@
                 <div class="card-body">
                     <div id="posts-body">
                         <table
+                                id="table"
                                 data-toggle="table"
                                 data-pagination="true"
                                 data-sortable="true"
@@ -27,13 +28,13 @@
                         >
                             <thead>
                             <tr>
-                                <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-width="50">#</th>
-                                <th data-field="preview" data-sortable="true" data-width="50">Превью</th>
-                                <th data-field="title" data-sortable="true" data-width="50">Заголовок</th>
-                                <th data-field="content" data-sortable="true" data-width="50">Информация</th>
-                                <th data-field="hashtag" data-sortable="true" data-width="50">Хэш-тег</th>
-                                <th data-field="status" data-sortable="true" data-width="50">Статус</th>
-                                <th data-field="lastModifiedDate" data-sortable="true" data-width="50">Дата последнего изменения</th>
+                                <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-width="50" data-filter-control="input">#</th>
+                                <th data-field="preview" data-sortable="true" data-width="50"data-filter-control="input">Превью</th>
+                                <th data-field="title" data-sortable="true" data-width="50" data-filter-control="input">Заголовок</th>
+                                <th data-field="content" data-sortable="true" data-width="50" data-filter-control="input">Информация</th>
+                                <th data-field="hashtag" data-sortable="true" data-width="50" data-filter-control="select">Хэш-тег</th>
+                                <th data-field="status" data-sortable="true" data-width="50" data-filter-control="select">Статус</th>
+                                <th data-field="lastModifiedDate" data-sortable="true" data-width="50" data-filter-control="input">Последнее редактирование</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -72,18 +73,9 @@
     </div>
 <script>
     $(document).ready(function() {
-      // Инициализация таблицы
-      $('#table').bootstrapTable();
-
-      // Установка значений фильтра после инициализации
-      setTimeout(function() {
-        const statusFilter = $('.filter-control[data-field="status"]');
-          acceptedPostStatus = ["MODERATION"];
-          // Применяем фильтр
-          $('table').bootstrapTable('filterBy', {
-            'status': acceptedPostStatus
-          });
-      }, 100); // Небольшая задержка для гарантированной инициализации
+        setTimeout(function() {
+            document.getElementsByClassName("bootstrap-table-filter-control-status")[0].value = "MODERATION";
+        }, 0);
     });
 </script>
 {% endblock %}

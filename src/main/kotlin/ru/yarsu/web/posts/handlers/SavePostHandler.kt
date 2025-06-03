@@ -4,7 +4,6 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.valueOrNull
 import org.http4k.core.*
-import org.http4k.core.body.*
 import org.http4k.lens.RequestContextLens
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
@@ -18,9 +17,9 @@ import ru.yarsu.web.lenses.GeneralWebLenses.lensOrNull
 import ru.yarsu.web.notFound
 import ru.yarsu.web.posts.lenses.PostWebLenses
 import ru.yarsu.web.posts.models.NewPostVM
-import ru.yarsu.web.posts.responseWithError
-import ru.yarsu.web.posts.tryAddPostAndHashtag
-import ru.yarsu.web.posts.validateForm
+import ru.yarsu.web.posts.utils.responseWithError
+import ru.yarsu.web.posts.utils.tryAddPostAndHashtag
+import ru.yarsu.web.posts.utils.validateForm
 
 class SavePostHandler(
     private val postOperations: PostOperationsHolder,
