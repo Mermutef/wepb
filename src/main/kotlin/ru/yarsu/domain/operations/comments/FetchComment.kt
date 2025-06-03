@@ -11,9 +11,7 @@ class FetchPublishedCommentsInPost (
 ) : (Int) -> Result4k<List<Comment>, CommentFetchingError> {
     override operator fun invoke(postId: Int): Result4k<List<Comment>, CommentFetchingError> =
         try {
-            when (val comments = selectPublishedCommentsInPost(postId)) {
-                else -> Success(comments)
-            }
+            Success(selectPublishedCommentsInPost(postId))
         } catch (_: DataAccessException) {
             Failure(CommentFetchingError.UNKNOWN_DATABASE_ERROR)
         }
@@ -24,9 +22,7 @@ class FetchHiddenCommentsInPost (
 ) : (Int) -> Result4k<List<Comment>, CommentFetchingError> {
     override operator fun invoke(postId: Int): Result4k<List<Comment>, CommentFetchingError> =
         try {
-            when (val comments = selectHiddenCommentsInPost(postId)) {
-                else -> Success(comments)
-            }
+            Success(selectHiddenCommentsInPost(postId))
         } catch (_: DataAccessException) {
             Failure(CommentFetchingError.UNKNOWN_DATABASE_ERROR)
         }
@@ -40,9 +36,7 @@ class FetchHiddenCommentsOfUserInPost (
         authorId: Int,
     ): Result4k<List<Comment>, CommentFetchingError> =
         try {
-            when (val comments = selectHiddenCommentsOfUserInPost(postId, authorId)) {
-                else -> Success(comments)
-            }
+            Success(selectHiddenCommentsOfUserInPost(postId, authorId))
         } catch (_: DataAccessException) {
             Failure(CommentFetchingError.UNKNOWN_DATABASE_ERROR)
         }
