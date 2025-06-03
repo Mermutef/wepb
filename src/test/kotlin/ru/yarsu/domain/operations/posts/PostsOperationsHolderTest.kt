@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.post
+package ru.yarsu.domain.operations.posts
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -8,23 +8,6 @@ import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.media.MediaOperations
 import ru.yarsu.db.posts.PostsOperations
 import ru.yarsu.db.users.UserOperations
-import ru.yarsu.domain.operations.posts.ChangeDateFieldInPost
-import ru.yarsu.domain.operations.posts.ChangeHashtagIdInPost
-import ru.yarsu.domain.operations.posts.ChangePost
-import ru.yarsu.domain.operations.posts.ChangePreviewInPost
-import ru.yarsu.domain.operations.posts.ChangeStringFieldInPost
-import ru.yarsu.domain.operations.posts.ChangeUserIdInPost
-import ru.yarsu.domain.operations.posts.CreatePost
-import ru.yarsu.domain.operations.posts.FetchAllPosts
-import ru.yarsu.domain.operations.posts.FetchNNewestPosts
-import ru.yarsu.domain.operations.posts.FetchPostById
-import ru.yarsu.domain.operations.posts.FetchPostByStatus
-import ru.yarsu.domain.operations.posts.FetchPostsByAuthorId
-import ru.yarsu.domain.operations.posts.FetchPostsByIdHashtag
-import ru.yarsu.domain.operations.posts.FetchPostsByModeratorId
-import ru.yarsu.domain.operations.posts.FetchPostsByTimeInterval
-import ru.yarsu.domain.operations.posts.PostOperationsHolder
-import ru.yarsu.domain.operations.posts.StatusChanger
 
 class PostsOperationsHolderTest : FunSpec({
     val context: DSLContext = mock()

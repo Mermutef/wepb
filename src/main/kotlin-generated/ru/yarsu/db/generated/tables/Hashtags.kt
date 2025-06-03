@@ -7,6 +7,7 @@ package ru.yarsu.db.generated.tables
 import javax.annotation.processing.Generated
 
 import kotlin.collections.Collection
+import kotlin.collections.List
 
 import org.jooq.Condition
 import org.jooq.Field
@@ -33,6 +34,7 @@ import org.jooq.impl.TableImpl
 
 import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.keys.HASHTAGS_PKEY
+import ru.yarsu.db.generated.keys.HASHTAGS_TITLE_KEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_HASHTAG_FKEY
 import ru.yarsu.db.generated.tables.Posts.PostsPath
 import ru.yarsu.db.generated.tables.records.HashtagsRecord
@@ -128,6 +130,7 @@ open class Hashtags(
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<HashtagsRecord, Int?> = super.getIdentity() as Identity<HashtagsRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<HashtagsRecord> = HASHTAGS_PKEY
+    override fun getUniqueKeys(): List<UniqueKey<HashtagsRecord>> = listOf(HASHTAGS_TITLE_KEY)
 
     private lateinit var _posts: PostsPath
 

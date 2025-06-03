@@ -34,6 +34,7 @@ import org.jooq.impl.TableImpl
 
 import ru.yarsu.db.generated.Public
 import ru.yarsu.db.generated.enums.UserRole
+import ru.yarsu.db.generated.keys.COMMENTS__COMMENTS_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.MEDIA__MEDIA_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_AUTHORID_FKEY
 import ru.yarsu.db.generated.keys.POSTS__POSTS_MODERATORID_FKEY
@@ -41,6 +42,7 @@ import ru.yarsu.db.generated.keys.USERS_EMAIL_KEY
 import ru.yarsu.db.generated.keys.USERS_LOGIN_KEY
 import ru.yarsu.db.generated.keys.USERS_PHONENUMBER_KEY
 import ru.yarsu.db.generated.keys.USERS_PKEY
+import ru.yarsu.db.generated.tables.Comments.CommentsPath
 import ru.yarsu.db.generated.tables.Media.MediaPath
 import ru.yarsu.db.generated.tables.Posts.PostsPath
 import ru.yarsu.db.generated.tables.records.UsersRecord
@@ -172,6 +174,22 @@ open class Users(
     override fun getIdentity(): Identity<UsersRecord, Int?> = super.getIdentity() as Identity<UsersRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<UsersRecord>> = listOf(USERS_LOGIN_KEY, USERS_EMAIL_KEY, USERS_PHONENUMBER_KEY)
+
+    private lateinit var _comments: CommentsPath
+
+    /**
+     * Get the implicit to-many join path to the <code>public.comments</code>
+     * table
+     */
+    fun comments(): CommentsPath {
+        if (!this::_comments.isInitialized)
+            _comments = CommentsPath(this, null, COMMENTS__COMMENTS_AUTHORID_FKEY.inverseKey)
+
+        return _comments;
+    }
+
+    val comments: CommentsPath
+        get(): CommentsPath = comments()
 
     private lateinit var _media: MediaPath
 

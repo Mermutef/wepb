@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.post
+package ru.yarsu.domain.operations.posts
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
@@ -8,15 +8,6 @@ import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
 import ru.yarsu.domain.models.User
-import ru.yarsu.domain.operations.posts.FetchAllPosts
-import ru.yarsu.domain.operations.posts.FetchNNewestPosts
-import ru.yarsu.domain.operations.posts.FetchPostById
-import ru.yarsu.domain.operations.posts.FetchPostByStatus
-import ru.yarsu.domain.operations.posts.FetchPostsByAuthorId
-import ru.yarsu.domain.operations.posts.FetchPostsByIdHashtag
-import ru.yarsu.domain.operations.posts.FetchPostsByModeratorId
-import ru.yarsu.domain.operations.posts.FetchPostsByTimeInterval
-import ru.yarsu.domain.operations.posts.PostFetchingError
 import ru.yarsu.domain.operations.validEmail
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validName

@@ -4,12 +4,18 @@
 package ru.yarsu.db.generated.tables.references
 
 
+import ru.yarsu.db.generated.tables.Comments
 import ru.yarsu.db.generated.tables.Hashtags
 import ru.yarsu.db.generated.tables.Media
 import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
 
 
+
+/**
+ * The table <code>public.comments</code>.
+ */
+val COMMENTS: Comments = Comments.COMMENTS
 
 /**
  * The table <code>public.hashtags</code>.

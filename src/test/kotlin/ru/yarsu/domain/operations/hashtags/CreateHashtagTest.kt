@@ -1,11 +1,9 @@
-package ru.yarsu.domain.operations.hashtag
+package ru.yarsu.domain.operations.hashtags
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
 import io.kotest.core.spec.style.FunSpec
 import ru.yarsu.domain.models.Hashtag
-import ru.yarsu.domain.operations.hashtags.CreateHashtag
-import ru.yarsu.domain.operations.hashtags.HashtagCreationError
 import ru.yarsu.domain.operations.validHashtagTitle
 
 class CreateHashtagTest : FunSpec({
@@ -77,7 +75,7 @@ class CreateHashtagTest : FunSpec({
         ).shouldBeFailure(HashtagCreationError.HASHTAG_ALREADY_EXISTS)
     }
 
-    test("Unknown db error test for CreateUser") {
+    test("Unknown db error test for CreateHashtag") {
         createHashtagNullTitle(
             validHashtagTitle
         ).shouldBeFailure(HashtagCreationError.UNKNOWN_DATABASE_ERROR)

@@ -1,4 +1,4 @@
-package ru.yarsu.domain.operations.hashtag
+package ru.yarsu.domain.operations.hashtags
 
 import dev.forkhandles.result4k.kotest.shouldBeFailure
 import dev.forkhandles.result4k.kotest.shouldBeSuccess
@@ -7,8 +7,6 @@ import io.kotest.matchers.shouldBe
 import ru.yarsu.domain.models.Hashtag
 import ru.yarsu.domain.models.Post
 import ru.yarsu.domain.models.Status
-import ru.yarsu.domain.operations.hashtags.DeleteHashtag
-import ru.yarsu.domain.operations.hashtags.HashtagDeleteError
 import ru.yarsu.domain.operations.validHashtagTitle
 import ru.yarsu.domain.operations.validPostContent
 import ru.yarsu.domain.operations.validPostDate1
