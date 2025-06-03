@@ -11,11 +11,13 @@ import org.jooq.impl.Internal
 
 import ru.yarsu.db.generated.tables.Comments
 import ru.yarsu.db.generated.tables.Hashtags
+import ru.yarsu.db.generated.tables.Directions
 import ru.yarsu.db.generated.tables.Media
 import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
 import ru.yarsu.db.generated.tables.records.CommentsRecord
 import ru.yarsu.db.generated.tables.records.HashtagsRecord
+import ru.yarsu.db.generated.tables.records.DirectionsRecord
 import ru.yarsu.db.generated.tables.records.MediaRecord
 import ru.yarsu.db.generated.tables.records.PostsRecord
 import ru.yarsu.db.generated.tables.records.UsersRecord
@@ -28,6 +30,8 @@ import ru.yarsu.db.generated.tables.records.UsersRecord
 
 val COMMENTS_PKEY: UniqueKey<CommentsRecord> = Internal.createUniqueKey(Comments.COMMENTS, DSL.name("comments_pkey"), arrayOf(Comments.COMMENTS.ID), true)
 val HASHTAGS_PKEY: UniqueKey<HashtagsRecord> = Internal.createUniqueKey(Hashtags.HASHTAGS, DSL.name("hashtags_pkey"), arrayOf(Hashtags.HASHTAGS.ID), true)
+val DIRECTIONS_NAME_KEY: UniqueKey<DirectionsRecord> = Internal.createUniqueKey(Directions.DIRECTIONS, DSL.name("directions_name_key"), arrayOf(Directions.DIRECTIONS.NAME), true)
+val DIRECTIONS_PKEY: UniqueKey<DirectionsRecord> = Internal.createUniqueKey(Directions.DIRECTIONS, DSL.name("directions_pkey"), arrayOf(Directions.DIRECTIONS.ID), true)
 val HASHTAGS_TITLE_KEY: UniqueKey<HashtagsRecord> = Internal.createUniqueKey(Hashtags.HASHTAGS, DSL.name("hashtags_title_key"), arrayOf(Hashtags.HASHTAGS.TITLE), true)
 val MEDIA_PKEY: UniqueKey<MediaRecord> = Internal.createUniqueKey(Media.MEDIA, DSL.name("media_pkey"), arrayOf(Media.MEDIA.FILENAME), true)
 val POSTS_PKEY: UniqueKey<PostsRecord> = Internal.createUniqueKey(Posts.POSTS, DSL.name("posts_pkey"), arrayOf(Posts.POSTS.ID), true)
@@ -40,6 +44,10 @@ val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, D
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
+val DIRECTIONS__DIRECTIONS_BANNER_PATH_FKEY: ForeignKey<DirectionsRecord, MediaRecord> = Internal.createForeignKey(Directions.DIRECTIONS, DSL.name("directions_banner_path_fkey"), arrayOf(Directions.DIRECTIONS.BANNER_PATH), ru.yarsu.db.generated.keys.MEDIA_PKEY, arrayOf(Media.MEDIA.FILENAME), true)
+val DIRECTIONS__DIRECTIONS_CHAIRMAN_ID_FKEY: ForeignKey<DirectionsRecord, UsersRecord> = Internal.createForeignKey(Directions.DIRECTIONS, DSL.name("directions_chairman_id_fkey"), arrayOf(Directions.DIRECTIONS.CHAIRMAN_ID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val DIRECTIONS__DIRECTIONS_DEPUTY_СHAIRMAN_ID_FKEY: ForeignKey<DirectionsRecord, UsersRecord> = Internal.createForeignKey(Directions.DIRECTIONS, DSL.name("directions_deputy_сhairman_id_fkey"), arrayOf(Directions.DIRECTIONS.DEPUTY_СHAIRMAN_ID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val DIRECTIONS__DIRECTIONS_LOGO_PATH_FKEY: ForeignKey<DirectionsRecord, MediaRecord> = Internal.createForeignKey(Directions.DIRECTIONS, DSL.name("directions_logo_path_fkey"), arrayOf(Directions.DIRECTIONS.LOGO_PATH), ru.yarsu.db.generated.keys.MEDIA_PKEY, arrayOf(Media.MEDIA.FILENAME), true)
 val COMMENTS__COMMENTS_AUTHORID_FKEY: ForeignKey<CommentsRecord, UsersRecord> = Internal.createForeignKey(Comments.COMMENTS, DSL.name("comments_authorid_fkey"), arrayOf(Comments.COMMENTS.AUTHORID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
 val COMMENTS__COMMENTS_POSTID_FKEY: ForeignKey<CommentsRecord, PostsRecord> = Internal.createForeignKey(Comments.COMMENTS, DSL.name("comments_postid_fkey"), arrayOf(Comments.COMMENTS.POSTID), ru.yarsu.db.generated.keys.POSTS_PKEY, arrayOf(Posts.POSTS.ID), true)
 val MEDIA__MEDIA_AUTHORID_FKEY: ForeignKey<MediaRecord, UsersRecord> = Internal.createForeignKey(Media.MEDIA, DSL.name("media_authorid_fkey"), arrayOf(Media.MEDIA.AUTHORID), ru.yarsu.db.generated.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)

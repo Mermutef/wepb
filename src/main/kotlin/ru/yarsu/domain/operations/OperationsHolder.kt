@@ -3,6 +3,7 @@ package ru.yarsu.domain.operations
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.dependencies.DatabaseOperations
 import ru.yarsu.domain.operations.comments.CommentOperationsHolder
+import ru.yarsu.domain.operations.directions.DirectionOperationsHolder
 import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.domain.operations.posts.PostOperationsHolder
@@ -29,6 +30,8 @@ class OperationsHolder(
 
     val hashtagOperations: HashtagOperationsHolder =
         HashtagOperationsHolder(database.hashtagOperations, database.postsOperations)
+
+    val directionOperations: DirectionOperationsHolder = DirectionOperationsHolder(database.directionOperations)
 
     val commentOperations: CommentOperationsHolder =
         CommentOperationsHolder(

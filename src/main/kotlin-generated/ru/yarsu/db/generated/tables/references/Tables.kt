@@ -6,6 +6,7 @@ package ru.yarsu.db.generated.tables.references
 
 import ru.yarsu.db.generated.tables.Comments
 import ru.yarsu.db.generated.tables.Hashtags
+import ru.yarsu.db.generated.tables.Directions
 import ru.yarsu.db.generated.tables.Media
 import ru.yarsu.db.generated.tables.Posts
 import ru.yarsu.db.generated.tables.Users
@@ -21,6 +22,11 @@ val COMMENTS: Comments = Comments.COMMENTS
  * The table <code>public.hashtags</code>.
  */
 val HASHTAGS: Hashtags = Hashtags.HASHTAGS
+
+/**
+ * The table <code>public.directions</code>.
+ */
+val DIRECTIONS: Directions = Directions.DIRECTIONS
 
 /**
  * The table <code>public.media</code>.
