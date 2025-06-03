@@ -2,8 +2,8 @@ package ru.yarsu.db
 
 import org.jooq.DSLContext
 import ru.yarsu.db.comment.CommentOperations
-import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.directions.DirectionOperations
+import ru.yarsu.db.hashtag.HashtagsOperations
 import ru.yarsu.db.media.MediaOperations
 import ru.yarsu.db.posts.PostsOperations
 import ru.yarsu.db.users.UserOperations

@@ -12,8 +12,8 @@ import ru.yarsu.domain.dependencies.HashtagsDatabase
 import ru.yarsu.domain.dependencies.PostsDatabase
 import ru.yarsu.domain.dependencies.UsersDatabase
 import ru.yarsu.domain.operations.comments.CommentOperationsHolder
-import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.directions.DirectionOperationsHolder
+import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.domain.operations.posts.PostOperationsHolder
 import ru.yarsu.domain.operations.users.UserOperationsHolder
