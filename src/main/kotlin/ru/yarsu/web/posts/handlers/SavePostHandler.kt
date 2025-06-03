@@ -33,7 +33,6 @@ class SavePostHandler(
         return lensOrNull(userLens, request)?.let { user ->
             val postId = request.idOrNull()
             val form = PostWebLenses.formFieldAll(request)
-            println(form)
             if (form.errors.isNotEmpty()) {
                 return render(request) extract
                     NewPostVM(
