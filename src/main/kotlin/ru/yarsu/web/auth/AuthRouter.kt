@@ -4,8 +4,8 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.routing.*
 import ru.yarsu.config.AppConfig
+import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.operations.OperationsHolder
-import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.handlers.ShowSignInFormHandler
 import ru.yarsu.web.auth.handlers.ShowSignUpFormHandler
 import ru.yarsu.web.auth.handlers.SignInHandler

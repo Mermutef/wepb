@@ -1,21 +1,20 @@
 package ru.yarsu.web
 
 import org.http4k.core.*
-import org.http4k.filter.ServerFilters
 import org.http4k.lens.BiDiBodyLens
 import org.http4k.routing.*
 import org.http4k.template.ViewModel
 import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
+import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
-import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
 import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
-import ru.yarsu.web.filters.AuthenticationFilter
+import ru.yarsu.web.filters.FiltersHolder
 import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
@@ -77,6 +76,7 @@ private fun createMainRouter(
         ),
     POST_SEGMENT bind postsRoutes(
         contextTools = contextTools,
+        operations = operations
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
@@ -91,6 +91,13 @@ fun createApp(
     val moderatorRoleFilter = roleFilter(contexts.userLens, Role.MODERATOR)
     val writerRoleFilter = roleFilter(contexts.userLens, Role.WRITER)
 
+    val filters = FiltersHolder(
+        operations = operations,
+        contextTools = contexts,
+        config = config,
+        jwtTools = jwtTools,
+    )
+
     val app = createMainRouter(
         contextTools = contexts,
         operations = operations,
@@ -100,15 +107,7 @@ fun createApp(
         moderatorRoleFilter
     )
 
-    return ServerFilters
-        .InitialiseRequestContext(contexts.appContexts)
-        .then(
-            AuthenticationFilter(
-                userLens = contexts.userLens,
-                userOperations = operations.userOperations,
-                jwtTools = jwtTools
-            )
-        ).then(app)
+    return filters.all.then(app)
 }
 
 infix fun BiDiBodyLens<ViewModel>.extract(viewModel: ViewModel?) =
@@ -119,6 +118,8 @@ infix fun BiDiBodyLens<ViewModel>.extract(viewModel: ViewModel?) =
 fun redirect(to: String = "/"): Response = Response(Status.FOUND).header("Location", to)
 
 val notFound: Response = Response(Status.NOT_FOUND)
+
+val internalServerError: Response = Response(Status.INTERNAL_SERVER_ERROR)
 
 fun ok(body: String = "pong"): Response = Response(Status.OK).body(body)
 

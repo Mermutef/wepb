@@ -10,9 +10,9 @@ import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.media.MediaCreationError
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.web.lenses.GeneralWebLenses.from
-import ru.yarsu.web.lenses.MediaLenses.fileField
-import ru.yarsu.web.lenses.MediaLenses.mediaFileForm
-import ru.yarsu.web.lenses.MediaLenses.mediaTypeField
+import ru.yarsu.web.media.lenses.MediaLenses.fileField
+import ru.yarsu.web.media.lenses.MediaLenses.mediaFileForm
+import ru.yarsu.web.media.lenses.MediaLenses.mediaTypeField
 import ru.yarsu.web.notFound
 import ru.yarsu.web.ok
 import java.time.LocalDateTime
@@ -25,7 +25,7 @@ class UploadMediaHandler(
         val user = userLens(request) ?: return notFound
         val filesForm = mediaFileForm from request
         return when {
-            filesForm.errors.isNotEmpty() -> ok("Error: Invalid request format")
+            filesForm.errors.isNotEmpty() -> ok("Error: Неверный формат запроса")
             else -> filesForm.createMedia(user)
         }
     }
@@ -63,15 +63,15 @@ class UploadMediaHandler(
 }
 
 enum class MediaUploadingError(val errorText: String) {
-    MEDIA_IS_EMPTY("Empty media file"),
-    MEDIA_IS_TOO_LARGE("Media file is too large"),
-    MEDIA_ALREADY_EXIST("Media already exist"),
-    FILENAME_IS_TOO_LONG("Too long filename. It can have length less than ${MediaFile.MAX_FILENAME_LENGTH}"),
+    MEDIA_IS_EMPTY("Пустой медиа файл"),
+    MEDIA_IS_TOO_LARGE("Медиа файл слишком большой"),
+    MEDIA_ALREADY_EXIST("Данный медиа файл уже существует"),
+    FILENAME_IS_TOO_LONG("Слишком длинное имя файла. Оно должно быть менее ${MediaFile.MAX_FILENAME_LENGTH}"),
     FILENAME_PATTERN_MISMATCH(
-        "The filename contains invalid characters. " +
-            "It can contain only Latin letters and decimal digits and \".\", \"-\", \"_\""
+        "Имя файла содержит недопустимые символы. " +
+            "Допускаются латинские буквы, десятичные цифры, знаки \".\", \"-\", \"_\""
     ),
-    FILENAME_ALREADY_EXIST("Another media with this filename already exist"),
-    FILENAME_IS_BLANK_OR_EMPTY("Media filename is blank or empty"),
-    UNKNOWN_DATABASE_ERROR("Something went wrong, try again later"),
+    FILENAME_ALREADY_EXIST("Медиа с данным именем файла уже существует"),
+    FILENAME_IS_BLANK_OR_EMPTY("Пустое имя файла"),
+    UNKNOWN_DATABASE_ERROR("Что-то пошло не так. Повторите попытку позднее"),
 }

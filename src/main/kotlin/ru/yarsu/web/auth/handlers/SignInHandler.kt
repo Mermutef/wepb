@@ -6,11 +6,11 @@ import dev.forkhandles.result4k.Success
 import org.http4k.core.*
 import org.http4k.lens.WebForm
 import ru.yarsu.config.AuthConfig
+import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.accounts.PasswordHasher
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.users.UserFetchingError
 import ru.yarsu.domain.operations.users.UserOperationsHolder
-import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.auth.lenses.UserWebLenses
 import ru.yarsu.web.auth.models.SignInVM
 import ru.yarsu.web.context.templates.ContextAwareViewRender

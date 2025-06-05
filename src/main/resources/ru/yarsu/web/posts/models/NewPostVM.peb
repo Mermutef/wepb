@@ -7,7 +7,7 @@
 {% block page %}
     {% include "../../meta/Navbar.peb" %}
 <div class="container">
-    <div class="card  mx-auto border-radius_card mt-5 mb-5">
+    <div class="card mx-auto border-radius_card my-3">
         <div class="row px-2">
             <div class="col px-0">
                 <div class="card-header text-center mb-2">
@@ -16,14 +16,25 @@
                 <div class="card-body">
                     <div id="new-post-body">
                         <form id="postForm" method="post">
+                            <div class="mb-3">
+                                    {% for error in model.form.errors.values() %}
+                                    {% if error.name == "no-specific" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
                             <div class="form-group mb-4">
                                 <h4 class="">
-                                    <label for="title" class="text-center">Название:</label>
+                                    <label for="title" class="text-center">Заголовок:</label>
                                 </h4>
-                                <textarea class="form-control"  id="title" name="title" rows="1"
-                                >{{ model.form.fields["title"] | first }}</textarea>
-                            </div>
-                            <div class="col-4 error-field">
+                                <input
+                                        class="form-control"
+                                        id="title"
+                                        name="title"
+                                        value="{{ model.form.fields["title"] | first }}"
+                                >
                                 {% for error in model.form.errors.values() %}
                                     {% if error.name == "title" %}
                                         <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
@@ -32,72 +43,289 @@
                                     {% endif %}
                                 {% endfor %}
                             </div>
-{#                            todo необходимо сделать загрузку медиа#}
+
                             <div class="form-group mb-4">
                                 <h4 class="">
-                                    <label for="content" class="text-center">Текст:</label>
+                                    <label
+                                            for="preview"
+                                            class="text-center">
+                                        Превью:
+                                    </label>
                                 </h4>
-                                <textarea class="form-control" id="content" name="content"
-                                          rows="5">{{ model.form.fields["content"] | first }}</textarea>
-                            </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
-                                        {% if error.name == "content" %}
-                                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
-                                                    {{ error.description }}
+                                <div class="row align-items-center">
+                                    <div class="col-1 col-md-3"></div>
+                                    <div class="col-10 col-md-6">
+                                        <div class="row row-cols-1">
+                                            <div class="col">
+                                                <img
+                                                        id="previewImage"
+                                                        class="img-thumbnail"
+                                                    {% if model.form.fields["preview"] is not empty and (model.form.fields["preview"] | first) is not empty %}
+                                                        src="/media/{{ model.form.fields["preview"] | first }}"
+                                                            {%  else %}
+                                                        src="/static/images/preview-placeholder.svg"
+                                                    {% endif %}
+                                                        alt="Превью"
+                                                >
                                             </div>
-                                        {% endif %}
-                                    {% endfor %}
-                            </div>
-                            <div class="form-group mb-4">
-                                <div class="row">
-                                    <div class="input-group mb-2">
-                                        <span class="input-group-text" id="basic-addon1">
-                                          #
-                                        </span>
-                                        <label for="hashtag"></label>
-                                        <textarea class="form-control" rows="1" id="hashtag" name="hashtag">{{ model.form.fields["hashtag"] | first }}</textarea>
+                                            <div class="col text-center mt-2">
+                                                <a style="cursor: pointer;"
+                                                   data-bs-toggle="modal" data-bs-target="#previewModal"
+                                                >
+                                                    <div class="input-group mb-2">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                  <i class="bi bi-image"></i>
+                                                </span>
+                                                        <input type="text"
+                                                               class="form-control no-focus"
+                                                               id="preview"
+                                                               name="preview"
+                                                               placeholder="Прикрепите изображение"
+                                                               aria-label="Выберите изображение для превью поста"
+                                                               aria-describedby="basic-addon1"
+                                                               style="cursor: pointer;"
+                                                               readonly
+                                                               value="{{ model.form.fields["preview"] | first }}"
+                                                        >
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "preview" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
-                                        {% if error.name == "hashtag" %}
-                                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
-                                                    {{ error.description }}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+                            <div class="form-group mb-4">
+                                <h4 class="">
+                                    <label for="content" class="text-center">Тело:</label>
+                                </h4>
+                                <!-- Button trigger modal -->
+                                <button hidden type="button"
+                                        id="image"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#mediaModal"
+                                        data-bs-whatever="image">
+                                </button>
+                                <button hidden type="button"
+                                        id="sound"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#mediaModal"
+                                        data-bs-whatever="sound">
+                                </button>
+                                <button hidden type="button"
+                                        id="video"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#insertVideoModal">
+                                </button>
+                                <textarea class="form-control pretty-border" id="content" name="content"
+                                >{{ model.form.fields["content"] | first }}</textarea>
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "content" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <div class="row align-items-center">
+                                    <div class="col-1 text-end p-0 m-1">
+                                        <h4 class="">
+                                            <label
+                                                    for="hashtag"
+                                                    class="text-center">
+                                                #
+                                            </label>
+                                        </h4>
+                                    </div>
+                                    <div class="col p-0 m-1">
+                                        <select id="hashtag" class="form-control" name="hashtag">
+                                            {% for tag in model.hashTags %}
+                                                <option value="{{ tag.id }}"
+                                                        {% if model.form.fields["hashtag"] | first == tag.id.toString() %}selected{% endif %}>
+                                                        {{ tag.title }}
+                                                </option>
+                                            {% endfor %}
+                                            <option value="-1"
+                                                {% if model.form.fields["hashtag"] | first == "-1" %}
+                                                    selected
+                                                {% endif %}>
+                                                Новый хэштег
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col p-0 m-1" id="hashtag-input">
+                                        <input
+                                                class="form-control"
+                                                name="hashtag-input"
+                                                value={% if model.form.fields["hashtag"] | first == "-1" %}
+                                                {{ model.form.fields["hashtag-input"] | first }}
+                                                {% endif %}
+                                        >
+                                    </div>
+                                    <div class="col-1 p-0 m-1">
+                                    </div>
+                                </div>
+                                {% for error in model.form.errors.values() %}
+                                    {% if error.name == "hashtag" %}
+                                        <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                                {{ error.description }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                             <div class="form-group mb-4">
                                 <h4 class="">
                                     <label for="eventDate" class="text-center">Дата мероприятия</label>
                                 </h4>
-                                <input class="form-control" type="datetime-local" id="eventDate" name="eventDate" value="{{ model.form.fields["eventDate"] | first }}"
+                                <input
+                                        class="form-control"
+                                        type="datetime-local"
+                                        id="eventDate"
+                                        name="eventDate"
+                                        value="{{ model.form.fields["eventDate"] | first }}"
                                 >
-                            </div>
-                            <div class="col-4 error-field">
-                                    {% for error in model.form.errors.values() %}
+                                {% for error in model.form.errors.values() %}
                                     {% if error.name == "eventDate" %}
                                         <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                                 {{ error.description }}
                                         </div>
                                     {% endif %}
-                                    {% endfor %}
+                                {% endfor %}
                             </div>
                             <div class="row justify-content-center mt-3 mt-4">
-                                <div class="col-3 col-lg-3">
+                                <div class="col-lg-3 col-sm-12 col-md-6">
                                     <button type="submit" class="btn btn-primary w-100">
-                                        Добавить
+                                        Сохранить
                                     </button>
                                 </div>
                             </div>
-
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="allUsersMedia" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allUsersMedia">Your media</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-fill px-0 py-2 text-center cursor-pointer media-item"
+                                id="imageSelector">
+                                <b>Изображения</b>
+                            </li>
+                            <li class="list-group-item flex-fill px-0 py-2 text-center cursor-pointer media-item"
+                                id="soundSelector">
+                                <b>Аудио</b>
+                            </li>
+                        </ul>
+                        <div class="row row-cols-6 justify-content-center mt-3" id="gallery"
+                             style="overflow-y: auto; max-height: 50vh;">
+                        </div>
+                        <div class="me-auto text-secondary" id="disclaimer"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div hidden>
+                            <input id="fileField" type="file" accept="image/*" onchange="postFile();">
+                            <select id="mediaType" aria-label="media-type-field">
+                                    {% for mediaType in model.mediaTypes %}
+                                    <option value="{{ mediaType }}"></option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                        <div id="insertMediaError" class="alert alert-danger text-center" role="alert" hidden></div>
+                        <button type="button" class="btn btn-primary"
+                                onclick="document.getElementById('fileField').click();">Загрузить
+                        </button>
+                        <button type="button" class="btn btn-primary" id="attachBtn">Прикрепить</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn" data-bs-dismiss="modal">Отмена
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="allUsersImages" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allUsersImages">Ваши изображения</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row row-cols-6 justify-content-center mt-3" id="previewGallery"
+                             style="overflow-y: auto; max-height: 50vh;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div hidden>
+                            <input id="previewFileField" type="file" accept="image/*" onchange="sendImage();">
+                        </div>
+                        <div id="insertPreviewError" class="alert alert-danger text-center" role="alert" hidden></div>
+                        <button type="button" class="btn btn-primary"
+                                onclick="document.getElementById('previewFileField').click();">Загрузить
+                        </button>
+                        <button type="button" class="btn btn-primary" id="attachPreviewBtn">Прикрепить</button>
+                        <button type="button" class="btn btn-secondary" id="cancelPreviewBtn" data-bs-dismiss="modal">Отмена
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="insertVideoModal" tabindex="-1" aria-labelledby="insertVideo" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allUsersMedia">Вставка видео плеера</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Допускается только прикрепление ссылок на проигрыватели VK-видео и Rutube
+                        </p>
+                        <p>Инструкция:
+                        </p>
+                        <ul>
+                            <li>Нажмите на "Поделиться" под нужным видео</li>
+                            <li>для Rutube:</li>
+                            <ul>
+                                <li>Нажмите на "Код вставки плеера"</li>
+                                <li>Нажмите "Скопировать"</li>
+                            </ul>
+                            <li>для VK-видео:</li>
+                            <ul>
+                                <li>Найдите поле "Код для вставки" и скопируйте ссылку в нем</li>
+                            </ul>
+                            <li>Вставьте скопированную ссылку в поле ниже</li>
+                        </ul>
+                        <form id="videoLinkForm">
+                            <input class="form-control mt-3" type="text" id="videoPlayerCode" name="videoPlayerCode"
+                                   aria-label="videoPlayerLinkField"
+                                   placeholder="Rutube or VK player code" required>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="createMediaLinkError" class="alert alert-danger text-center" role="alert" hidden></div>
+                        <button type="button" class="btn btn-primary" onclick="insertVideo();">Прикрепить</button>
+                        <button type="button" class="btn btn-secondary" id="videoLinkCloseBtn" data-bs-dismiss="modal">
+                            Отмена
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="/static/js/simplemde.min.js" defer></script>
+<script src="/static/js/editor-scripts.js" defer></script>
 {% endblock %}

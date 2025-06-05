@@ -1,5 +1,6 @@
 package ru.yarsu.domain.models
 
+import ru.yarsu.domain.models.MediaFile.Companion.mediaMarkPattern
 import ru.yarsu.web.profile.crop
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -62,7 +63,7 @@ data class Post(
 
     val dateTimeWithPattern = lastModifiedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
 
-    val middleContent = content.crop(MIDDLE_CONTENT_LENGTH)
+    val middleContent = content.replace(mediaMarkPattern, "\n").crop(MIDDLE_CONTENT_LENGTH)
 
     val middleTitleName = title.crop(MIDDLE_TITLE_LENGTH)
 }

@@ -15,6 +15,8 @@ data class MediaFile(
         const val MAX_FILENAME_LENGTH = 256
         const val MAX_MEDIA_SIZE_IN_BYTES = 10
         val filenamePattern = Regex("^[\\w-.]+$")
+
+        val mediaMarkPattern = Regex("""<(\w+):\s*([^>]+)\s*>""")
         private const val BYTES_IN_MEGABYTE = 1024 * 1024
 
         fun validateMediaData(

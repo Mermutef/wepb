@@ -1,4 +1,4 @@
-package ru.yarsu.web.errors
+package ru.yarsu.web.errors.models
 
 import org.http4k.template.ViewModel
 

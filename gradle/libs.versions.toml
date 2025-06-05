@@ -6,6 +6,7 @@ http4k = "5.45.2.0"
 jackson = "2.18.3"
 jooq = "3.19.10"
 jwtJava = "4.5.0"
+flexmark = "0.64.8"
 kotest = "5.9.1"
 kotestTestcontainers = "2.0.2"
 kotlin = "2.0.21"
@@ -92,6 +93,7 @@ jacksonYaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-ya
 jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooqPostgresExtension = { module = "org.jooq:jooq-postgres-extensions", version.ref = "jooq" }
 jwtJava = { module = "com.auth0:java-jwt", version.ref = "jwtJava" }
+flexmark = {module = "com.vladsch.flexmark:flexmark-all", version.ref = "flexmark"}
 kotestAssertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotestRunner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotestTestcontainers = { module = "io.kotest.extensions:kotest-extensions-testcontainers", version.ref = "kotestTestcontainers" }
