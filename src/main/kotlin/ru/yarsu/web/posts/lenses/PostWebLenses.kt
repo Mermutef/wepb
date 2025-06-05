@@ -1,6 +1,5 @@
 package ru.yarsu.web.posts.lenses
 
-import org.http4k.core.*
 import org.http4k.lens.BiDiMapping
 import org.http4k.lens.FormField
 import org.http4k.lens.int
@@ -72,7 +71,7 @@ object PostWebLenses {
         )
         .optional("eventDate", PostLensErrors.EVENT_DATE_NOT_CORRECT.errorText)
 
-    val formFieldAll = makeBodyLensForFields(
+    val postForm = makeBodyLensForFields(
         titleField,
         previewField,
         contentField,
