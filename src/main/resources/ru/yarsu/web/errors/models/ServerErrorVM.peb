@@ -1,0 +1,28 @@
+{# @pebvariable name="model" type="ru.yarsu.web.errors.models.ServerErrorVM" #}
+
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    Страница не найдена
+    {% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+<div class="container">
+    <div class="card mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-2">
+                    <h2 class="bold-heavy">502</h2>
+                </div>
+                <div class="row p-3 text-center">
+                    <div class="col-12">
+                        Что-то пошло не так. Подождите или повторите попытку позднее.
+                    </div>
+                    <div class="col my-2">
+                        <a class="btn btn-primary" href="/">На главную</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

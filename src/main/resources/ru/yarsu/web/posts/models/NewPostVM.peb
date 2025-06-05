@@ -135,8 +135,8 @@
                             </div>
 
                             <div class="form-group mb-4">
-                                <div class="row">
-                                    <div class="col-1 text-end">
+                                <div class="row align-items-center">
+                                    <div class="col-1 text-end p-0 m-1">
                                         <h4 class="">
                                             <label
                                                     for="hashtag"
@@ -145,7 +145,7 @@
                                             </label>
                                         </h4>
                                     </div>
-                                    <div class="col">
+                                    <div class="col p-0 m-1">
                                         <select id="hashtag" class="form-control" name="hashtag">
                                             {% for tag in model.hashTags %}
                                                 <option value="{{ tag.id }}"
@@ -161,7 +161,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col" id="hashtag-input">
+                                    <div class="col p-0 m-1" id="hashtag-input">
                                         <input
                                                 class="form-control"
                                                 name="hashtag-input"
@@ -170,7 +170,7 @@
                                                 {% endif %}
                                         >
                                     </div>
-                                    <div class="col-1">
+                                    <div class="col-1 p-0 m-1">
                                     </div>
                                 </div>
                                 {% for error in model.form.errors.values() %}
@@ -201,9 +201,9 @@
                                 {% endfor %}
                             </div>
                             <div class="row justify-content-center mt-3 mt-4">
-                                <div class="col-3 col-lg-3">
+                                <div class="col-lg-3 col-sm-12 col-md-6">
                                     <button type="submit" class="btn btn-primary w-100">
-                                        Добавить
+                                        Сохранить
                                     </button>
                                 </div>
                             </div>

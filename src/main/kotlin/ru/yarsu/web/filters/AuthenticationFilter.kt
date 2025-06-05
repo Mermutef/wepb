@@ -4,9 +4,9 @@ import dev.forkhandles.result4k.Success
 import org.http4k.core.*
 import org.http4k.core.cookie.*
 import org.http4k.lens.RequestContextLens
+import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.models.User
 import ru.yarsu.domain.operations.users.UserOperationsHolder
-import ru.yarsu.domain.tools.JWTTools
 import ru.yarsu.web.cookies.clearGlobalCookie
 
 class AuthenticationFilter(
