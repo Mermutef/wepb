@@ -1,0 +1,42 @@
+{# @pebvariable name="model" type="ru.yarsu.web.posts.models.PostVM" #}
+
+    {% extends "../../meta/BaseLayout.peb" %}
+    {% block title %}
+    {{ model.postWithHashtag.first.title }}
+    {% endblock %}
+{% block page %}
+    {% include "../../meta/Navbar.peb" %}
+<div class="container">
+    <div class="card mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-center mb-0">
+                    <h1 class="bold-heavy">{{ model.postWithHashtag.first.title }}</h1>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="post-info mb-1">
+                        <div class="row">
+                            <div class="col text-orange">
+                                <i>#{{ model.postWithHashtag.second.title}}</i>
+                            </div>
+                            <div class="col text-end">
+                                <i class="text-orange"> {{ model.author.login }} </i>{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy")}}
+                            </div>
+                        </div>
+                        {% if model.postWithHashtag.first.eventDate!=null %}
+                            <div class="col">
+                                <b>Мероприятие состоится </b>{{ model.postWithHashtag.first.eventDate | date("dd.MM.yyyy в HH:mm")}}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <div id="post-body">
+                        <div class="post-content">{{ model.renderMD(model.postWithHashtag.first.content) | raw }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/simplemde.min.js" defer></script>
+{% endblock %}

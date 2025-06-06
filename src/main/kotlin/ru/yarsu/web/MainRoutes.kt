@@ -15,6 +15,7 @@ import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.FiltersHolder
+import ru.yarsu.web.filters.editorRoleFilter
 import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
 import ru.yarsu.web.media.mediaRouter
@@ -38,6 +39,7 @@ private fun createMainRouter(
     jwtTools: JWTTools,
     writerRoleFilter: Filter,
     moderatorRoleFilter: Filter,
+    editorRoleFilter: Filter,
 ) = routes(
     "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
     "/" bind Method.GET to GeneralPageHandler(
@@ -76,7 +78,8 @@ private fun createMainRouter(
         ),
     POST_SEGMENT bind postsRoutes(
         contextTools = contextTools,
-        operations = operations
+        operations = operations,
+        editorRoleFilter = editorRoleFilter
     ),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
@@ -90,6 +93,7 @@ fun createApp(
 
     val moderatorRoleFilter = roleFilter(contexts.userLens, Role.MODERATOR)
     val writerRoleFilter = roleFilter(contexts.userLens, Role.WRITER)
+    val editorRoleFilter = editorRoleFilter(contexts.userLens)
 
     val filters = FiltersHolder(
         operations = operations,
@@ -103,8 +107,9 @@ fun createApp(
         operations = operations,
         config = config,
         jwtTools = jwtTools,
-        writerRoleFilter,
-        moderatorRoleFilter
+        writerRoleFilter = writerRoleFilter,
+        moderatorRoleFilter = moderatorRoleFilter,
+        editorRoleFilter = editorRoleFilter
     )
 
     return filters.all.then(app)
