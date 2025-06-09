@@ -77,7 +77,10 @@ class SignInHandler(
             isPhone(
                 authData.filter { it.isDigit() }
                     .replaceFirstChar { if (it == '8') '7' else it }
-            ) -> userOperations.fetchUserByPhone(authData)
+            ) -> userOperations.fetchUserByPhone(
+                authData.filter { it.isDigit() }
+                    .replaceFirstChar { if (it == '8') '7' else it }
+            )
 
             else -> userOperations.fetchUserByLogin(authData)
         }

@@ -89,6 +89,10 @@ body {
     border-color: var(--bs-soft-blue);
 }
 
+.text-orange {
+    color: var(--bs-orange);
+}
+
 .nav-text-min {
     font-size: 15px;
 }

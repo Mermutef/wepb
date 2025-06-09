@@ -16,6 +16,7 @@ import ru.yarsu.domain.operations.hashtags.HashtagFetchingError
 import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.domain.operations.posts.PostCreationError
+import ru.yarsu.domain.operations.posts.PostFetchingError
 import ru.yarsu.domain.operations.posts.PostOperationsHolder
 import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.extract
@@ -186,6 +187,22 @@ fun addNewPost(
     }
 }
 
+fun fetchPostById(
+    postId: Int,
+    postOperations: PostOperationsHolder,
+): Result<Post, FetchingPostError> {
+    return when (
+        val post = postOperations.fetchPostById(postId)
+    ) {
+        is Failure -> when (post.reason) {
+            PostFetchingError.NO_SUCH_POST -> Failure(FetchingPostError.NO_SUCH_POST)
+            PostFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(FetchingPostError.UNKNOWN_DATABASE_ERROR)
+        }
+
+        is Success -> Success(post.value)
+    }
+}
+
 @Suppress("LongParameterList")
 fun Request.tryAddPostAndHashtag(
     postAndHashtag: Pair<Post, String>,
@@ -223,7 +240,7 @@ fun Request.tryAddPostAndHashtag(
                     form = form,
                 )
 
-                is Success -> redirect("${POST_SEGMENT}/post/${newPost.value.id}")
+                is Success -> redirect("${POST_SEGMENT}/${newPost.value.id}")
             }
         }
 
@@ -281,4 +298,9 @@ enum class CreationPostError(val errorText: String) {
     MODERATOR_NOT_EXISTS("Указанный модератор не существует"),
     INVALID_POST_DATA("Неверные данные поста"),
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
+}
+
+enum class FetchingPostError(val errorText: String) {
+    UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
+    NO_SUCH_POST("Указанного поста не существует"),
 }
