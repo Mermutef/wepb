@@ -41,56 +41,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/comments/${postId}/all`);
             if (!response.ok) throw new Error('Ошибка загрузки комментариев');
 
-            const comments = await response.json();
-            console.log(comments);
-            const fragment = document.createDocumentFragment();
+            // Получаем готовый HTML от сервера
+            const html = await response.text();
 
-            // Удаляем старые комментарии и сообщение об отсутствии
+            // Создаем временный контейнер для обработки HTML
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = html;
+
+            // Удаляем старые комментарии
             document.querySelectorAll('.comment-item, .no-comments').forEach(el => el.remove());
 
-            // Если комментариев нет - показываем сообщение
-            if (comments.length === 0) {
-                // ... код для no-comments без изменений ...
-            }
-            // Если есть комментарии - отображаем их
-            else {
-                comments.forEach(comment => {
-                    // Точная проверка редактирования с учетом секунд
-                    const isEdited = Math.abs(comment.comment.lastModifyDate - comment.comment.creationDate) > 1;
-
-                    const commentElement = document.createElement('div');
-                    commentElement.className = 'col comment-item';
-                    commentElement.innerHTML = `
-                        <div class="row mb-2">
-                            <div class="col">
-                                <i class="text-orange">@${escapeHtml(comment.author.login)}</i>
-                            </div>
-                            <div class="col text-end">
-                                <i class="text-muted fs-6">
-                                    ${formatDate(comment.comment.creationDate)}
-                                    ${isEdited ? '<span class="text-orange"> (ред.)</span>' : ''}
-                                </i>
-                            </div>
-                        </div>
-                        <div class="row ms-3">
-                            <div class="col">
-                                ${formatContent(comment.comment.content)}
-                            </div>
-                        </div>
-                        <hr>
-                    `;
-                    fragment.appendChild(commentElement);
-                });
-            }
-
-            // Вставляем новые элементы перед comment-holder
-            commentHolder.parentNode.appendChild(fragment);
+            // Вставляем новые комментарии перед comment-holder
+            const newComments = Array.from(tempContainer.children);
+            newComments.forEach(comment => {
+                commentHolder.parentNode.insertBefore(comment, commentHolder);
+            });
 
         } catch (error) {
             console.error('Ошибка:', error);
+            // Показываем сообщение об ошибке
+            const errorElement = document.createElement('div');
+            errorElement.className = 'alert alert-danger mt-4';
+            errorElement.textContent = 'Не удалось загрузить комментарии';
+            commentHolder.parentNode.insertBefore(errorElement, commentHolder);
         }
     };
-
+    
     // Отправка нового комментария
     const setupCommentForm = () => {
         const form = document.getElementById('comment-form');
