@@ -53,7 +53,7 @@ http4kTesting = [
 
 jackson = [
     "jacksonCore",
-    "jacksonYaml",
+    "jacksonJsr",
     "jacksonKotlin",
 ]
 
@@ -89,7 +89,7 @@ http4kTestingHamkrest = { module = "org.http4k:http4k-testing-hamkrest", version
 http4kTestingKotest = { module = "org.http4k:http4k-testing-kotest", version.ref = "http4k" }
 jacksonCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jacksonKotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-jacksonYaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jacksonJsr = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooqPostgresExtension = { module = "org.jooq:jooq-postgres-extensions", version.ref = "jooq" }
 jwtJava = { module = "com.auth0:java-jwt", version.ref = "jwtJava" }
