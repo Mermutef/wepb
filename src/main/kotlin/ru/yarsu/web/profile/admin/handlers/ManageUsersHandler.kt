@@ -112,7 +112,7 @@ class ManageUsersHandler (
             } else if (user == null) {
                 Failure(Pair(id, ChangeRoleError.INVALID_FORM_DATA))
             } else {
-                val roleSet = Role.entries.minus(Role.ADMIN)
+                val roleSet = Role.entries.minus(Role.ADMIN).minus(Role.ANONYMOUS)
                 when {
                     user.role in roleSet && newRole in roleSet ->
                         Success(Pair(user, newRole))
@@ -131,7 +131,7 @@ class ManageUsersHandler (
     }
 }
 
-private fun manageUsersRoles(): List<Role> = Role.entries.minus(Role.ADMIN)
+private fun manageUsersRoles(): List<Role> = Role.entries.minus(Role.ADMIN).minus(Role.ANONYMOUS)
 
 enum class ChangeRoleError(val errorText: String) {
     INVALID_FORM_DATA("Неверные данные"),

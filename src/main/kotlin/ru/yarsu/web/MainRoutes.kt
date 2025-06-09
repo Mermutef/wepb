@@ -15,7 +15,6 @@ import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.FiltersHolder
-import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.filters.editorRoleFilter
 import ru.yarsu.web.filters.roleFilter
 import ru.yarsu.web.media.MEDIA_SEGMENT
