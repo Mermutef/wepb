@@ -7,24 +7,9 @@ import org.http4k.lens.RequestContextLens
 import ru.yarsu.domain.models.User
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.notFound
-import ru.yarsu.web.ok
 import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
-import ru.yarsu.web.profile.admin.LIST_ADMINISTRATION
-import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
-import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
-import ru.yarsu.web.profile.moderator.POST_MODERATION
-import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
-import ru.yarsu.web.profile.moderator.POST_MODERATION
+import ru.yarsu.web.profile.admin.MANAGE_USERS
 import ru.yarsu.web.profile.user.USER
-import ru.yarsu.web.profile.writer.MY_POSTS
-import ru.yarsu.web.profile.writer.WRITER_SEGMENT
-import ru.yarsu.web.profile.writer.MY_POSTS
-import ru.yarsu.web.profile.writer.WRITER_SEGMENT
-import ru.yarsu.web.redirect
-
-import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
-import ru.yarsu.web.profile.admin.LIST_ADMINISTRATION
-
 import ru.yarsu.web.redirect
 
 class RedirectToHandlers(
@@ -40,7 +25,7 @@ class RedirectToHandlers(
 
             is Success -> {
                 when {
-                    user.value.isAdmin() -> redirect("$ADMIN_SEGMENT${LIST_ADMINISTRATION}/${user.value.login}")
+                    user.value.isAdmin() -> redirect("$ADMIN_SEGMENT$MANAGE_USERS")
                     user.value.isModerator() || user.value.isWriter() || user.value.isReader() ->
                         redirect("$USER/${user.value.login}")
                     else -> notFound

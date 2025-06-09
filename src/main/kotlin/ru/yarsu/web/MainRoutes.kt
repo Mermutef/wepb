@@ -27,15 +27,12 @@ import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
 import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
 import ru.yarsu.web.profile.moderator.moderatorRoutes
-import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
-import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.profileRoutes
 import ru.yarsu.web.profile.user.USER
 import ru.yarsu.web.profile.user.userRoutes
 import ru.yarsu.web.profile.writer.WRITER_SEGMENT
 import ru.yarsu.web.profile.writer.writerRoutes
 import java.io.InputStream
-import ru.yarsu.web.filters.roleFilter
 
 @Suppress("LongParameterList")
 private fun createMainRouter(
@@ -67,7 +64,6 @@ private fun createMainRouter(
                 contextTools = contextTools,
                 operations = operations,
             )
-
         ),
     PROFILE_SEGMENT bind profileRoutes(
         contextTools = contextTools,

@@ -1,4 +1,4 @@
-{# @pebvariable name="model" type="ru.yarsu.web.profile.admin.models.AdminRoomVM" #}
+{# @pebvariable name="model" type="ru.yarsu.web.profile.admin.models.ManageUsersVM" #}
 
     {% extends "../../../meta/BaseLayout.peb" %}
     {% block title %}
@@ -10,7 +10,7 @@
     {% include "../../../meta/imports/ImportBootstrapTable.peb" %}
 
 <div class="container">
-    <div class="card mx-auto border-radius_card mt-5 mb-5">
+    <div class="card mx-auto border-radius_card my-3">
         <div class="row px-2">
             <div class="col px-0">
                 <div class="card-header text-center mb-2">
@@ -18,6 +18,11 @@
                 </div>
                 <div class="card-body">
                     <div id="users-body">
+                        {% if model.error.second is not null %}
+                            <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
+                                    Пользователь ID{{ model.error.first }}: {{ model.error.second }}
+                            </div>
+                        {% endif %}
                         <table
                                 id="users-table"
                                 data-toggle="table"
@@ -30,12 +35,12 @@
                         >
                             <thead>
                             <tr>
-                                <th data-field="id" data-sortable="true">ID</th>
-                                <th data-field="name" data-sortable="true">Имя</th>
-                                <th data-field="surname" data-sortable="true">Фамилия</th>
-                                <th data-field="email" data-sortable="true">Email</th>
+                                <th data-field="id" data-sortable="true" data-sorter="numericOnly" data-filter-control="input">ID</th>
+                                <th data-field="name" data-sortable="true" data-filter-control="input">Имя</th>
+                                <th data-field="surname" data-sortable="true" data-filter-control="input">Фамилия</th>
+                                <th data-field="email" data-sortable="true" data-filter-control="input">Email</th>
                                 <th data-field="role" data-sortable="true" data-filter-control="select">Роль</th>
-                                <th data-field="actions">Действия</th>
+                                <th data-field="actions"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -59,20 +64,11 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                    type="button"
-                                                    id="roleMenu-{{ user.id }}"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                Изменить роль
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="roleMenu-{{ user.id }}">
-                                                <li><a class="dropdown-item change-role" href="#" data-role="MODERATOR">Модератор</a></li>
-                                                <li><a class="dropdown-item change-role" href="#" data-role="WRITER">Автор</a></li>
-                                                <li><a class="dropdown-item change-role" href="#" data-role="READER">Читатель</a></li>
-                                            </ul>
-                                        </div>
+                                        <select class="form-control" aria-label="roleMenu-{{ user.id }}" onchange="submitUserData({{ user.id }})" id="roleSelector{{ user.id }}">
+                                            {% for role in model.roles %}
+                                                <option>{{ role }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -86,37 +82,32 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.change-role').forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
+    function submitUserData(userId) {
+        // Create form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/manage-users';
 
-            const userId = this.closest('tr').dataset.userId;
-            const newRole = this.dataset.role;
+        // Add id
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'id';
+        idInput.value = userId;
+        form.appendChild(idInput);
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/admin/list-administration/change-role';
-
-            const idInput = document.createElement('input');
-            idInput.type = 'hidden';
-            idInput.name = 'userId';
-            idInput.value = userId;
-            form.appendChild(idInput);
-
+        // Add role
+        const roleSelect = document.querySelector(`#roleSelector${userId}`);
+        if (roleSelect) {
             const roleInput = document.createElement('input');
-            roleInput.type = 'hidden';
-            roleInput.name = 'newRole';
-            roleInput.value = newRole;
+            roleInput.name = 'role';
+            roleInput.value = roleSelect.value;
             form.appendChild(roleInput);
+        }
 
-
-            document.body.appendChild(form);
-            form.submit();
-        });
-    });
-});
+        // Append and submit
+        form.style.display = "none";
+        document.body.appendChild(form);
+        form.submit();
+    }
 </script>
-
-
 {% endblock %}

@@ -2,7 +2,6 @@ package ru.yarsu.service
 
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Success
-import dev.forkhandles.result4k.valueOrNull
 import org.flywaydb.core.Flyway
 import org.jooq.DSLContext
 import ru.yarsu.ADMIN_USERNAME
@@ -11,10 +10,12 @@ import ru.yarsu.config.AppConfig
 import ru.yarsu.db.generated.enums.UserRole
 import ru.yarsu.db.generated.tables.Users.Companion.USERS
 import ru.yarsu.domain.accounts.PasswordHasher
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
 
-fun OperationsHolder.initApplication(jooqContext: DSLContext, config: AppConfig) {
+fun OperationsHolder.initApplication(
+    jooqContext: DSLContext,
+    config: AppConfig,
+) {
     applyMigrations(config)
     initGeneralAdmin(jooqContext, config)
 }
