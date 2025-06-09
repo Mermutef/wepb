@@ -7,6 +7,7 @@ import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.posts.handlers.PostHandler
 import ru.yarsu.web.posts.handlers.SavePostHandler
 import ru.yarsu.web.posts.handlers.ShowEditPostFormHandler
+import ru.yarsu.web.posts.handlers.SetPostStatusHandler
 import ru.yarsu.web.posts.handlers.ShowNewPostFormHandler
 
 fun postsRoutes(
@@ -37,6 +38,13 @@ fun postsRoutes(
         userOperations = operations.userOperations,
         render = contextTools.render
     ),
+    "/{id}$SET_STATUS" bind Method.POST to editorRoleFilter
+        .then(
+            SetPostStatusHandler(
+                postOperations = operations.postOperations,
+                userLens = contextTools.userLens
+            )
+        ),
     "/{id}/edit" bind Method.GET to ShowEditPostFormHandler(
         render = contextTools.render,
         userLens = contextTools.userLens,
@@ -53,3 +61,4 @@ fun postsRoutes(
 
 const val POST_SEGMENT = "/posts"
 const val CREATE_POST = "/new-post"
+const val SET_STATUS = "/set-status"

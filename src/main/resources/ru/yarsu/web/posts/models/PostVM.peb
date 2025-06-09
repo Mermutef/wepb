@@ -33,6 +33,68 @@
                     <div id="post-body">
                         <div class="post-content">{{ model.renderMD(model.postWithHashtag.first.content) | raw }}</div>
                     </div>
+                    <form id="postStatus" method="post" action="/posts/{{ model.postWithHashtag.first.id }}/set-status" hidden>
+                        <select id="selectStatus" class="form-control" name="selectStatus">
+                            <option value="MODERATION"></option>
+                            <option value="DRAFT"></option>
+                            <option value="PUBLISHED"></option>
+                            <option value="HIDDEN"></option>
+                        </select>
+                        <button type="submit" id="submitForm"></button>
+                    </form>
+                    <div class="row justify-content-center mt-3 mt-4">
+                        {% if model.postWithHashtag.first.status == "DRAFT" %}
+                            {% if user.id == model.postWithHashtag.first.authorId or user.isModerator()%}
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <a class="text-white btn btn-primary w-100" href="#">Редактировать пост</a>
+                                </div>
+                            {% endif %}
+                            {% if user.isModerator() %}
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <button onclick="setStatus('PUBLISHED');" class="btn btn-primary w-100">
+                                        Опубликовать
+                                    </button>
+                                </div>
+                            {% endif %}
+                            {% if (user.isWriter() and user.id == model.postWithHashtag.first.authorId) or user.isModerator() %}
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <button onclick="setStatus('MODERATION');" class="btn btn-primary w-100">
+                                        Отправить на модерацию
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if model.postWithHashtag.first.status == "MODERATION" %}
+                            {% if user.id == model.postWithHashtag.first.authorId or user.isModerator()%}
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <button onclick="setStatus('DRAFT');" class="btn btn-primary w-100">
+                                        В черновики
+                                    </button>
+                                </div>
+                            {% endif %}
+                            {% if user.isModerator() %}
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <button onclick="setStatus('PUBLISHED');" class="btn btn-primary w-100">
+                                        Опубликовать
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if model.postWithHashtag.first.status == "PUBLISHED" and user.isModerator()%}
+                            <div class="col-lg-3 col-sm-12 col-md-6">
+                                <button onclick="setStatus('HIDDEN');" class="btn btn-primary w-100">
+                                    Скрыть
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if model.postWithHashtag.first.status == "HIDDEN" and user.isModerator()%}
+                            <div class="col-lg-3 col-sm-12 col-md-6">
+                                <button onclick="setStatus('DRAFT');" class="btn btn-primary w-100">
+                                    В черновики
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,4 +150,10 @@
     const isModer = {{ user.isModerator() }};
 </script>
 <script src="/static/js/comments.js"></script>
+<script>
+    function setStatus(status) {
+        document.getElementById("selectStatus").value = status;
+        document.getElementById("submitForm").click();
+    }
+</script>
 {% endblock %}
