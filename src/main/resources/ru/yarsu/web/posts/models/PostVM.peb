@@ -17,13 +17,13 @@
                     <div class="post-info mb-1 mt-3">
                         <div class="row">
                             <div class="col text-orange">
-                                <i>#{{ model.postWithHashtag.second.title}}</i>
+                                <i>#{{ model.postWithHashtag.second.title }}</i>
                             </div>
                             <div class="col text-end">
-                                <i class="text-orange">@{{ model.author.login }}</i> <i class="text-muted fs-6">{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy")}}</i>
+                                <i class="text-orange">@{{ model.author.login }}</i> <i class="text-muted fs-6">{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy") }}</i>
                             </div>
                         </div>
-                        {% if model.postWithHashtag.first.eventDate!=null %}
+                        {% if model.postWithHashtag.first.eventDate != null %}
                             <div class="col">
                                 <b>Мероприятие состоится </b>{{ model.postWithHashtag.first.eventDate | date("dd.MM.yyyy в HH:mm")}}
                             </div>
