@@ -14,23 +14,18 @@ import ru.yarsu.web.profile.admin.handlers.AdminHandler
 
 fun adminRoutes(
     contextTools: ContextTools,
-    operationsHolder: UserOperationsHolder,
-    operations: UserOperations
+    operations: OperationsHolder
 
 ) = routes(
     "$LIST_ADMINISTRATION/{login}" bind Method.GET to AdminHandler(
         render = contextTools.render,
-        userOperationsHolder = operationsHolder,
-        userOperations = operations,
+        userOperations = operations.userOperations,
         userLens = contextTools.userLens,
     ),
-    "$LIST_ADMINISTRATION/change-role" bind Method.POST to AdminHandler(
+    "/admin/list-administration/change-role" bind Method.POST to AdminHandler(
         render = contextTools.render,
-        userOperationsHolder = operationsHolder,
-        userOperations = operations,
+        userOperations = operations.userOperations,
         userLens = contextTools.userLens,
-
-
     )
 
 )

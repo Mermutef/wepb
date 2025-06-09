@@ -8,7 +8,6 @@ import ru.yarsu.JWT_ISSUER
 import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.accounts.Role
-import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
@@ -66,7 +65,7 @@ private fun createMainRouter(
         .then(
             adminRoutes(
                 contextTools = contextTools,
-                operations = operations.userOperations,
+                operations = operations,
             )
 
         ),

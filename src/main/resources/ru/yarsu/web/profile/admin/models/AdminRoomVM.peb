@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = 'admin/change-role';
+            form.action = '/admin/list-administration/change-role';
 
             const idInput = document.createElement('input');
             idInput.type = 'hidden';
@@ -118,53 +118,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
-{#<script>#}
-{#$(document).ready(function() {#}
-{#    // Обработчик для изменения роли#}
-{#    $('.change-role').click(function(e) {#}
-{#        e.preventDefault();#}
-{#        const userId = $(this).closest('tr').data('user-id');#}
-{#        const newRole = $(this).data('role');#}
-
-{#        Swal.fire({#}
-{#            title: 'Подтверждение',#}
-{#            text: `Вы уверены, что хотите изменить роль пользователя на ${newRole}?`,#}
-{#            icon: 'question',#}
-{#            showCancelButton: true,#}
-{#            confirmButtonText: 'Да, изменить',#}
-{#            cancelButtonText: 'Отмена'#}
-{#        }).then((result) => {#}
-{#            if (result.isConfirmed) {#}
-{#                $.ajax({#}
-{#                    url: '/admin/change-role',#}
-{#                    method: 'POST',#}
-{#                    contentType: 'application/json',#}
-{#                    data: JSON.stringify({#}
-{#                        userId: userId,#}
-{#                        newRole: newRole#}
-{#                    }),#}
-{#                    success: function(response) {#}
-{#                        Swal.fire({#}
-{#                            title: 'Успех!',#}
-{#                            text: 'Роль пользователя успешно изменена',#}
-{#                            icon: 'success'#}
-{#                        }).then(() => {#}
-{#                            location.reload();#}
-{#                        });#}
-{#                    },#}
-{#                    error: function(xhr) {#}
-{#                        Swal.fire({#}
-{#                            title: 'Ошибка!',#}
-{#                            text: xhr.responseJSON?.message || 'Произошла ошибка',#}
-{#                            icon: 'error'#}
-{#                        });#}
-{#                    }#}
-{#                });#}
-{#            }#}
-{#        });#}
-{#    });#}
-{#});#}
-{#</script>#}
 
 {% endblock %}

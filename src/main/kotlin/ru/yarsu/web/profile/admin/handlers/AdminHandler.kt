@@ -20,8 +20,7 @@ import ru.yarsu.web.profile.admin.models.AdminRoomVM
 
 class AdminHandler(
     private val render: ContextAwareViewRender,
-    private val userOperationsHolder : UserOperationsHolder,
-    private val userOperations: UserOperations,
+    private val userOperations: UserOperationsHolder,
     private val userLens: RequestContextLens<User?>,
 ) : HttpHandler {
 
@@ -76,25 +75,38 @@ class AdminHandler(
     }
 
         private fun changeUserRole(userId: Int, newRole: Role): Result<User?, Pair<Int?, ChangeRoleError>> {
-        val user = userOperationsHolder.fetchUserByID(userId).valueOrNull()
+        val user = userOperations.fetchUserByID(userId).valueOrNull()
             ?: return Failure(Pair(userId, ChangeRoleError.USER_NOT_FOUND))
 
         return when {
             user.role == Role.ADMIN ->
                 Failure(Pair(userId, ChangeRoleError.CANNOT_CHANGE_ADMIN_ROLE))
 
-            newRole == Role.ADMIN ->
-                Failure(Pair(userId, ChangeRoleError.INVALID_NEW_ROLE))
-
-            else -> when(val result = userOperations.updateRole(user, newRole)) {
-                is Success -> Success(result)
-                is Failure -> Failure(Pair(userId, ChangeRoleError.DATABASE_ERROR))
+            newRole == Role.WRITER -> {
+                 when (val result = userOperations.makeWriter(user)) {
+                    is Success -> Success(result.value)
+                    is Failure -> Failure(Pair(userId, ChangeRoleError.DATABASE_ERROR))
+                }
             }
+            newRole == Role.MODERATOR -> {
+                when (val result = userOperations.makeModerator(user)) {
+                    is Success -> Success(result.value)
+                    is Failure -> Failure(Pair(userId, ChangeRoleError.DATABASE_ERROR))
+                }
+            }
+            newRole == Role.READER -> {
+                when ( val result =userOperations.makeReader(user)){
+                    is Success -> Success(result.value)
+                    is Failure -> Failure(Pair(userId, ChangeRoleError.DATABASE_ERROR))
+                }
+            }
+            else ->  Failure(Pair(userId, ChangeRoleError.DATABASE_ERROR))
+
         }
     }
 
     private fun fetchAllUsers(): Result<List<User>, FetchingUsersError> {
-        return when (val users = userOperationsHolder.fetchAllUsers()) {
+        return when (val users = userOperations.fetchAllUsers()) {
             is Failure -> when (users.reason) {
                 UserFetchingError.NO_SUCH_USER -> Failure(FetchingUsersError.NO_USERS_FOUND)
                 UserFetchingError.UNKNOWN_DATABASE_ERROR -> Failure(FetchingUsersError.UNKNOWN_DATABASE_ERROR)
