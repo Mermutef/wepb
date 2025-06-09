@@ -14,13 +14,13 @@
                     <h1 class="bold-heavy">{{ model.postWithHashtag.first.title }}</h1>
                 </div>
                 <div class="card-body pt-0">
-                    <div class="post-info mb-1">
+                    <div class="post-info mb-1 mt-3">
                         <div class="row">
                             <div class="col text-orange">
                                 <i>#{{ model.postWithHashtag.second.title}}</i>
                             </div>
                             <div class="col text-end">
-                                <i class="text-orange"> {{ model.author.login }} </i>{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy")}}
+                                <i class="text-orange">@{{ model.author.login }}</i> <i class="text-muted fs-6">{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy")}}</i>
                             </div>
                         </div>
                         {% if model.postWithHashtag.first.eventDate!=null %}
