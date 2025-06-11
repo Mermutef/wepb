@@ -6,6 +6,8 @@ import ru.yarsu.config.AppConfig
 import ru.yarsu.domain.accounts.JWTTools
 import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.context.ContextTools
+import ru.yarsu.web.errors.filters.notFoundFilter
+import ru.yarsu.web.errors.filters.serverErrorFilter
 
 class FiltersHolder(
     contextTools: ContextTools,

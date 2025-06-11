@@ -11,6 +11,8 @@ import ru.yarsu.domain.accounts.Role
 import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.auth.AUTH_SEGMENT
 import ru.yarsu.web.auth.authRouter
+import ru.yarsu.web.comments.COMMENTS_SEGMENT
+import ru.yarsu.web.comments.commentsRoutes
 import ru.yarsu.web.common.handlers.GeneralPageHandler
 import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
@@ -91,6 +93,7 @@ private fun createMainRouter(
         operations = operations,
         editorRoleFilter = editorRoleFilter
     ),
+    COMMENTS_SEGMENT bind commentsRoutes(operations, contextTools),
     "/static" bind static(ResourceLoader.Classpath("/ru/yarsu/public")),
 )
 

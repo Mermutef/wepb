@@ -20,7 +20,7 @@
                                 <i>#{{ model.postWithHashtag.second.title }}</i>
                             </div>
                             <div class="col text-end">
-                                <i class="text-orange">@{{ model.author.login }}</i> <i class="text-muted fs-6">{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy") }}</i>
+                                <i class="text-orange">@{{ model.author.login }}</i> <i class="text-muted fs-6">{{ model.postWithHashtag.first.lastModifiedDate | date("dd.MM.yyyy")}}</i>
                             </div>
                         </div>
                         {% if model.postWithHashtag.first.eventDate != null %}
@@ -37,6 +37,55 @@
             </div>
         </div>
     </div>
+    <div class="card mx-auto border-radius_card my-3">
+        <div class="row px-2">
+            <div class="col px-0">
+                <div class="card-header text-start mb-0">
+                    <h4 class="bold-heavy">Комментарии</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1" id="comments">
+                        <div class="col">
+                            {% if user is not empty %}
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="text-orange">@you</i>
+                                    </div>
+                                    <div class="col text-end">
+                                        <i class="text-muted fs-6">Сейчас</i>
+                                    </div>
+                                </div>
+                                <div class="row row-cols-1 ms-3">
+                                    <div class="col">
+                                        <form id="comment-form">
+                                            <textarea id="comment-area" class="form-control" rows="3" placeholder="Ваш комментарий..." name="content"></textarea>
+                                        </form>
+                                    </div>
+                                    <div class="col mt-3 text-end">
+                                        <button class="btn btn-primary" id="comment-button">Отправить</button>
+                                    </div>
+                                </div>
+                                <hr>
+                            {% else %}
+                                <div class="row row-cols-1 ms-3">
+                                    <div class="col">
+                                        Авторизуйтесь для написания комментариев
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col" id="comment-holder" data-post-id="{{ model.postWithHashtag.first.id }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<script src="/static/js/simplemde.min.js" defer></script>
+<script>
+    const postId = {{ model.postWithHashtag.first.id }};
+    const userId = {{ user.id }};
+    const isModer = {{ user.isModerator() }};
+</script>
+<script src="/static/js/comments.js"></script>
 {% endblock %}

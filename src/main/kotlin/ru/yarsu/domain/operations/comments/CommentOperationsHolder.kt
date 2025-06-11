@@ -11,6 +11,9 @@ class CommentOperationsHolder(
     private val postsDatabase: PostsDatabase,
     private val usersDatabase: UsersDatabase,
 ) {
+    val fetchCommentById: (Int) -> Result4k<Comment, CommentFetchingError> =
+        FetchCommentById(selectCommentById = commentsDatabase::selectCommentById)
+
     val fetchPublishedCommentsInPost: (Int) -> Result4k<List<Comment>, CommentFetchingError> =
         FetchPublishedCommentsInPost(
             selectPublishedCommentsInPost = commentsDatabase::selectPublishedCommentsInPost
