@@ -1,5 +1,3 @@
-@file:Suppress("KotlinUnreachableCode")
-
 package ru.yarsu.web.profile.admin.handlers
 
 import dev.forkhandles.result4k.Failure
