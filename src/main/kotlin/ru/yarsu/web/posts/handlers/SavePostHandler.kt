@@ -1,3 +1,5 @@
+@file:Suppress("KotlinUnreachableCode")
+
 package ru.yarsu.web.posts.handlers
 
 import dev.forkhandles.result4k.Failure
@@ -12,13 +14,13 @@ import ru.yarsu.domain.operations.posts.PostOperationsHolder
 import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.extract
 import ru.yarsu.web.form.toCustomForm
+import ru.yarsu.web.lenses.GeneralWebLenses.from
 import ru.yarsu.web.lenses.GeneralWebLenses.idOrNull
-import ru.yarsu.web.lenses.GeneralWebLenses.lensOrNull
 import ru.yarsu.web.notFound
-import ru.yarsu.web.posts.lenses.PostWebLenses
+import ru.yarsu.web.posts.lenses.PostWebLenses.postForm
 import ru.yarsu.web.posts.models.NewPostVM
 import ru.yarsu.web.posts.utils.responseWithError
-import ru.yarsu.web.posts.utils.tryAddPostAndHashtag
+import ru.yarsu.web.posts.utils.trySavePostAndHashtag
 import ru.yarsu.web.posts.utils.validateForm
 
 class SavePostHandler(
@@ -30,9 +32,9 @@ class SavePostHandler(
 ) : HttpHandler {
     @Suppress("ReturnCount")
     override fun invoke(request: Request): Response {
-        return lensOrNull(userLens, request)?.let { user ->
+        return userLens(request)?.let { user ->
             val postId = request.idOrNull()
-            val form = PostWebLenses.formFieldAll(request)
+            val form = postForm from request
             if (form.errors.isNotEmpty()) {
                 return render(request) extract
                     NewPostVM(
@@ -43,7 +45,6 @@ class SavePostHandler(
                             ?: emptyList()
                     )
             }
-            // todo редактирование постов
             return when (
                 val validatedPostAndHashtag = form.validateForm(
                     user = user,
@@ -60,19 +61,16 @@ class SavePostHandler(
                 )
 
                 is Success -> {
-                    // validatedForm.value.takeIf { it.id == -1 }
-                    // ?.let {
-                    request.tryAddPostAndHashtag(
+                    request.trySavePostAndHashtag(
                         postAndHashtag = validatedPostAndHashtag.value,
                         postOperations = postOperations,
                         mediaOperations = mediaOperations,
                         hashtagOperations = hashtagOperations,
                         render = render,
-                        form = form
+                        form = form,
+                        user = user,
                     )
                 }
-                // }
-                // ?: tryUpdatePost()
             }
         } ?: notFound
     }

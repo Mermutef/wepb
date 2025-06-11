@@ -6,6 +6,7 @@ import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.posts.handlers.PostHandler
 import ru.yarsu.web.posts.handlers.SavePostHandler
+import ru.yarsu.web.posts.handlers.ShowEditPostFormHandler
 import ru.yarsu.web.posts.handlers.ShowNewPostFormHandler
 
 fun postsRoutes(
@@ -35,7 +36,19 @@ fun postsRoutes(
         hashtagOperations = operations.hashtagOperations,
         userOperations = operations.userOperations,
         render = contextTools.render
-    )
+    ),
+    "/{id}/edit" bind Method.GET to ShowEditPostFormHandler(
+        render = contextTools.render,
+        userLens = contextTools.userLens,
+        operations = operations,
+    ),
+    "/{id}/edit" bind Method.POST to SavePostHandler(
+        postOperations = operations.postOperations,
+        hashtagOperations = operations.hashtagOperations,
+        mediaOperations = operations.mediaOperations,
+        userLens = contextTools.userLens,
+        render = contextTools.render
+    ),
 )
 
 const val POST_SEGMENT = "/posts"
