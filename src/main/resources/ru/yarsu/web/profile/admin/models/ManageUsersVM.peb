@@ -64,11 +64,17 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
+                                        {% if not user.isAdmin() %}
                                         <select class="form-control" aria-label="roleMenu-{{ user.id }}" onchange="submitUserData({{ user.id }})" id="roleSelector{{ user.id }}">
                                             {% for role in model.roles %}
-                                                <option>{{ role }}</option>
+                                                <option
+                                                {% if user.role == role %}
+                                                selected
+                                                {% endif %}
+                                                >{{ role }}</option>
                                             {% endfor %}
                                         </select>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
