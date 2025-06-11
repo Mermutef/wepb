@@ -4,6 +4,8 @@ import ru.yarsu.domain.models.Comment
 import java.time.ZonedDateTime
 
 interface CommentsDatabase {
+    fun selectCommentById(commentId: Int): Comment?
+
     fun selectPublishedCommentsInPost(postId: Int): List<Comment>
 
     fun selectHiddenCommentsInPost(postId: Int): List<Comment>

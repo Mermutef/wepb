@@ -18,25 +18,25 @@ private val mapper = jacksonObjectMapper().let { it.apply { it.registerModule(Ja
 class GiveAllCommentsHandler(
     private val operations: OperationsHolder,
 ) : HttpHandler {
-    override fun invoke(request: Request): Response {
-        val postId = request.idOrNull() ?: return notFound
-        when (val comments = operations.commentOperations.fetchPublishedCommentsInPost(postId)) {
-            is Success -> {
-                val commentsWithAuthors = comments.value.map { comment ->
-                    val user = operations
-                        .userOperations
-                        .fetchUserByID(comment.authorId)
-                        .valueOrNull()
-                        ?: return notFound
-                    mapOf(
-                        "comment" to comment,
-                        "author" to user,
-                    )
+    override fun invoke(request: Request): Response =
+        request.idOrNull()?.let { postId ->
+            when (val comments = operations.commentOperations.fetchPublishedCommentsInPost(postId)) {
+                is Success -> {
+                    val commentsWithAuthors = comments.value.map { comment ->
+                        val user = operations
+                            .userOperations
+                            .fetchUserByID(comment.authorId)
+                            .valueOrNull()
+                            ?: return notFound
+                        mapOf(
+                            "comment" to comment,
+                            "author" to user,
+                        )
+                    }
+                    ok(mapper.writeValueAsString(commentsWithAuthors))
                 }
-                return ok(mapper.writeValueAsString(commentsWithAuthors))
-            }
 
-            is Failure -> return notFound
-        }
-    }
+                is Failure -> notFound
+            }
+        } ?: notFound
 }

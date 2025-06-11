@@ -1,134 +1,288 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Функции экранирования и форматирования
-    const escapeHtml = (text) => {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    // Кэш элементов
+    const elements = {
+        commentHolder: document.getElementById('comment-holder'),
+        commentForm: document.getElementById('comment-form'),
+        commentButton: document.getElementById('comment-button'),
+        commentTextarea: document.getElementById('comment-area')
     };
 
-    const formatDate = (timestamp) => {
-        // Конвертируем секунды в миллисекунды
+    // Вспомогательные функции
+    const escapeHtml = text => text.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;',
+        '"': '&quot;', "'": '&#39;'
+    }[m]));
+
+    const formatDate = timestamp => {
         const date = new Date(timestamp * 1000);
-
-        // Проверка на валидность даты
-        if (isNaN(date.getTime())) {
-            console.warn('Invalid timestamp:', timestamp);
-            return 'Дата неизвестна';
-        }
-
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-
-        return `${day}.${month}.${year} ${hours}:${minutes}`;
+        if (isNaN(date.getTime())) return 'Дата неизвестна';
+        return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     };
 
-    const formatContent = (content) => {
-        return escapeHtml(content).replace(/\n/g, '<br>');
+    const formatContent = content => escapeHtml(content).replace(/\n/g, '<br>');
+
+    // Состояние приложения
+    const state = {
+        currentEdit: null, // {id: number, element: HTMLElement, original: string}
     };
 
-    // Загрузка комментариев
-    const loadComments = async () => {
+    // Функция отмены редактирования
+    const cancelEdit = () => {
+        if (!state.currentEdit) return;
+
+        state.currentEdit.element.innerHTML = state.currentEdit.original;
+        state.currentEdit = null;
+    };
+
+    // Функция начала редактирования (переработанная)
+    const startEdit = async (commentId, element) => {
+        // Закрываем предыдущее редактирование
+        if (state.currentEdit) cancelEdit();
+
+        // Сохраняем оригинальное содержимое
+        state.currentEdit = {
+            id: commentId,
+            element: element,
+            original: element.innerHTML
+        };
+
+        // Быстрая визуальная замена
+        element.innerHTML = '<div class="text-center py-2">Загрузка...</div>';
+
         try {
-            const commentHolder = document.getElementById('comment-holder');
-            if (!commentHolder) return;
+            const response = await fetch(`/comments/${commentId}`);
+            if (!response.ok) throw new Error();
+            const data = await response.json();
 
-            const postId = commentHolder.dataset.postId;
-            if (!postId) throw new Error('Post ID not found');
+            // Проверяем, не отменили ли мы редактирование во время загрузки
+            if (!state.currentEdit || state.currentEdit.id !== commentId) return;
 
-            const response = await fetch(`/comments/${postId}/all`);
-            if (!response.ok) throw new Error('Ошибка загрузки комментариев');
+            element.innerHTML = `
+                <div class="edit-comment-form">
+                    <textarea class="form-control mb-2" rows="3" autofocus>${data.content}</textarea>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-secondary me-2 cancel-edit">Отмена</button>
+                        <button type="button" class="btn btn-primary save-edit">Сохранить</button>
+                    </div>
+                </div>
+                <hr>
+            `;
+        } catch {
+            if (state.currentEdit?.id === commentId) {
+                element.innerHTML = state.currentEdit.original;
+                state.currentEdit = null;
+            }
+        }
+    };
 
-            // Получаем готовый HTML от сервера
-            const html = await response.text();
+    // Функция сохранения комментария
+    const saveEdit = async () => {
+        if (!state.currentEdit) return;
 
-            // Создаем временный контейнер для обработки HTML
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = html;
+        const element = state.currentEdit.element;
+        const textarea = element.querySelector('textarea');
+        if (!textarea) return;
 
-            // Удаляем старые комментарии
-            document.querySelectorAll('.comment-item, .no-comments').forEach(el => el.remove());
+        const content = textarea.value.trim();
+        if (!content) return;
 
-            // Вставляем новые комментарии перед comment-holder
-            const newComments = Array.from(tempContainer.children);
-            newComments.forEach(comment => {
-                commentHolder.parentNode.insertBefore(comment, commentHolder);
+        // Визуализация процесса сохранения
+        element.innerHTML = '<div class="text-center py-2">Сохранение...</div>';
+
+        try {
+            const response = await fetch(`/comments/${state.currentEdit.id}/edit`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content})
             });
 
-        } catch (error) {
-            console.error('Ошибка:', error);
-            // Показываем сообщение об ошибке
-            const errorElement = document.createElement('div');
-            errorElement.className = 'alert alert-danger mt-4';
-            errorElement.textContent = 'Не удалось загрузить комментарии';
-            commentHolder.parentNode.insertBefore(errorElement, commentHolder);
+            if (!response.ok) throw new Error();
+
+            // Обновляем только этот комментарий
+            await loadComments();
+        } catch {
+            // При ошибке восстанавливаем форму
+            element.innerHTML = `
+                <div class="edit-comment-form">
+                    <textarea class="form-control mb-2" rows="3">${content}</textarea>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="button" class="btn btn-secondary me-2 cancel-edit">Отмена</button>
+                        <button type="button" class="btn btn-primary save-edit">Сохранить</button>
+                    </div>
+                    <div class="text-danger mt-2">Ошибка сохранения</div>
+                </div>
+                <hr>
+            `;
         }
     };
-    
-    // Отправка нового комментария
-    const setupCommentForm = () => {
-        const form = document.getElementById('comment-form');
-        const button = document.getElementById('comment-button');
-        const textarea = document.getElementById('comment-area');
 
-        if (!form || !button || !textarea) return;
+    // Функция удаления комментария
+    const deleteComment = async commentId => {
+        if (!confirm('Вы уверены, что хотите удалить комментарий? Это действие отменить невозможно')) return;
 
-        button.addEventListener('click', async () => {
+        const comment = document.getElementById(`comment-${commentId}`);
+        if (comment) comment.style.opacity = '0.5';
+
+        const response = await fetch(`/comments/${commentId}/delete`, {method: 'POST'});
+
+        if (response.ok) {
+            await loadComments();
+        } else {
+            if (comment) comment.style.opacity = '';
+            showError('Не удалось удалить комментарий', elements.commentForm);
+        }
+    };
+
+    // Загрузка комментариев (оптимизированная)
+    const loadComments = async () => {
+        if (!elements.commentHolder) return;
+        const postId = elements.commentHolder.dataset.postId;
+        if (!postId) return;
+
+        // Отменяем активное редактирование
+        if (state.currentEdit) cancelEdit();
+
+        try {
+            const response = await fetch(`/comments/${postId}/all`);
+            if (!response.ok) throw new Error();
+            renderComments(await response.json());
+        } catch {
+            showError('Ошибка загрузки комментариев', elements.commentHolder);
+        }
+    };
+
+    // Отрисовка комментариев
+    const renderComments = comments => {
+        if (!elements.commentHolder) return;
+
+        // Используем DocumentFragment для быстрой вставки
+        const fragment = document.createDocumentFragment();
+        const container = document.createElement('div');
+
+        if (comments.length === 0) {
+            container.innerHTML = `
+                <div class="col text-center py-4">
+                    <i class="text-muted">Еще никто не прокомментировал эту запись. Станьте первым!</i>
+                </div>
+                <hr>
+            `;
+        } else {
+            comments.forEach(comment => {
+                const isEdited = Math.abs(comment.comment.lastModifiedDate - comment.comment.creationDate) > 1;
+                const isAuthor = userId && (comment.author.id == userId);
+
+                container.innerHTML += `
+                    <div class="col comment-item" id="comment-${comment.comment.id}">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <i class="text-orange">@${escapeHtml(comment.author.login)}</i>
+                            </div>
+                            <div class="col text-end">
+                                <i class="text-muted fs-6">
+                                    ${formatDate(comment.comment.creationDate)}
+                                    ${isEdited ? '<span class="text-orange"> (ред.)</span>' : ''}
+                                </i>
+                            </div>
+                        </div>
+                        <div class="row ms-3">
+                            <div class="col comment-content">
+                                ${formatContent(comment.comment.content)}
+                            </div>
+                        </div>
+                        ${(isAuthor || isModer) ? `
+                        <div class="row mt-2 mb-3">
+                            <div class="col text-end">
+                                ${isAuthor ? `<button class="btn btn-primary me-2 edit-comment" data-id="${comment.comment.id}">Редактировать</button>` : ''}
+                                ${(isAuthor || isModer) ? `<button class="btn btn-danger delete-comment" data-id="${comment.comment.id}">Удалить</button>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                        <hr>
+                    </div>
+                `;
+            });
+        }
+
+        fragment.appendChild(container);
+        elements.commentHolder.innerHTML = '';
+        elements.commentHolder.appendChild(fragment);
+    };
+
+    // Инициализация формы комментария
+    const initCommentForm = () => {
+        if (!elements.commentForm || !elements.commentButton) return;
+
+        elements.commentButton.addEventListener('click', async () => {
+            const content = elements.commentTextarea.value.trim();
+            if (!content) {
+                showError('Комментарий не может быть пустым', elements.commentForm);
+                return;
+            }
+
+            elements.commentButton.disabled = true;
+
             try {
-                // Удаляем предыдущие ошибки
-                const existingError = form.closest('.row').querySelector('.alert.alert-danger');
-                if (existingError) existingError.remove();
-
-                const content = textarea.value.trim();
-                if (!content) {
-                    showError('Комментарий не может быть пустым', form);
-                    return;
-                }
-
-                const commentHolder = document.getElementById('comment-holder');
-                const postId = commentHolder.dataset.postId;
-
+                const postId = elements.commentHolder.dataset.postId;
                 const response = await fetch(`/comments/${postId}/new`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({content})
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка при отправке комментария');
-                }
+                if (!response.ok) throw new Error();
 
-                // Очищаем поле и обновляем комментарии
-                textarea.value = '';
+                elements.commentTextarea.value = '';
                 await loadComments();
-
-            } catch (error) {
-                showError(error.message, form);
+            } catch {
+                showError('Ошибка при отправке комментария', elements.commentForm);
+            } finally {
+                elements.commentButton.disabled = false;
             }
         });
     };
 
     // Показ ошибок
-    const showError = (message, formElement) => {
+    const showError = (message, container) => {
         const errorDiv = document.createElement('div');
-        errorDiv.className = 'alert alert-danger mt-2 mb-0 text-center thin-input';
-        errorDiv.setAttribute('role', 'alert');
+        errorDiv.className = 'alert alert-danger mt-2';
         errorDiv.textContent = message;
+        container.prepend(errorDiv);
 
-        // Вставляем ошибку перед формой
-        formElement.append(errorDiv);
+        // Автоматическое скрытие через 5 секунд
+        setTimeout(() => errorDiv.remove(), 5000);
     };
 
-    // Инициализация
-    const init = () => {
-        loadComments();
-        setupCommentForm();
+    // Инициализация обработчиков событий
+    const initEventHandlers = () => {
+        // Используем делегирование событий для динамических элементов
+        elements.commentHolder?.addEventListener('click', e => {
+            const target = e.target;
+            const commentElement = target.closest('.comment-item');
+
+            if (!commentElement) return;
+
+            // Редактирование
+            if (target.classList.contains('edit-comment')) {
+                startEdit(target.dataset.id, commentElement);
+            }
+            // Удаление
+            else if (target.classList.contains('delete-comment')) {
+                deleteComment(target.dataset.id);
+            }
+        });
+
+        // Обработчики для формы редактирования
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('cancel-edit')) {
+                cancelEdit();
+            } else if (e.target.classList.contains('save-edit')) {
+                saveEdit();
+            }
+        });
     };
 
-    init();
+    // Запуск приложения
+    initEventHandlers();
+    initCommentForm();
+    loadComments();
 });

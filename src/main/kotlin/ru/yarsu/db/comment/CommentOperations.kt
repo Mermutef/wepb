@@ -11,6 +11,12 @@ import java.time.ZonedDateTime
 class CommentOperations (
     private val jooqContext: DSLContext,
 ) : CommentsDatabase {
+    override fun selectCommentById(commentId: Int): Comment? =
+        selectFromComments()
+            .where(COMMENTS.ID.eq(commentId))
+            .fetchOne()
+            ?.toComment()
+
     override fun selectPublishedCommentsInPost(postId: Int): List<Comment> =
         selectFromComments()
             .where(COMMENTS.POSTID.eq(postId), COMMENTS.IS_HIDDEN.eq(false))

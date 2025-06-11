@@ -5,7 +5,6 @@ import org.http4k.core.Status
 import org.http4k.core.with
 import ru.yarsu.web.context.templates.ContextAwareViewRender
 import ru.yarsu.web.errors.models.NotFoundVM
-import ru.yarsu.web.extract
 import ru.yarsu.web.notFound
 
 fun notFoundFilter(renderer: ContextAwareViewRender): Filter =

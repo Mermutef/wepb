@@ -45,7 +45,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row row-cols-1" id="comments">
-                        <div class="col" id="comment-holder" data-post-id="{{ model.postWithHashtag.first.id }}">
+                        <div class="col">
                             {% if user is not empty %}
                                 <div class="row">
                                     <div class="col">
@@ -74,11 +74,18 @@
                                 </div>
                             {% endif %}
                         </div>
+                        <div class="col" id="comment-holder" data-post-id="{{ model.postWithHashtag.first.id }}">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    const postId = {{ model.postWithHashtag.first.id }};
+    const userId = {{ user.id }};
+    const isModer = {{ user.isModerator() }};
+</script>
 <script src="/static/js/comments.js"></script>
 {% endblock %}
