@@ -7,7 +7,8 @@ import org.http4k.lens.RequestContextLens
 import ru.yarsu.domain.models.User
 import ru.yarsu.web.auth.lenses.UserWebLenses.authorizeUserFromPath
 import ru.yarsu.web.notFound
-import ru.yarsu.web.ok
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.MANAGE_USERS
 import ru.yarsu.web.profile.user.USER
 import ru.yarsu.web.redirect
 
@@ -24,12 +25,9 @@ class RedirectToHandlers(
 
             is Success -> {
                 when {
-                    user.value.isAdmin() -> ok("pong")
+                    user.value.isAdmin() -> redirect("$ADMIN_SEGMENT$MANAGE_USERS")
                     user.value.isModerator() || user.value.isWriter() || user.value.isReader() ->
                         redirect("$USER/${user.value.login}")
-//                        redirect("${MODERATOR_SEGMENT}${POST_MODERATION}/${user.value.login}")
-//                     -> redirect("${WRITER_SEGMENT}${MY_POSTS}/${user.value.login}")
-//                     ->
                     else -> notFound
                 }
             }

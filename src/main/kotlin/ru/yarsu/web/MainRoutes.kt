@@ -22,6 +22,8 @@ import ru.yarsu.web.media.mediaRouter
 import ru.yarsu.web.posts.POST_SEGMENT
 import ru.yarsu.web.posts.postsRoutes
 import ru.yarsu.web.profile.PROFILE_SEGMENT
+import ru.yarsu.web.profile.admin.ADMIN_SEGMENT
+import ru.yarsu.web.profile.admin.adminRoutes
 import ru.yarsu.web.profile.moderator.MODERATOR_SEGMENT
 import ru.yarsu.web.profile.moderator.moderatorRoutes
 import ru.yarsu.web.profile.profileRoutes
@@ -39,6 +41,7 @@ private fun createMainRouter(
     jwtTools: JWTTools,
     writerRoleFilter: Filter,
     moderatorRoleFilter: Filter,
+    adminRoleFilter: Filter,
     editorRoleFilter: Filter,
 ) = routes(
     "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
@@ -54,6 +57,13 @@ private fun createMainRouter(
         operations = operations,
         jwtTools = jwtTools
     ),
+    ADMIN_SEGMENT bind adminRoleFilter
+        .then(
+            adminRoutes(
+                contextTools = contextTools,
+                operations = operations,
+            )
+        ),
     PROFILE_SEGMENT bind profileRoutes(
         contextTools = contextTools,
     ),
@@ -93,6 +103,7 @@ fun createApp(
 
     val moderatorRoleFilter = roleFilter(contexts.userLens, Role.MODERATOR)
     val writerRoleFilter = roleFilter(contexts.userLens, Role.WRITER)
+    val adminRoleFilter = roleFilter(contexts.userLens, Role.ADMIN)
     val editorRoleFilter = editorRoleFilter(contexts.userLens)
 
     val filters = FiltersHolder(
@@ -109,7 +120,8 @@ fun createApp(
         jwtTools = jwtTools,
         writerRoleFilter = writerRoleFilter,
         moderatorRoleFilter = moderatorRoleFilter,
-        editorRoleFilter = editorRoleFilter
+        editorRoleFilter = editorRoleFilter,
+        adminRoleFilter = adminRoleFilter,
     )
 
     return filters.all.then(app)
