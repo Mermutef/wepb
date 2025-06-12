@@ -26,7 +26,7 @@ class GeneralPageHandler(
         return when (val publishedPosts = fetchPublishedPosts()) {
             is Failure -> notFound
             is Success -> render(request) extract GeneralPageVM(
-                publishedPosts.value.associateWith {
+                publishedPosts.value.sortedByDescending { it.lastModifiedDate }.associateWith {
                     hashtagsOperations.fetchHashtagById(
                         it.hashtagId
                     ).valueOrNull() ?: Hashtag.nullTag
