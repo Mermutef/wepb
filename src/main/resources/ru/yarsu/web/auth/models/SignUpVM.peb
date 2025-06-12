@@ -35,7 +35,7 @@
                             value="{{ model.form.fields["name"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "name" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -55,7 +55,7 @@
                             value="{{ model.form.fields["surname"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "surname" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -75,7 +75,7 @@
                             value="{{ model.form.fields["login"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "login" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -95,7 +95,7 @@
                             value="{{ model.form.fields["phoneNumber"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "phoneNumber" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -115,7 +115,7 @@
                             value="{{ model.form.fields["email"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "email" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -155,7 +155,7 @@
                             value="{{ model.form.fields["repeat_password"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "repeat_password" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
@@ -175,7 +175,7 @@
                             value="{{ model.form.fields["vk_link"] | first }}"
                     >
                     {% for error in model.form.errors.values() %}
-                        {% if error.name == "password" %}
+                        {% if error.name == "vk_link" %}
                             <div class="alert alert-danger mt-2 mb-0 text-center thin-input" role="alert">
                                     {{ error.description }}
                             </div>
