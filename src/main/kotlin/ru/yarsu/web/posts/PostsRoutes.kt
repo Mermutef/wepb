@@ -6,8 +6,8 @@ import ru.yarsu.domain.operations.OperationsHolder
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.posts.handlers.PostHandler
 import ru.yarsu.web.posts.handlers.SavePostHandler
-import ru.yarsu.web.posts.handlers.ShowEditPostFormHandler
 import ru.yarsu.web.posts.handlers.SetPostStatusHandler
+import ru.yarsu.web.posts.handlers.ShowEditPostFormHandler
 import ru.yarsu.web.posts.handlers.ShowNewPostFormHandler
 
 fun postsRoutes(

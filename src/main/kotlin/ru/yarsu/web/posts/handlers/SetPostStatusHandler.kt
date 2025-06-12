@@ -140,7 +140,6 @@ class SetPostStatusHandler(
         post: Post,
         user: User,
     ): Response {
-        println("Я заходил в функцию отправки изменения роли")
         return when (
             updatePostStatus(
                 status = status,

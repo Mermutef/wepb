@@ -46,7 +46,7 @@
                         {% if model.postWithHashtag.first.status == "DRAFT" %}
                             {% if user.id == model.postWithHashtag.first.authorId or user.isModerator()%}
                                 <div class="col-lg-3 col-sm-12 col-md-6">
-                                    <a class="text-white btn btn-primary w-100" href="#">Редактировать пост</a>
+                                    <a class="text-white btn btn-primary w-100" href="/posts/{{ model.postWithHashtag.first.id }}/edit">Редактировать пост</a>
                                 </div>
                             {% endif %}
                             {% if user.isModerator() %}
