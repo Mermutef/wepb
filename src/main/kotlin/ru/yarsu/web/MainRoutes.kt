@@ -14,7 +14,6 @@ import ru.yarsu.web.auth.authRouter
 import ru.yarsu.web.comments.COMMENTS_SEGMENT
 import ru.yarsu.web.comments.commentsRoutes
 import ru.yarsu.web.common.handlers.GeneralPageHandler
-import ru.yarsu.web.common.handlers.HomeHandler
 import ru.yarsu.web.context.ContextTools
 import ru.yarsu.web.filters.FiltersHolder
 import ru.yarsu.web.filters.editorRoleFilter
@@ -46,7 +45,6 @@ private fun createMainRouter(
     adminRoleFilter: Filter,
     editorRoleFilter: Filter,
 ) = routes(
-    "/current-work" bind Method.GET to HomeHandler(contextTools.render, contextTools.userLens),
     "/" bind Method.GET to GeneralPageHandler(
         render = contextTools.render,
         postsOperations = operations.postOperations,

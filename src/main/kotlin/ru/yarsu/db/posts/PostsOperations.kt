@@ -23,12 +23,13 @@ class PostsOperations(
     override fun selectPostsByHashtagId(idHashtag: Int): List<Post> =
         selectFromPosts()
             .where(POSTS.HASHTAG.eq(idHashtag))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .mapNotNull { it.toPost() }
 
     override fun selectNNewestPosts(countN: Int): List<Post> =
         selectFromPosts()
-            .orderBy(POSTS.CREATION_DATE.desc())
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .limit(countN)
             .fetch()
             .mapNotNull { it.toPost() }
@@ -36,18 +37,21 @@ class PostsOperations(
     override fun selectPostsByAuthorId(authorId: Int): List<Post> =
         selectFromPosts()
             .where(POSTS.AUTHORID.eq(authorId))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .mapNotNull { it.toPost() }
 
     override fun selectPostsByModeratorId(moderatorId: Int): List<Post> =
         selectFromPosts()
             .where(POSTS.MODERATORID.eq(moderatorId))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .mapNotNull { it.toPost() }
 
     override fun selectPostsByStatus(status: Status): List<Post> =
         selectFromPosts()
             .where(POSTS.STATUS.eq(status.asDbStatus()))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .mapNotNull { it.toPost() }
 
@@ -56,13 +60,14 @@ class PostsOperations(
         endDate: ZonedDateTime,
     ): List<Post> =
         selectFromPosts()
-            .where(POSTS.CREATION_DATE.between(startDate.toOffsetDateTime(), endDate.toOffsetDateTime()))
-            .orderBy(POSTS.CREATION_DATE.desc())
+            .where(POSTS.LAST_MODIFIED_DATE.between(startDate.toOffsetDateTime(), endDate.toOffsetDateTime()))
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .map { it.toPost() }
 
     override fun selectAllPosts(): List<Post> =
         selectFromPosts()
+            .orderBy(POSTS.LAST_MODIFIED_DATE.desc())
             .fetch()
             .mapNotNull { it.toPost() }
 

@@ -19,6 +19,7 @@ import ru.yarsu.domain.operations.hashtags.HashtagFetchingError
 import ru.yarsu.domain.operations.hashtags.HashtagOperationsHolder
 import ru.yarsu.domain.operations.media.MediaOperationsHolder
 import ru.yarsu.domain.operations.posts.FieldInPostChangingError
+import ru.yarsu.domain.operations.posts.MakeStatusError
 import ru.yarsu.domain.operations.posts.PostCreationError
 import ru.yarsu.domain.operations.posts.PostFetchingError
 import ru.yarsu.domain.operations.posts.PostOperationsHolder
@@ -240,6 +241,51 @@ fun fetchPostById(
     }
 }
 
+fun updatePostStatus(
+    status: Status,
+    post: Post,
+    postOperations: PostOperationsHolder,
+): Result<Post, StatusSettingError> {
+    return when (val updatedPost = updateStatusByName(status, post, postOperations)) {
+        is Failure -> when (updatedPost.reason) {
+            MakeStatusError.UNKNOWN_DATABASE_ERROR -> Failure(StatusSettingError.UNKNOWN_DATABASE_ERROR)
+            MakeStatusError.IS_ALREADY_DRAFT -> Failure(StatusSettingError.IS_ALREADY_DRAFT)
+            MakeStatusError.IS_ALREADY_PUBLISHED -> Failure(StatusSettingError.IS_ALREADY_PUBLISHED)
+            MakeStatusError.IS_ALREADY_HIDDEN -> Failure(StatusSettingError.IS_ALREADY_HIDDEN)
+            MakeStatusError.IS_ALREADY_MODERATION -> Failure(StatusSettingError.IS_ALREADY_MODERATION)
+        }
+        is Success -> Success(updatedPost.value)
+    }
+}
+
+fun updatePostModeratorId(
+    post: Post,
+    moderatorId: Int,
+    postOperations: PostOperationsHolder,
+): Result<Post, ChangingModeratorIdError> {
+    return when (val updatedPost = postOperations.changeModeratorId(post, moderatorId)) {
+        is Failure -> when (updatedPost.reason) {
+            FieldInPostChangingError.UNKNOWN_CHANGING_ERROR -> Failure(ChangingModeratorIdError.UNKNOWN_CHANGING_ERROR)
+            FieldInPostChangingError.USER_NOT_EXISTS -> Failure(ChangingModeratorIdError.USER_NOT_EXISTS)
+            else -> Failure(ChangingModeratorIdError.UNKNOWN_DATABASE_ERROR)
+        }
+        is Success -> Success(updatedPost.value)
+    }
+}
+
+private fun updateStatusByName(
+    status: Status,
+    post: Post,
+    postOperations: PostOperationsHolder,
+): Result<Post, MakeStatusError> {
+    return when (status) {
+        Status.DRAFT -> postOperations.makeDraft(post)
+        Status.PUBLISHED -> postOperations.makePublished(post)
+        Status.MODERATION -> postOperations.makeModeration(post)
+        Status.HIDDEN -> postOperations.makeHidden(post)
+    }
+}
+
 @Suppress("LongParameterList")
 fun Request.trySavePostAndHashtag(
     postAndHashtag: Pair<Post, String>,
@@ -355,4 +401,18 @@ enum class PostError(val errorText: String) {
 enum class FetchingPostError(val errorText: String) {
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
     NO_SUCH_POST("Указанного поста не существует"),
+}
+
+enum class StatusSettingError(val errorText: String) {
+    UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
+    IS_ALREADY_PUBLISHED("Указанный пост уже был опубликован"),
+    IS_ALREADY_HIDDEN("Указанный пост уже был скрыт"),
+    IS_ALREADY_MODERATION("Указанный пост уже находится на модерации"),
+    IS_ALREADY_DRAFT("Указанный пост уже является черновиком"),
+}
+
+enum class ChangingModeratorIdError(val errorText: String) {
+    UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
+    UNKNOWN_CHANGING_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
+    USER_NOT_EXISTS("Указанный пользователь не существует"),
 }

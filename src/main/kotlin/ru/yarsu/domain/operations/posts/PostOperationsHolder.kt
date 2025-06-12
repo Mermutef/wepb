@@ -117,7 +117,7 @@ class PostOperationsHolder(
 
     val changeModeratorId: (Post, Int) -> Result4k<Post, FieldInPostChangingError> =
         ChangeUserIdInPost(
-            changeUserId = postsDatabase::updateAuthorId,
+            changeUserId = postsDatabase::updateModeratorId,
             selectUserById = userDatabase::selectUserByID
         )
 
