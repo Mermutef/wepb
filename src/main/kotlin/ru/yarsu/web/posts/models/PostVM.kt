@@ -17,5 +17,4 @@ class PostVM(
     val signUpLink = "$AUTH_SEGMENT$SIGN_UP"
 
     fun renderMD(content: String) = content.render()
-
 }
