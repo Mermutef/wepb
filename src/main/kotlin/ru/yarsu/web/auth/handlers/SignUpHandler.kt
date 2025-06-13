@@ -94,7 +94,7 @@ enum class SignUpError(val errorText: String) {
     PASSWORD_IS_BLANK_OR_EMPTY("Пароль должен быть не пустым"),
     REPEAT_PASSWORD_IS_BLANK_OR_EMPTY("Повтор пароля не может быть пустым"),
     PASSWORDS_DO_NOT_MATCH("Пароли должны совпадать"),
-    LOGIN_ALREADY_EXISTS("Имя пользователя уже занято"),
+    LOGIN_ALREADY_EXISTS("Логин пользователя уже занят"),
     PHONE_ALREADY_EXISTS("Номер телефона уже занят"),
     EMAIL_ALREADY_EXISTS("Адрес электронной почты уже занят"),
     UNKNOWN_DATABASE_ERROR("Что-то случилось. Пожалуйста, повторите попытку позднее или обратитесь за помощью"),
