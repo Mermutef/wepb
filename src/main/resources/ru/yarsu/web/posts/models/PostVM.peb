@@ -150,8 +150,8 @@
 </div>
 <script>
     const postId = {{ model.postWithHashtag.first.id }};
-    const userId = {% if user is not empty %} user.id {% else%} null {% endif %};
-    const isModer = {% if user is not empty %} user.isModerator() {% else%} null {% endif %};
+    const userId = {% if user is not empty %}{{ user.id }}{% else%} null {% endif %};
+    const isModer = {% if user is not empty %}{{ user.isModerator() }}{% else%} null {% endif %};
 </script>
 <script src="/static/js/comments.js"></script>
 <script>
