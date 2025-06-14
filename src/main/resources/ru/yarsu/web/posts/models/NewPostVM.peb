@@ -311,7 +311,7 @@
                         <form id="videoLinkForm">
                             <input class="form-control mt-3" type="text" id="videoPlayerCode" name="videoPlayerCode"
                                    aria-label="videoPlayerLinkField"
-                                   placeholder="Rutube or VK player code" required>
+                                   placeholder="Код Rutube или VK-видео плеера" required>
                         </form>
                     </div>
                     <div class="modal-footer">
