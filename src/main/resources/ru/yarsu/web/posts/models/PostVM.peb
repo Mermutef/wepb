@@ -78,6 +78,9 @@
                                         Опубликовать
                                     </button>
                                 </div>
+                                <div class="col-lg-3 col-sm-12 col-md-6">
+                                    <a class="text-white btn btn-primary w-100" href="/posts/{{ model.postWithHashtag.first.id }}/edit">Редактировать пост</a>
+                                </div>
                             {% endif %}
                         {% endif %}
                         {% if model.postWithHashtag.first.status == "PUBLISHED" and user.isModerator()%}
