@@ -134,9 +134,10 @@
                             {% else %}
                                 <div class="row row-cols-1 ms-3">
                                     <div class="col">
-                                        Авторизуйтесь для написания комментариев
+                                        <a href="{{ model.signInLink }}" class="text-black">Войдите</a> или <a href="{{ model.signUpLink }}" class="text-black">зарегистрируйтесь</a> для написания комментариев
                                     </div>
                                 </div>
+                                <hr>
                             {% endif %}
                         </div>
                         <div class="col" id="comment-holder" data-post-id="{{ model.postWithHashtag.first.id }}">
@@ -149,8 +150,8 @@
 </div>
 <script>
     const postId = {{ model.postWithHashtag.first.id }};
-    const userId = {{ user.id }};
-    const isModer = {{ user.isModerator() }};
+    const userId = {% if user is not empty %}{{ user.id }}{% else%} null {% endif %};
+    const isModer = {% if user is not empty %}{{ user.isModerator() }}{% else%} null {% endif %};
 </script>
 <script src="/static/js/comments.js"></script>
 <script>
