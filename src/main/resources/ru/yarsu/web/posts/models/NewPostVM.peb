@@ -231,7 +231,7 @@
                                 <b>Аудио</b>
                             </li>
                         </ul>
-                        <div class="row row-cols-6 justify-content-center mt-3" id="gallery"
+                        <div class="row justify-content-center mt-3" id="gallery"
                              style="overflow-y: auto; max-height: 50vh;">
                         </div>
                         <div class="me-auto text-secondary" id="disclaimer"></div>
@@ -264,7 +264,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row row-cols-6 justify-content-center mt-3" id="previewGallery"
+                        <div class="row justify-content-center mt-3" id="previewGallery"
                              style="overflow-y: auto; max-height: 50vh;">
                         </div>
                     </div>

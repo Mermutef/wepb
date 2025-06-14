@@ -249,7 +249,7 @@ function addDisclaimer(gallery, message) {
 
 function createGalleryElement(i, iconPath, media) {
     let col = document.createElement("div");
-    col.className = "col-2 m-2";
+    col.className = "col-sm-6 col-md-4 col-lg-2 m-2";
 
     let input = document.createElement("input");
     input.className = "btn-check";
