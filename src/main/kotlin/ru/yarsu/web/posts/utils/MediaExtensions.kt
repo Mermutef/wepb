@@ -2,8 +2,6 @@ package ru.yarsu.web.posts.utils
 
 import ru.yarsu.domain.models.MediaType
 import ru.yarsu.web.rendering.MarkdownToHTMLRenderer
-import kotlin.collections.get
-import kotlin.text.get
 
 fun MediaType.html(filename: String): String =
     when (this) {
@@ -43,7 +41,7 @@ fun MediaType.html(filename: String): String =
             """.trimIndent()
     }
 
-private fun String.replaceQuotes() = this.replace("<", "{").replace(">", "}")
+private fun String.replaceBraces() = this.replace("<", "{").replace(">", "}").replace("&", "&amp;")
 
 fun String.render(): String {
     val media = MediaType.entries.associateWith { mediaType -> mediaType.pattern.findAll(this).toList() }
@@ -53,7 +51,7 @@ fun String.render(): String {
         media[mediaType]!!.forEach { filename ->
             rawString = rawString.replace(
                 filename.groupValues[0],
-                filename.groupValues[0].replaceQuotes()
+                filename.groupValues[0].replaceBraces()
             )
         }
     }
@@ -62,7 +60,7 @@ fun String.render(): String {
     media.keys.forEach { mediaType ->
         media[mediaType]!!.forEach { filename ->
             rawString = rawString.replace(
-                filename.groupValues[0].replaceQuotes(),
+                filename.groupValues[0].replaceBraces(),
                 mediaType.html(filename.groupValues[1])
             )
         }
